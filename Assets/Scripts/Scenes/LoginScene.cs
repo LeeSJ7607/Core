@@ -1,4 +1,6 @@
-﻿internal sealed class LoginScene
+﻿using UnityEngine;
+
+internal sealed class LoginScene : MonoBehaviour
 {
     
 }
