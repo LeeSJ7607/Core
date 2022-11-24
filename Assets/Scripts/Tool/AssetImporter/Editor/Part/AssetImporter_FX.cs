@@ -23,7 +23,8 @@ public sealed class AssetImporter_FX : AssetImporterPart
     
     private readonly AssetImporter_TextureImpl _textureImpl = new();
     private int _selectedTextureFormatIdx = Array.FindIndex(AssetImporter_TextureImpl.TextureFormats, _ => _.Equals(TextureImporterFormat.ASTC_6x6.ToString()));
-    private int _selectedTextureSizeIdx;
+    private int _selectedTextureMaxSizeIdx;
+    private int _selectedTextureMinSizeIdx = AssetImporter_TextureImpl.TextureSizes.Length - 1;
     private int _selectedLabelIdx;
     private int _drawMaxRow = 5;
     private Texture2D _texModified;
@@ -58,16 +59,22 @@ public sealed class AssetImporter_FX : AssetImporterPart
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         {
-            _selectedTextureFormatIdx = EditorGUILayout.Popup("모든 텍스쳐 압축 포맷 기준", _selectedTextureFormatIdx, AssetImporter_TextureImpl.TextureFormats);
+            _selectedTextureFormatIdx = EditorGUILayout.Popup("텍스쳐 압축 포맷", _selectedTextureFormatIdx, AssetImporter_TextureImpl.TextureFormats);
         }
         EditorGUILayout.EndVertical();
 
-        GUIUtil.DrawPopup("텍스쳐 사이즈 검색", ref _selectedTextureSizeIdx, AssetImporter_TextureImpl.TextureSizes, CalcSearchedAssetInfos);
+        EditorGUILayout.BeginHorizontal();
+        {
+            GUIUtil.DrawPopup("텍스쳐 최대 사이즈", ref _selectedTextureMaxSizeIdx, AssetImporter_TextureImpl.TextureSizes, CalcSearchedAssetInfos);
+            GUIUtil.DrawPopup("텍스쳐 최소 사이즈", ref _selectedTextureMinSizeIdx, AssetImporter_TextureImpl.TextureSizes, CalcSearchedAssetInfos);
+        }
+        EditorGUILayout.EndHorizontal();
+        
         GUIUtil.DrawPopup("레이블 검색", ref _selectedLabelIdx, _textureImpl.Labels, CalcSearchedAssetInfos);
 
         void CalcSearchedAssetInfos()
         {
-            _textureImpl.CalcSearchedAssetInfos(_selectedLabelIdx, _selectedTextureSizeIdx);
+            _textureImpl.CalcSearchedAssetInfos(_selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx);
         }
     }
     
@@ -163,5 +170,5 @@ public sealed class AssetImporter_FX : AssetImporterPart
         }
     }
 
-    public override bool TrySave() => _textureImpl.TrySave(_selectedTextureFormatIdx);
+    public override bool TrySave() => _textureImpl.TrySave();
 }
