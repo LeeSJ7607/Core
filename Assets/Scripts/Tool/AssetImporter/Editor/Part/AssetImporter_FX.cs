@@ -157,7 +157,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         {
             Btn("비교", () => Compare(assetInfo));
         }
-
+        
         EditorGUILayout.EndVertical();
         
         void Btn(string name, Action act)
@@ -168,7 +168,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
             }
         }
     }
-
+    
     private void Compare(AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
         if (_compareAssetInfo == null)
@@ -185,6 +185,6 @@ public sealed class AssetImporter_FX : AssetImporterPart
         AssetImporterTool_Compare.Open(_compareAssetInfo, assetInfo);
         _compareAssetInfo = null;
     }
-
+    
     public override bool TrySave() => _textureImpl.TrySave();
 }
