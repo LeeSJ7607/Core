@@ -76,6 +76,12 @@ public sealed class AssetImporter_TextureImpl
             TextureImporter.SaveAndReimport();
         }
 
+        public void SetPlatformTextureSettings(int format)
+        {
+            AOSSettings.format = Enum.Parse<TextureImporterFormat>(TextureFormats[format]);
+            Changed = true;
+        }
+
         public void Save()
         {
             SetPlatformTextureSettings();
@@ -204,9 +210,6 @@ public sealed class AssetImporter_TextureImpl
             Selection.activeObject = activeObject;
         }
         
-        //TODO: 스크립터블 오브젝트에 적용.
-        var textureFormat = Enum.Parse<TextureImporterFormat>(TextureFormats[selectedTextureFormatIdx]);
-
         return changed;
     }
 }

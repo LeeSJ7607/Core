@@ -146,8 +146,9 @@ public sealed class AssetImporter_FX : AssetImporterPart
     private void DrawOption(AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
         EditorGUILayout.BeginVertical();
-
+        
         Btn("수정", () => AssetImporterTool_Preview.Open(assetInfo));
+        Btn("포맷", () => assetInfo.SetPlatformTextureSettings(_selectedTextureFormatIdx));
         Btn("선택", () => Selection.activeObject = assetInfo.Texture2D);
         Btn("열기", () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
 
