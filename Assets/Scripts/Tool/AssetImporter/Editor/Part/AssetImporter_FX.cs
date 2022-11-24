@@ -22,6 +22,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
     private bool _isOn;
     
     private readonly AssetImporter_TextureImpl _textureImpl = new();
+    private AssetImporter_TextureImpl.AssetInfo _compareAssetInfo;
     private int _selectedTextureFormatIdx = Array.FindIndex(AssetImporter_TextureImpl.TextureFormats, _ => _.Equals(TextureImporterFormat.ASTC_6x6.ToString()));
     private int _selectedTextureMaxSizeIdx;
     private int _selectedTextureMinSizeIdx = AssetImporter_TextureImpl.TextureSizes.Length - 1;
@@ -48,7 +49,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
 
         _textureImpl.Initialize();
     }
-
+    
     public override void Draw()
     {
         DrawMenus();
@@ -118,7 +119,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         
         if (GUILayout.Button(tex, GUILayout.Width(50), GUILayout.Height(50)))
         {
-            AssetImporterTool_TextureWindow.Open(tex);
+            AssetImporterTool_Preview.Open(tex);
         }
     }
     
@@ -126,38 +127,36 @@ public sealed class AssetImporter_FX : AssetImporterPart
     //TODO: 폰트 크기도 수정해주면 좋을듯.
     private void DrawDesc(AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
+        const float keyWidth = 80;
+        const float valueWidth = 170;
         var tex = assetInfo.Texture2D;
+        var importer = assetInfo.TextureImporter;
         
-        var name = $"Name: {tex.name}";
-        var textureType = $"TextureType: {assetInfo.TextureType}";
-        var wrapMode = $"WrapMode: {assetInfo.WrapMode}";
-        var filterMode = $"FilterMode: {assetInfo.FilterMode}";
-        var maxSize = $"Max Size: {assetInfo.MaxTextureSize.ToString()}";
-        var format = $"Format: {assetInfo.AOSSettings.format}";
-        var textureSize = $"TextureSize: {tex.width}x{tex.height}";
-        var fileSize = $"File Size: {assetInfo.FileSize}";
-        
-        var desc = 
-            name + "\n" 
-          + textureType + "\n"
-          + wrapMode + "\n"
-          + filterMode + "\n"
-          + maxSize + "\n" 
-          + format + "\n"
-          + textureSize + "\n"
-          + fileSize;
-        
-        GUILayout.Label(desc, GUIUtil.LabelStyle(TextAnchor.MiddleLeft), GUILayout.Width(280));
+        EditorGUILayout.Space(1);
+        GUILayout.BeginVertical();
+        GUIUtil.Desc("Name", tex.name, keyWidth, valueWidth);
+        GUIUtil.Desc("Texture Type", assetInfo.TextureType.ToString(), keyWidth, valueWidth);
+        GUIUtil.Desc("Wrap Mode", assetInfo.WrapMode.ToString(), keyWidth, valueWidth);
+        GUIUtil.Desc("Filter Mode", assetInfo.FilterMode.ToString(), keyWidth, valueWidth);
+        GUIUtil.Desc("Max Size", importer.maxTextureSize.ToString(), keyWidth, valueWidth);
+        GUIUtil.Desc("format", assetInfo.AOSSettings.format.ToString(), keyWidth, valueWidth);
+        GUIUtil.Desc("Texture Size", $"{tex.width.ToString()}x{tex.height.ToString()}", keyWidth, valueWidth);
+        GUILayout.EndVertical();
     }
     
     private void DrawOption(AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
         EditorGUILayout.BeginVertical();
         
-        Btn("수정", () => AssetImporterTool_Preview.Open(assetInfo));
+        Btn("수정", () => AssetImporterTool_Modify.Open(assetInfo));
         Btn("포맷", () => assetInfo.SetPlatformTextureSettings(_selectedTextureFormatIdx));
         Btn("선택", () => Selection.activeObject = assetInfo.Texture2D);
         Btn("열기", () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
+
+        if (_compareAssetInfo == null || _compareAssetInfo.Texture2D == assetInfo.Texture2D)
+        {
+            Btn("비교", () => Compare(assetInfo));
+        }
 
         EditorGUILayout.EndVertical();
         
@@ -168,6 +167,23 @@ public sealed class AssetImporter_FX : AssetImporterPart
                 act();
             }
         }
+    }
+
+    private void Compare(AssetImporter_TextureImpl.AssetInfo assetInfo)
+    {
+        if (_compareAssetInfo == null)
+        {
+            _compareAssetInfo = assetInfo;
+            return;
+        }
+
+        if (_compareAssetInfo.Path.Equals(assetInfo.Path))
+        {
+            return;
+        }
+        
+        AssetImporterTool_Compare.Open(_compareAssetInfo, assetInfo);
+        _compareAssetInfo = null;
     }
 
     public override bool TrySave() => _textureImpl.TrySave();

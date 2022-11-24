@@ -34,7 +34,7 @@ public sealed class AssetImporter_TextureImpl
 
     public sealed class AssetInfo
     {
-        private readonly string _path;
+        public string Path { get; }
         public Texture2D Texture2D { get; private set; }
         public TextureImporter TextureImporter { get; }
         public TextureImporterPlatformSettings AOSSettings { get; }
@@ -47,9 +47,9 @@ public sealed class AssetImporter_TextureImpl
 
         public AssetInfo(string guid)
         {
-            _path = AssetDatabase.GUIDToAssetPath(guid);
-            Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(_path);
-            TextureImporter = (TextureImporter)AssetImporter.GetAtPath(_path);
+            Path = AssetDatabase.GUIDToAssetPath(guid);
+            Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(Path);
+            TextureImporter = (TextureImporter)AssetImporter.GetAtPath(Path);
             AOSSettings = TextureImporter.GetPlatformTextureSettings("Android");
             TextureType = TextureImporter.textureType;
             WrapMode = TextureImporter.wrapMode;
@@ -60,7 +60,7 @@ public sealed class AssetImporter_TextureImpl
 
         private void Refresh()
         {
-            Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(_path);
+            Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(Path);
             FileSize = EditorTextureUtil.TextureSize(Texture2D);
             Changed = false;
         }

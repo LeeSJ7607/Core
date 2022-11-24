@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-internal sealed class AssetImporterTool_FormatWindow : EditorWindow
+internal sealed class AssetImporterTool_Format : EditorWindow
 {
     private const float _size = 200;
     
@@ -27,7 +27,7 @@ internal sealed class AssetImporterTool_FormatWindow : EditorWindow
 
     public static void Open(AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
-        var tool = GetWindow<AssetImporterTool_FormatWindow>("FormatWindow");
+        var tool = GetWindow<AssetImporterTool_Format>("Format");
         tool.minSize = tool.maxSize = new Vector2(_size * AssetImporter_TextureImpl.TextureFormats.Length + 40, _size + 40);
         
         CreateTexture(tool, assetInfo);
@@ -35,7 +35,7 @@ internal sealed class AssetImporterTool_FormatWindow : EditorWindow
     
     private void OnDisable()
     {
-        GetWindow<AssetImporterTool_TextureWindow>().Close();
+        GetWindow<AssetImporterTool_Preview>().Close();
         
         foreach (var textureInfo in _textureInfos)
         {
@@ -43,7 +43,7 @@ internal sealed class AssetImporterTool_FormatWindow : EditorWindow
         }
     }
 
-    private static void CreateTexture(AssetImporterTool_FormatWindow tool, AssetImporter_TextureImpl.AssetInfo assetInfo)
+    private static void CreateTexture(AssetImporterTool_Format tool, AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
         var path = AssetDatabase.GetAssetPath(assetInfo.Texture2D);
         
@@ -86,7 +86,7 @@ internal sealed class AssetImporterTool_FormatWindow : EditorWindow
         
         if (GUILayout.Button(tex, GUILayout.Width(_size), GUILayout.Height(_size)))
         {
-            AssetImporterTool_TextureWindow.Open(tex);
+            AssetImporterTool_Preview.Open(tex);
         }
     }
 

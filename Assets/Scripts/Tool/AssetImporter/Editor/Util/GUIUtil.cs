@@ -52,4 +52,24 @@ public sealed class GUIUtil
         }
         EditorGUILayout.EndVertical();
     }
+    
+    public static void Desc(string desc)
+    {
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField(desc, LabelStyle(TextAnchor.MiddleLeft));
+        EditorGUILayout.EndHorizontal();
+    }
+    
+    public static void Desc(string key, string value, float keyWidth, float valueWidth)
+    {
+        EditorGUILayout.BeginHorizontal();
+
+        EditorGUILayout.LabelField(key, LabelStyle(TextAnchor.MiddleLeft), GUILayout.Width(keyWidth));
+        if (string.IsNullOrEmpty(value) == false)
+        {
+            EditorGUILayout.LabelField(value, LabelStyle(TextAnchor.MiddleRight), GUILayout.Width(valueWidth));
+        }
+        
+        EditorGUILayout.EndHorizontal();
+    }
 }
