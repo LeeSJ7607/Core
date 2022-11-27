@@ -30,16 +30,16 @@ public sealed class AssetImporter_FX : AssetImporterPart
     private int _drawMaxRow = 5;
     private Texture2D _texModified;
     private Vector2 _scrollPos;
-    private bool Initialized;
+    private bool _initialized;
     
     private void Initialize()
     {
-        if (Initialized)
+        if (_initialized)
         {
             return;
         }
 
-        Initialized = true;
+        _initialized = true;
 
         //TODO: 저장된 DrawMaxRow를 적용한다.
         //_drawMaxRow
@@ -97,6 +97,11 @@ public sealed class AssetImporter_FX : AssetImporterPart
                 }
 
                 var assetInfo = _textureImpl.SearchedAssetInfos[idx];
+                if (AssetImporterTool.IsCompareState && assetInfo.IsCompare == false)
+                {
+                    continue;
+                }
+
                 EditorGUILayout.BeginHorizontal(GUIUtil.HelpBoxStyle(assetInfo.Changed ? _texModified : null), GUILayout.Width(375));
                 
                 DrawTexture(assetInfo);
@@ -153,11 +158,11 @@ public sealed class AssetImporter_FX : AssetImporterPart
         Btn("선택", () => Selection.activeObject = assetInfo.Texture2D);
         Btn("열기", () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
 
-        if (_compareAssetInfo == null || _compareAssetInfo.Texture2D == assetInfo.Texture2D)
+        if (AssetImporterTool.IsCompareState == false || _compareAssetInfo.IsSame(assetInfo) == false)
         {
             Btn("비교", () => Compare(assetInfo));
         }
-        
+
         EditorGUILayout.EndVertical();
         
         void Btn(string name, Action act)
@@ -168,23 +173,35 @@ public sealed class AssetImporter_FX : AssetImporterPart
             }
         }
     }
-    
+
     private void Compare(AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
-        if (_compareAssetInfo == null)
+        if (AssetImporterTool.IsCompareState)
         {
-            _compareAssetInfo = assetInfo;
-            return;
-        }
-
-        if (_compareAssetInfo.Path.Equals(assetInfo.Path))
-        {
+            AssetImporterTool_Compare.Open(_compareAssetInfo, assetInfo);
             return;
         }
         
-        AssetImporterTool_Compare.Open(_compareAssetInfo, assetInfo);
-        _compareAssetInfo = null;
+        _compareAssetInfo ??= assetInfo;
+        AssetImporterTool.IsCompareState = true;
+
+        foreach (var searchedAssetInfo in _textureImpl.SearchedAssetInfos)
+        {
+            EditorTextureUtil.ChangeReadable(searchedAssetInfo.TextureImporter, true);
+            if (EditorTextureUtil.IsSameTexture(searchedAssetInfo.Texture2D, _compareAssetInfo.Texture2D))
+            {
+                searchedAssetInfo.IsCompare = true;
+            }
+        }
     }
     
+    public override void EndCompare()
+    {
+        foreach (var searchedAssetInfo in _textureImpl.SearchedAssetInfos)
+        {
+            EditorTextureUtil.ChangeReadable(searchedAssetInfo.TextureImporter, searchedAssetInfo.isOriginReadable);
+        }
+    }
+
     public override bool TrySave() => _textureImpl.TrySave();
 }

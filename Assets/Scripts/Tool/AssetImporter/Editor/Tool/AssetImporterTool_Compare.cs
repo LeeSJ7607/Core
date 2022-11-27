@@ -33,11 +33,11 @@ public sealed class AssetImporterTool_Compare : EditorWindow
         var importer = assetInfo.TextureImporter;
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        if (GUILayout.Button(tex, GUIUtil.ButtonStyle(), GUILayout.Width(_textureSize), GUILayout.Height(_textureSize)))
+        if (GUILayout.Button(tex, GUIUtil.ButtonStyle(), GUILayout.Width(_textureSize + 60), GUILayout.Height(_textureSize)))
         {
             
         }
-
+        
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         GUIUtil.Desc($"{importer.assetPath} ({assetInfo.FileSize})");
         GUIUtil.Desc(tex.name);

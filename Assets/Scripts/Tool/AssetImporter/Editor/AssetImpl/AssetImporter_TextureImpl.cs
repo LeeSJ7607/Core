@@ -42,7 +42,9 @@ public sealed class AssetImporter_TextureImpl
         public TextureWrapMode WrapMode { get; set; }
         public FilterMode FilterMode { get; set; }
         public int MaxTextureSize { get; set; }
+        public bool isOriginReadable { get; }
         public string FileSize { get; set; }
+        public bool IsCompare { get; set; }
         public bool Changed { get; set; }
 
         public AssetInfo(string guid)
@@ -55,6 +57,7 @@ public sealed class AssetImporter_TextureImpl
             WrapMode = TextureImporter.wrapMode;
             FilterMode = TextureImporter.filterMode;
             MaxTextureSize = TextureImporter.maxTextureSize;
+            isOriginReadable = TextureImporter.isReadable;
             FileSize = EditorTextureUtil.TextureSize(Texture2D);
         }
 
@@ -87,21 +90,26 @@ public sealed class AssetImporter_TextureImpl
             SetPlatformTextureSettings();
             Refresh();
         }
+
+        public bool IsSame(AssetInfo assetInfo)
+        {
+            return Path.Equals(assetInfo.Path);
+        }
     }
     
     public List<AssetInfo> SearchedAssetInfos { get; } = new();
     private readonly List<AssetInfo> _assetInfos = new();
     private string _curRootFindAssets = "Assets/Temp";
-    private bool Initialized;
+    private bool _initialized;
 
     public void Initialize()
     {
-        if (Initialized)
+        if (_initialized)
         {
             return;
         }
 
-        Initialized = true;
+        _initialized = true;
         
         //TODO: 저장된 포맷을 적용한다.
         //_selectedTextureFormatIdx

@@ -6,6 +6,7 @@ using UnityEngine;
 
 internal sealed class AssetImporterTool : EditorWindow
 {
+    public static bool IsCompareState { get; set; }
     private readonly IReadOnlyList<AssetImporterPart> _assetImporterParts;
 
     public AssetImporterTool()
@@ -53,9 +54,19 @@ internal sealed class AssetImporterTool : EditorWindow
         }
         
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-        if (GUILayout.Button("변경된 사항 적용", GUIUtil.ButtonStyle(), GUILayout.Height(50)))
+        if (IsCompareState)
         {
-            Save();
+            if (GUILayout.Button("비교 종료", GUIUtil.ButtonStyle(), GUILayout.Height(50)))
+            {
+                EndCompare();
+            }
+        }
+        else
+        {
+            if (GUILayout.Button("변경된 사항 적용", GUIUtil.ButtonStyle(), GUILayout.Height(50)))
+            {
+                Save();
+            }
         }
         EditorGUILayout.EndHorizontal();
     }
@@ -68,6 +79,16 @@ internal sealed class AssetImporterTool : EditorWindow
         }
 
         part.IsOn = true;
+    }
+
+    private void EndCompare()
+    {
+        foreach (var assetImporterPart in _assetImporterParts)
+        {
+            assetImporterPart.EndCompare();
+        }
+                
+        IsCompareState = false;
     }
 
     private void Save()
