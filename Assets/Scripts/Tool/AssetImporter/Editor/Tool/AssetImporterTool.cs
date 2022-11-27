@@ -4,9 +4,16 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+public enum ToolMode
+{
+    None,
+    Compare,
+    References
+}
+
 internal sealed class AssetImporterTool : EditorWindow
 {
-    public static bool IsCompareState { get; set; }
+    public static ToolMode ToolMode { get; set; }
     private readonly IReadOnlyList<AssetImporterPart> _assetImporterParts;
 
     public AssetImporterTool()
@@ -28,7 +35,12 @@ internal sealed class AssetImporterTool : EditorWindow
         // 폰트 사이즈, 텍스쳐 크기 등.. 서치 올 참고..
         tool._assetImporterParts[0].IsOn = true;
     }
-    
+
+    private void OnDisable()
+    {
+        ClearMode();
+    }
+
     private void OnGUI()
     {
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
@@ -52,23 +64,50 @@ internal sealed class AssetImporterTool : EditorWindow
             assetImporterPart.Draw();
             EditorGUILayout.EndVertical();
         }
-        
+
+        DrawToolModeBtn();
+    }
+
+    private void DrawToolModeBtn()
+    {
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-        if (IsCompareState)
+
+        if (GUILayout.Button(GetToolModeBtnName(), GUIUtil.ButtonStyle(), GUILayout.Height(50)))
         {
-            if (GUILayout.Button("비교 종료", GUIUtil.ButtonStyle(), GUILayout.Height(50)))
+            switch (ToolMode)
             {
-                EndCompare();
+            case ToolMode.None:
+                {
+                    Save();
+                }
+                break;
+
+            default:
+                {
+                    ClearMode();
+                }
+                break;
             }
         }
-        else
-        {
-            if (GUILayout.Button("변경된 사항 적용", GUIUtil.ButtonStyle(), GUILayout.Height(50)))
-            {
-                Save();
-            }
-        }
+
         EditorGUILayout.EndHorizontal();
+    }
+
+    private void ClearMode()
+    {
+        End(ToolMode.Compare);
+        End(ToolMode.References);
+        ToolMode = ToolMode.None;
+    }
+    
+    private string GetToolModeBtnName()
+    {
+        return ToolMode switch
+        {
+            ToolMode.None => "변경된 사항 적용",
+            ToolMode.Compare => "비교 모드 종료",
+            ToolMode.References => "참조 모드 종료",
+        };
     }
 
     private void ToolOn(AssetImporterPart part)
@@ -81,14 +120,12 @@ internal sealed class AssetImporterTool : EditorWindow
         part.IsOn = true;
     }
 
-    private void EndCompare()
+    private void End(ToolMode toolMode)
     {
         foreach (var assetImporterPart in _assetImporterParts)
         {
-            assetImporterPart.EndCompare();
+            assetImporterPart.End(toolMode);
         }
-                
-        IsCompareState = false;
     }
 
     private void Save()

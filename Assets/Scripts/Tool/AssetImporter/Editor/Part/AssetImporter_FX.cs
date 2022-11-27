@@ -58,6 +58,16 @@ public sealed class AssetImporter_FX : AssetImporterPart
     
     private void DrawMenus()
     {
+        EditorGUILayout.BeginHorizontal();
+        {
+            if (GUILayout.Button("전체 참조 찾기"))
+            {
+                AssetImporterUtil.AllAssetCalcReferences(_textureImpl.SearchedAssetInfos);
+                AssetImporterTool.ToolMode = ToolMode.References;
+            }
+        }
+        EditorGUILayout.EndHorizontal();
+
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         {
             _selectedTextureFormatIdx = EditorGUILayout.Popup("텍스쳐 압축 포맷", _selectedTextureFormatIdx, AssetImporter_TextureImpl.TextureFormats);
@@ -97,7 +107,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
                 }
 
                 var assetInfo = _textureImpl.SearchedAssetInfos[idx];
-                if (AssetImporterTool.IsCompareState && assetInfo.IsCompare == false)
+                if (CanDrawAsset(assetInfo) == false)
                 {
                     continue;
                 }
@@ -116,6 +126,18 @@ public sealed class AssetImporter_FX : AssetImporterPart
         }
         
         EditorGUILayout.EndScrollView();
+    }
+
+    private bool CanDrawAsset(AssetImporter_TextureImpl.AssetInfo assetInfo)
+    {
+        switch (AssetImporterTool.ToolMode)
+        { 
+        case ToolMode.References when assetInfo.IsReferences == false:
+        case ToolMode.Compare when assetInfo.IsCompare == false:
+        case ToolMode.Compare when _compareAssetInfo.IsSame(assetInfo):
+            return false;
+        }
+        return true;
     }
     
     private void DrawTexture(AssetImporter_TextureImpl.AssetInfo assetInfo)
@@ -153,15 +175,12 @@ public sealed class AssetImporter_FX : AssetImporterPart
     {
         EditorGUILayout.BeginVertical();
         
-        Btn("수정", () => AssetImporterTool_Modify.Open(assetInfo));
-        Btn("포맷", () => assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx));
         Btn("선택", () => Selection.activeObject = assetInfo.Texture2D);
         Btn("열기", () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
-
-        if (AssetImporterTool.IsCompareState == false || _compareAssetInfo.IsSame(assetInfo) == false)
-        {
-            Btn("비교", () => Compare(assetInfo));
-        }
+        Btn("수정", () => AssetImporterTool_Modify.Open(assetInfo));
+        Btn("포맷", () => assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx));
+        Btn("참조", () => References(assetInfo));
+        Btn("비교", () => Compare(assetInfo));
 
         EditorGUILayout.EndVertical();
         
@@ -174,16 +193,33 @@ public sealed class AssetImporter_FX : AssetImporterPart
         }
     }
 
+    private void References(AssetImporter_TextureImpl.AssetInfo assetInfo)
+    {
+        End(ToolMode.Compare);
+        
+        if (assetInfo.References != null)
+        {
+            AssetImporterTool_References.Open(assetInfo.References);
+            return;
+        }
+        
+        AssetImporterTool_References.Open(assetInfo.Texture2D);
+    }
+
     private void Compare(AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
-        if (AssetImporterTool.IsCompareState)
+        End(ToolMode.References);
+        
+        if (AssetImporterTool.ToolMode == ToolMode.Compare)
         {
             AssetImporterTool_Compare.Open(_compareAssetInfo, assetInfo);
             return;
         }
         
+        AssetImporterTool.ToolMode = ToolMode.Compare;
+        
         _compareAssetInfo ??= assetInfo;
-        AssetImporterTool.IsCompareState = true;
+        EditorTextureUtil.ChangeReadable(_compareAssetInfo.TextureImporter, true);
 
         foreach (var searchedAssetInfo in _textureImpl.SearchedAssetInfos)
         {
@@ -194,12 +230,28 @@ public sealed class AssetImporter_FX : AssetImporterPart
             }
         }
     }
-    
-    public override void EndCompare()
+
+    public override void End(ToolMode toolMode)
     {
-        foreach (var searchedAssetInfo in _textureImpl.SearchedAssetInfos)
+        switch (toolMode)
         {
-            EditorTextureUtil.ChangeReadable(searchedAssetInfo.TextureImporter, searchedAssetInfo.isOriginReadable);
+        case ToolMode.Compare:
+            {
+                foreach (var searchedAssetInfo in _textureImpl.SearchedAssetInfos)
+                {
+                    EditorTextureUtil.ChangeReadable(searchedAssetInfo.TextureImporter, searchedAssetInfo.isOriginReadable);
+                }
+            }
+            break;
+
+        case ToolMode.References:
+            {
+                foreach (var searchedAssetInfo in _textureImpl.SearchedAssetInfos)
+                {
+                    searchedAssetInfo.IsReferences = false;
+                }
+            }
+            break;
         }
     }
 

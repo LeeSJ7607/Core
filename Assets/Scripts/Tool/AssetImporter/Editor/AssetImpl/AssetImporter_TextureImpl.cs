@@ -44,6 +44,8 @@ public sealed class AssetImporter_TextureImpl
         public int MaxTextureSize { get; set; }
         public bool isOriginReadable { get; }
         public string FileSize { get; set; }
+        public IReadOnlyDictionary<UnityEngine.Object, IReadOnlyList<string>> References { get; private set; } 
+        public bool IsReferences { get; set; }
         public bool IsCompare { get; set; }
         public bool Changed { get; set; }
 
@@ -110,6 +112,12 @@ public sealed class AssetImporter_TextureImpl
         public bool IsSame(AssetInfo assetInfo)
         {
             return Path.Equals(assetInfo.Path);
+        }
+
+        public void CalcReferences()
+        {
+            References = AssetImporterUtil.CalcReferences(Texture2D);
+            IsReferences = References[Texture2D].Count > 0;
         }
     }
     

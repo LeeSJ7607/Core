@@ -89,7 +89,6 @@ public static class EditorTextureUtil
             TextureImporterFormat.ASTC_6x6 => TextureFormat.ASTC_6x6,
             TextureImporterFormat.ASTC_5x5 => TextureFormat.ASTC_5x5,
             TextureImporterFormat.ASTC_4x4 => TextureFormat.ASTC_4x4,
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
     
