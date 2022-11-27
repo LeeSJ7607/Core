@@ -199,7 +199,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         
         if (assetInfo.References != null)
         {
-            AssetImporterTool_References.Open(assetInfo.References);
+            AssetImporterTool_References.Open(assetInfo.Texture2D, assetInfo.References);
             return;
         }
         

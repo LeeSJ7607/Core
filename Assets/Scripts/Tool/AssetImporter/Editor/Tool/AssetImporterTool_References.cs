@@ -10,7 +10,7 @@ public sealed class AssetImporterTool_References : EditorWindow
     public static void Open(Object selectedObj)
     {
         var references = AssetImporterUtil.CalcReferences(selectedObj);
-        if (references == null)
+        if (references[selectedObj].Count == 0)
         {
             EditorUtility.DisplayDialog("알림", "참조된 에셋이 없습니다.", "확인");
             return;
@@ -20,9 +20,9 @@ public sealed class AssetImporterTool_References : EditorWindow
         tool._references = references;
     }
     
-    public static void Open(IReadOnlyDictionary<Object, IReadOnlyList<string>> references)
+    public static void Open(Object selectedObj, IReadOnlyDictionary<Object, IReadOnlyList<string>> references)
     {
-        if (references == null)
+        if (references[selectedObj].Count == 0)
         {
             EditorUtility.DisplayDialog("알림", "참조된 에셋이 없습니다.", "확인");
             return;
