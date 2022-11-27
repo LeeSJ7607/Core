@@ -154,7 +154,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         EditorGUILayout.BeginVertical();
         
         Btn("수정", () => AssetImporterTool_Modify.Open(assetInfo));
-        Btn("포맷", () => assetInfo.SetPlatformTextureSettings(_selectedTextureFormatIdx));
+        Btn("포맷", () => assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx));
         Btn("선택", () => Selection.activeObject = assetInfo.Texture2D);
         Btn("열기", () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
 

@@ -67,6 +67,15 @@ public sealed class AssetImporter_TextureImpl
             FileSize = EditorTextureUtil.TextureSize(Texture2D);
             Changed = false;
         }
+
+        private void SetTextureImporter()
+        {
+            var importer = TextureImporter;
+            importer.textureType = TextureType;
+            importer.wrapMode = WrapMode;
+            importer.filterMode = FilterMode;
+            importer.maxTextureSize = MaxTextureSize;
+        }
         
         private void SetPlatformTextureSettings()
         {
@@ -79,14 +88,21 @@ public sealed class AssetImporter_TextureImpl
             TextureImporter.SaveAndReimport();
         }
 
-        public void SetPlatformTextureSettings(int format)
+        public void SetTextureImporterFormat(int formatIdx)
         {
-            AOSSettings.format = Enum.Parse<TextureImporterFormat>(TextureFormats[format]);
+            var format = Enum.Parse<TextureImporterFormat>(TextureFormats[formatIdx]);
+            if (AOSSettings.format == format)
+            {
+                return;
+            }
+
+            AOSSettings.format = format;
             Changed = true;
         }
 
         public void Save()
         {
+            SetTextureImporter();
             SetPlatformTextureSettings();
             Refresh();
         }
@@ -210,15 +226,9 @@ public sealed class AssetImporter_TextureImpl
                 continue;
             }
             
-            var importer = assetInfo.TextureImporter;
-            importer.textureType = assetInfo.TextureType;
-            importer.wrapMode = assetInfo.WrapMode;
-            importer.filterMode = assetInfo.FilterMode;
-            importer.maxTextureSize = assetInfo.MaxTextureSize;
+            activeObject = assetInfo.Texture2D;
             assetInfo.Save();
             changed = true;
-
-            activeObject = assetInfo.Texture2D;
         }
 
         if (changed)
