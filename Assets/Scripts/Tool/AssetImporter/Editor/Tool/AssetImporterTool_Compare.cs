@@ -4,6 +4,8 @@ using UnityEngine;
 
 public sealed class AssetImporterTool_Compare : EditorWindow
 {
+    private const float _keyWidth = 80;
+    private const float _valueWidth = 170;
     private const float _textureSize = 200;
     private AssetImporter_TextureImpl.AssetInfo _left;
     private AssetImporter_TextureImpl.AssetInfo _right;
@@ -25,10 +27,20 @@ public sealed class AssetImporterTool_Compare : EditorWindow
         EditorGUILayout.EndHorizontal();
     }
     
+    private void Desc(string key, string value, object lValue, object rValue)
+    {
+        if (lValue.Equals(rValue))
+        {
+            GUIUtil.Desc(key, value, _keyWidth, _valueWidth);
+        }
+        else
+        {
+            GUIUtil.DescColor(key, value, _keyWidth, _valueWidth);
+        }
+    }
+    
     private void Set(AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
-        const float keyWidth = 80;
-        const float valueWidth = 170;
         var tex = assetInfo.Texture2D;
         var importer = assetInfo.TextureImporter;
         
@@ -44,12 +56,12 @@ public sealed class AssetImporterTool_Compare : EditorWindow
         EditorGUILayout.EndVertical();
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        GUIUtil.Desc("Texture Type", assetInfo.TextureType.ToString(), keyWidth, valueWidth);
-        GUIUtil.Desc("Wrap Mode", assetInfo.WrapMode.ToString(), keyWidth, valueWidth);
-        GUIUtil.Desc("Filter Mode", assetInfo.FilterMode.ToString(), keyWidth, valueWidth);
-        GUIUtil.Desc("Max Size", importer.maxTextureSize.ToString(), keyWidth, valueWidth);
-        GUIUtil.Desc("format", assetInfo.AOSSettings.format.ToString(), keyWidth, valueWidth);
-        GUIUtil.Desc("Texture Size", $"{tex.width.ToString()}x{tex.height.ToString()}", keyWidth, valueWidth);
+        Desc("Texture Type", assetInfo.TextureType.ToString(), _left.TextureType, _right.TextureType);
+        Desc("Wrap Mode", assetInfo.WrapMode.ToString(), _left.WrapMode, _right.WrapMode);
+        Desc("Filter Mode", assetInfo.FilterMode.ToString(), _left.FilterMode, _right.FilterMode);
+        Desc("Max Size", importer.maxTextureSize.ToString(), _left.TextureImporter.maxTextureSize, _right.TextureImporter.maxTextureSize);
+        Desc("Format", assetInfo.AOSSettings.format.ToString(), _left.AOSSettings.format, _right.AOSSettings.format);
+        GUIUtil.Desc("Texture Size", $"{tex.width.ToString()}x{tex.height.ToString()}", _keyWidth, _valueWidth);
         EditorGUILayout.EndVertical();
 
         EditorGUILayout.BeginHorizontal();

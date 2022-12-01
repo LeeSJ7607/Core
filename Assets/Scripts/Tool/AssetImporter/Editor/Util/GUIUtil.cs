@@ -72,4 +72,25 @@ public sealed class GUIUtil
         
         EditorGUILayout.EndHorizontal();
     }
+    
+    public static void DescColor(string key, string value, float keyWidth, float valueWidth)
+    {
+        var color = Color.red;
+        
+        var keyLabelStyle = LabelStyle(TextAnchor.MiddleLeft);
+        keyLabelStyle.normal.textColor = color;
+        
+        var valueLabelStyle = LabelStyle(TextAnchor.MiddleRight);
+        valueLabelStyle.normal.textColor = color;
+        
+        EditorGUILayout.BeginHorizontal();
+
+        EditorGUILayout.LabelField(key, keyLabelStyle, GUILayout.Width(keyWidth));
+        if (string.IsNullOrEmpty(value) == false)
+        {
+            EditorGUILayout.LabelField(value, valueLabelStyle, GUILayout.Width(valueWidth));
+        }
+        
+        EditorGUILayout.EndHorizontal();
+    }
 }
