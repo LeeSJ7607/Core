@@ -43,11 +43,11 @@ public static class DependencyImpl
         return result;
     }
 
-    public static void AllAssetCalcReferences(IEnumerable<AssetImporter_TextureImpl.AssetInfo> assetInfos)
+    public static void Dependencies(IEnumerable<AssetImporter_TextureImpl.AssetInfo> assetInfos)
     {
         foreach (var searchedAssetInfo in assetInfos)
         {
-            searchedAssetInfo.CalcReferences();
+            searchedAssetInfo.SetReferences();
         }
     }
 }

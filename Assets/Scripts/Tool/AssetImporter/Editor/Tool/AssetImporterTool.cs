@@ -7,8 +7,7 @@ using UnityEngine;
 public enum ToolMode
 {
     None,
-    Compare,
-    References
+    Compare
 }
 
 internal sealed class AssetImporterTool : EditorWindow
@@ -96,7 +95,6 @@ internal sealed class AssetImporterTool : EditorWindow
     private void ClearMode()
     {
         End(ToolMode.Compare);
-        End(ToolMode.References);
         ToolMode = ToolMode.None;
     }
     
@@ -106,7 +104,6 @@ internal sealed class AssetImporterTool : EditorWindow
         {
             ToolMode.None => "변경된 사항 적용",
             ToolMode.Compare => "비교 모드 종료",
-            ToolMode.References => "참조 모드 종료",
         };
     }
 

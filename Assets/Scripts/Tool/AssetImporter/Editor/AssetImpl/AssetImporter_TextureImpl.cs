@@ -42,7 +42,6 @@ public sealed class AssetImporter_TextureImpl
         public TextureWrapMode WrapMode { get; set; }
         public FilterMode FilterMode { get; set; }
         public int MaxTextureSize { get; set; }
-        public bool isOriginReadable { get; }
         public string FileSize { get; set; }
         public IReadOnlyDictionary<UnityEngine.Object, IReadOnlyList<string>> References { get; private set; } 
         public bool IsReferences { get; set; }
@@ -59,7 +58,6 @@ public sealed class AssetImporter_TextureImpl
             WrapMode = TextureImporter.wrapMode;
             FilterMode = TextureImporter.filterMode;
             MaxTextureSize = TextureImporter.maxTextureSize;
-            isOriginReadable = TextureImporter.isReadable;
             FileSize = EditorTextureUtil.TextureSize(Texture2D);
         }
 
@@ -114,7 +112,7 @@ public sealed class AssetImporter_TextureImpl
             return Path.Equals(assetInfo.Path);
         }
 
-        public void CalcReferences()
+        public void SetReferences()
         {
             References ??= DependencyImpl.GetDependencies(Texture2D);
             IsReferences = References[Texture2D].Count > 0;

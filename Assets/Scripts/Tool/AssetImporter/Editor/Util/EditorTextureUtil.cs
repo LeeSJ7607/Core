@@ -92,17 +92,6 @@ public static class EditorTextureUtil
         };
     }
     
-    public static void ChangeReadable(TextureImporter importer, bool active)
-    {
-        if (importer.isReadable == active)
-        {
-            return;
-        }
-
-        importer.isReadable = active;
-        importer.SaveAndReimport();
-    }
-
     public static bool IsSameTexture(Texture2D left, Texture2D right)
     {
         var leftPixels = left.GetPixels();
