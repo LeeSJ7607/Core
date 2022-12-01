@@ -116,7 +116,7 @@ public sealed class AssetImporter_TextureImpl
 
         public void CalcReferences()
         {
-            References = AssetImporterUtil.CalcReferences(Texture2D);
+            References ??= DependencyImpl.GetDependencies(Texture2D);
             IsReferences = References[Texture2D].Count > 0;
         }
     }

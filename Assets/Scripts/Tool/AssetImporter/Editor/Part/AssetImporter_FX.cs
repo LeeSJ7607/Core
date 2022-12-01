@@ -60,9 +60,9 @@ public sealed class AssetImporter_FX : AssetImporterPart
     {
         EditorGUILayout.BeginHorizontal();
         {
-            if (GUILayout.Button("전체 참조 찾기"))
+            if (GUILayout.Button("모든 참조 찾기"))
             {
-                AssetImporterUtil.AllAssetCalcReferences(_textureImpl.SearchedAssetInfos);
+                DependencyImpl.AllAssetCalcReferences(_textureImpl.SearchedAssetInfos);
                 AssetImporterTool.ToolMode = ToolMode.References;
             }
         }
@@ -197,13 +197,8 @@ public sealed class AssetImporter_FX : AssetImporterPart
     {
         End(ToolMode.Compare);
         
-        if (assetInfo.References != null)
-        {
-            AssetImporterTool_References.Open(assetInfo.Texture2D, assetInfo.References);
-            return;
-        }
-        
-        AssetImporterTool_References.Open(assetInfo.Texture2D);
+        assetInfo.CalcReferences();
+        AssetImporterTool_References.Open(assetInfo.References);
     }
 
     private void Compare(AssetImporter_TextureImpl.AssetInfo assetInfo)

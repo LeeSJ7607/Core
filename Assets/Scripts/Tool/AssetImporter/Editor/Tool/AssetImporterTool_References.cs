@@ -7,27 +7,8 @@ public sealed class AssetImporterTool_References : EditorWindow
     private IReadOnlyDictionary<Object, IReadOnlyList<string>> _references;
     private Vector2 _scrollPos;
     
-    public static void Open(Object selectedObj)
+    public static void Open(IReadOnlyDictionary<Object, IReadOnlyList<string>> references)
     {
-        var references = AssetImporterUtil.CalcReferences(selectedObj);
-        if (references[selectedObj].Count == 0)
-        {
-            EditorUtility.DisplayDialog("알림", "참조된 에셋이 없습니다.", "확인");
-            return;
-        }
-        
-        var tool = GetWindow<AssetImporterTool_References>("References");
-        tool._references = references;
-    }
-    
-    public static void Open(Object selectedObj, IReadOnlyDictionary<Object, IReadOnlyList<string>> references)
-    {
-        if (references[selectedObj].Count == 0)
-        {
-            EditorUtility.DisplayDialog("알림", "참조된 에셋이 없습니다.", "확인");
-            return;
-        }
-        
         var tool = GetWindow<AssetImporterTool_References>("References");
         tool._references = references;
     }
