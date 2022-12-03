@@ -17,4 +17,6 @@
 //TODO: 아틀라스에 묶인 텍스쳐인데 압축을 한 경우 2중 압축이 되어 예외처리가 필요함.
 //TODO: 텍스쳐 검색 기능
 //TODO: 압축이 안 된 텍스쳐들을 보기 위한 필터 기능
-//TODO: FBX, Material, Animation
+//TODO: FBX, Material, Animation, Audio
+//TODO: 동일한 텍스쳐 모두 찾기
+//TODO: Audio는 compressionFormat 이 ADPCM 일 경우, sampleRateSetting 를 OptimizeSampleRate 로 고정

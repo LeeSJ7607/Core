@@ -178,7 +178,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
 
         if (assetInfo.IsReferences)
         {
-            Btn("참조", () => References(assetInfo));
+            Btn("참조", () => AssetImporterTool_References.Open(assetInfo.References));
         }
 
         EditorGUILayout.EndVertical();
@@ -191,13 +191,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
             }
         }
     }
-
-    private void References(AssetImporter_TextureImpl.AssetInfo assetInfo)
-    {
-        assetInfo.SetReferences();
-        AssetImporterTool_References.Open(assetInfo.References);
-    }
-
+    
     private void Compare(AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
         if (AssetImporterTool.ToolMode == ToolMode.Compare)
@@ -217,13 +211,14 @@ public sealed class AssetImporter_FX : AssetImporterPart
             }
         }
     }
-
+    
     public override void End(ToolMode toolMode)
     {
         switch (toolMode)
         {
         case ToolMode.Compare:
             {
+                _compareAssetInfo = null;
                 foreach (var searchedAssetInfo in _textureImpl.SearchedAssetInfos)
                 {
                     searchedAssetInfo.IsCompare = false;
