@@ -55,7 +55,7 @@ public static class EditorTextureUtil
         return (long)mMethod_GetRuntimeMemorySizeLong.Invoke(null, new[] { texture });
     }
 
-    public static long GetStorageMemorySize(Texture texture)
+    private static long GetStorageMemorySize(Texture texture)
     {
         if (mMethod_GetStorageMemorySizeLong == null)
             mMethod_GetStorageMemorySizeLong = cType.GetMethod("GetStorageMemorySizeLong", BindingFlags.Static | BindingFlags.Public);
@@ -77,39 +77,5 @@ public static class EditorTextureUtil
     {
         var size = GetStorageMemorySize(tex);
         return EditorUtility.FormatBytes(size);
-    }
-    
-    public static TextureFormat GetTextureFormat(TextureImporterFormat type)
-    {
-        return type switch
-        {
-            TextureImporterFormat.ASTC_12x12 => TextureFormat.ASTC_12x12,
-            TextureImporterFormat.ASTC_10x10 => TextureFormat.ASTC_10x10,
-            TextureImporterFormat.ASTC_8x8 => TextureFormat.ASTC_8x8,
-            TextureImporterFormat.ASTC_6x6 => TextureFormat.ASTC_6x6,
-            TextureImporterFormat.ASTC_5x5 => TextureFormat.ASTC_5x5,
-            TextureImporterFormat.ASTC_4x4 => TextureFormat.ASTC_4x4,
-        };
-    }
-    
-    public static bool IsSameTexture(Texture2D left, Texture2D right)
-    {
-        var leftPixels = left.GetPixels();
-        var rightPixels = right.GetPixels();
-
-        if (leftPixels.Length != rightPixels.Length)
-        {
-            return false;
-        }
-
-        for (var i = 0; i < leftPixels.Length; i++)
-        {
-            if (leftPixels[i] != rightPixels[i])
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

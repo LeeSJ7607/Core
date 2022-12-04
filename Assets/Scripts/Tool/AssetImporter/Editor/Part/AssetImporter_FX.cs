@@ -66,6 +66,10 @@ public sealed class AssetImporter_FX : AssetImporterPart
             {
                 DependencyImpl.Dependencies(_textureImpl.SearchedAssetInfos);
             }
+            if (GUILayout.Button("동일한 텍스쳐 모두 찾기"))
+            {
+                DependencyImpl.SameAssets(_textureImpl.SearchedAssetInfos);
+            }
         }
         EditorGUILayout.EndHorizontal();
 
@@ -107,11 +111,6 @@ public sealed class AssetImporter_FX : AssetImporterPart
                 }
 
                 var assetInfo = _textureImpl.SearchedAssetInfos[idx];
-                if (CanDrawAsset(assetInfo) == false)
-                {
-                    continue;
-                }
-                
                 EditorGUILayout.BeginHorizontal(GUIUtil.HelpBoxStyle(assetInfo.Changed ? _texModified : null), GUILayout.Width(375));
                 DrawTexture(assetInfo);
                 DrawDesc(assetInfo);
@@ -126,17 +125,6 @@ public sealed class AssetImporter_FX : AssetImporterPart
         EditorGUILayout.EndScrollView();
     }
     
-    private bool CanDrawAsset(AssetImporter_TextureImpl.AssetInfo assetInfo)
-    {
-        switch (AssetImporterTool.ToolMode)
-        { 
-        case ToolMode.Compare when assetInfo.IsCompare == false:
-        case ToolMode.Compare when _compareAssetInfo.IsSame(assetInfo):
-            return false;
-        }
-        return true;
-    }
-
     private void DrawTexture(AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
         var tex = assetInfo.Texture2D;
@@ -175,11 +163,14 @@ public sealed class AssetImporter_FX : AssetImporterPart
         Btn("열기", () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
         Btn("수정", () => AssetImporterTool_Modify.Open(assetInfo));
         Btn("포맷", () => assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx));
-        Btn("비교", () => Compare(assetInfo));
 
         if (assetInfo.IsReferences)
         {
             Btn("참조", () => AssetImporterTool_References.Open(assetInfo.References));
+        }
+        if (assetInfo.IsCompare)
+        {
+            Btn("비교", () => AssetImporterTool_Compare.Open(_compareAssetInfo, assetInfo));
         }
 
         EditorGUILayout.EndVertical();
@@ -193,43 +184,6 @@ public sealed class AssetImporter_FX : AssetImporterPart
         }
     }
     
-    private void Compare(AssetImporter_TextureImpl.AssetInfo assetInfo)
-    {
-        if (AssetImporterTool.ToolMode == ToolMode.Compare)
-        {
-            AssetImporterTool_Compare.Open(_compareAssetInfo, assetInfo);
-            return;
-        }
-        
-        AssetImporterTool.ToolMode = ToolMode.Compare;
-        _compareAssetInfo ??= assetInfo;
-
-        foreach (var searchedAssetInfo in _textureImpl.SearchedAssetInfos)
-        {
-            if (searchedAssetInfo.Texture2D.imageContentsHash.CompareTo(_compareAssetInfo.Texture2D.imageContentsHash) == 0)
-            {
-                searchedAssetInfo.IsCompare = true;
-            }
-        }
-    }
-    
-    public override void End(ToolMode toolMode)
-    {
-        switch (toolMode)
-        {
-        case ToolMode.Compare:
-            {
-                _compareAssetInfo = null;
-                
-                foreach (var searchedAssetInfo in _textureImpl.SearchedAssetInfos)
-                {
-                    searchedAssetInfo.IsCompare = false;
-                }
-            }
-            break;
-        }
-    }
-
     public override void ShowDiff()
     {
         if (_textureImpl.CanDiff() == false)

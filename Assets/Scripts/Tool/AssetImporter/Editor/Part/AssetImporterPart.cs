@@ -3,7 +3,6 @@
     public abstract string Name { get; }
     public abstract bool IsOn { get; set; }
     public abstract void Draw();
-    public abstract void End(ToolMode toolMode);
     public abstract void ShowDiff();
     public abstract bool TrySave();
 }

@@ -43,8 +43,8 @@ public sealed class AssetImporter_TextureImpl
         public FilterMode FilterMode { get; set; }
         public int MaxTextureSize { get; set; }
         public string FileSize { get; set; }
-        public IReadOnlyDictionary<UnityEngine.Object, IReadOnlyList<string>> References { get; private set; } 
-        public bool IsReferences { get; private set; }
+        public IReadOnlyDictionary<UnityEngine.Object, IReadOnlyList<string>> References { get; set; } 
+        public bool IsReferences { get; set; }
         public bool IsCompare { get; set; }
         public bool Changed { get; set; }
 
@@ -106,17 +106,6 @@ public sealed class AssetImporter_TextureImpl
             SetTextureImporter();
             SetPlatformTextureSettings();
             Refresh();
-        }
-
-        public bool IsSame(AssetInfo assetInfo)
-        {
-            return _path.Equals(assetInfo._path);
-        }
-
-        public void SetReferences()
-        {
-            References ??= DependencyImpl.GetDependencies(Texture2D);
-            IsReferences = References[Texture2D].Count > 0;
         }
     }
     
