@@ -34,7 +34,7 @@ public sealed class AssetImporter_TextureImpl
 
     public sealed class AssetInfo
     {
-        public string Path { get; }
+        private readonly string _path;
         public Texture2D Texture2D { get; private set; }
         public TextureImporter TextureImporter { get; }
         public TextureImporterPlatformSettings AOSSettings { get; }
@@ -44,15 +44,15 @@ public sealed class AssetImporter_TextureImpl
         public int MaxTextureSize { get; set; }
         public string FileSize { get; set; }
         public IReadOnlyDictionary<UnityEngine.Object, IReadOnlyList<string>> References { get; private set; } 
-        public bool IsReferences { get; set; }
+        public bool IsReferences { get; private set; }
         public bool IsCompare { get; set; }
         public bool Changed { get; set; }
 
         public AssetInfo(string guid)
         {
-            Path = AssetDatabase.GUIDToAssetPath(guid);
-            Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(Path);
-            TextureImporter = (TextureImporter)AssetImporter.GetAtPath(Path);
+            _path = AssetDatabase.GUIDToAssetPath(guid);
+            Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(_path);
+            TextureImporter = (TextureImporter)AssetImporter.GetAtPath(_path);
             AOSSettings = TextureImporter.GetPlatformTextureSettings("Android");
             TextureType = TextureImporter.textureType;
             WrapMode = TextureImporter.wrapMode;
@@ -63,7 +63,7 @@ public sealed class AssetImporter_TextureImpl
 
         private void Refresh()
         {
-            Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(Path);
+            Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(_path);
             FileSize = EditorTextureUtil.TextureSize(Texture2D);
             Changed = false;
         }
@@ -80,7 +80,8 @@ public sealed class AssetImporter_TextureImpl
         private void SetPlatformTextureSettings()
         {
             var ios = TextureImporter.GetPlatformTextureSettings("iPhone");
-            ios.maxTextureSize = AOSSettings.maxTextureSize;
+            ios.overridden = AOSSettings.overridden = true;
+            ios.maxTextureSize = MaxTextureSize;
             ios.format = AOSSettings.format;
             
             TextureImporter.SetPlatformTextureSettings(AOSSettings);
@@ -109,7 +110,7 @@ public sealed class AssetImporter_TextureImpl
 
         public bool IsSame(AssetInfo assetInfo)
         {
-            return Path.Equals(assetInfo.Path);
+            return _path.Equals(assetInfo._path);
         }
 
         public void SetReferences()
@@ -120,6 +121,7 @@ public sealed class AssetImporter_TextureImpl
     }
     
     public List<AssetInfo> SearchedAssetInfos { get; } = new();
+    public IReadOnlyList<AssetInfo> AssetInfos => _assetInfos;
     private readonly List<AssetInfo> _assetInfos = new();
     private string _curRootFindAssets = "Assets/Temp";
     private bool _initialized;
@@ -218,6 +220,19 @@ public sealed class AssetImporter_TextureImpl
             return tex.width <= maxSize && tex.height <= maxSize
                 && tex.width >= minSize && tex.height >= minSize;
         }
+    }
+
+    public bool CanDiff()
+    {
+        foreach (var assetInfo in _assetInfos)
+        {
+            if (assetInfo.Changed)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public bool TrySave()

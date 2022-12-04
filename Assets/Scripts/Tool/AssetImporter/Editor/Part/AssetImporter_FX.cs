@@ -21,6 +21,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
     }
     private bool _isOn;
     
+    private readonly AssetImporter_TextureImpl _originTextureImpl = new();
     private readonly AssetImporter_TextureImpl _textureImpl = new();
     private AssetImporter_TextureImpl.AssetInfo _compareAssetInfo;
     private int _selectedTextureFormatIdx = Array.FindIndex(AssetImporter_TextureImpl.TextureFormats, _ => _.Equals(TextureImporterFormat.ASTC_6x6.ToString()));
@@ -47,6 +48,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         //TODO: 저장된 TexModified를 적용한다.
         _texModified = Resources.Load<Texture2D>("AssetImporterTool_TexModified");
 
+        _originTextureImpl.Initialize();
         _textureImpl.Initialize();
     }
     
@@ -152,7 +154,6 @@ public sealed class AssetImporter_FX : AssetImporterPart
         const float keyWidth = 80;
         const float valueWidth = 170;
         var tex = assetInfo.Texture2D;
-        var importer = assetInfo.TextureImporter;
         
         EditorGUILayout.Space(1);
         GUILayout.BeginVertical();
@@ -160,7 +161,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         GUIUtil.Desc("Texture Type", assetInfo.TextureType.ToString(), keyWidth, valueWidth);
         GUIUtil.Desc("Wrap Mode", assetInfo.WrapMode.ToString(), keyWidth, valueWidth);
         GUIUtil.Desc("Filter Mode", assetInfo.FilterMode.ToString(), keyWidth, valueWidth);
-        GUIUtil.Desc("Max Size", importer.maxTextureSize.ToString(), keyWidth, valueWidth);
+        GUIUtil.Desc("Max Size", assetInfo.MaxTextureSize.ToString(), keyWidth, valueWidth);
         GUIUtil.Desc("Format", assetInfo.AOSSettings.format.ToString(), keyWidth, valueWidth);
         GUIUtil.Desc("Texture Size", $"{tex.width.ToString()}x{tex.height.ToString()}", keyWidth, valueWidth);
         GUILayout.EndVertical();
@@ -219,6 +220,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         case ToolMode.Compare:
             {
                 _compareAssetInfo = null;
+                
                 foreach (var searchedAssetInfo in _textureImpl.SearchedAssetInfos)
                 {
                     searchedAssetInfo.IsCompare = false;
@@ -226,6 +228,18 @@ public sealed class AssetImporter_FX : AssetImporterPart
             }
             break;
         }
+    }
+
+    public override void ShowDiff()
+    {
+        if (_textureImpl.CanDiff() == false)
+        {
+            const string msg = "변경된 에셋이 없습니다.\n에셋을 변경 후, 다시 시도해주세요.";
+            EditorUtility.DisplayDialog("알림", msg, "확인");
+            return;
+        }
+        
+        AssetImporterTool_Diff.Open(this, _originTextureImpl, _textureImpl);
     }
 
     public override bool TrySave() => _textureImpl.TrySave();

@@ -12,6 +12,8 @@ public enum ToolMode
 
 internal sealed class AssetImporterTool : EditorWindow
 {
+    private const float _drawMenuBtn = 30;
+    
     public static ToolMode ToolMode { get; set; }
     private readonly IReadOnlyList<AssetImporterPart> _assetImporterParts;
 
@@ -37,10 +39,17 @@ internal sealed class AssetImporterTool : EditorWindow
 
     private void OnDisable()
     {
-        ClearMode();
+        Reset();
     }
 
     private void OnGUI()
+    {
+        DrawCategory();
+        DrawDesc();
+        DrawMenu();
+    }
+
+    private void DrawCategory()
     {
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
         foreach (var assetImporterPart in _assetImporterParts)
@@ -51,7 +60,20 @@ internal sealed class AssetImporterTool : EditorWindow
             }
         }
         EditorGUILayout.EndHorizontal();
-        
+    }
+    
+    private void ToolOn(AssetImporterPart part)
+    {
+        foreach (var assetImporterPart in _assetImporterParts)
+        {
+            assetImporterPart.IsOn = false;
+        }
+
+        part.IsOn = true;
+    }
+
+    private void DrawDesc()
+    {
         foreach (var assetImporterPart in _assetImporterParts)
         {
             if (assetImporterPart.IsOn == false)
@@ -63,81 +85,91 @@ internal sealed class AssetImporterTool : EditorWindow
             assetImporterPart.Draw();
             EditorGUILayout.EndVertical();
         }
-
-        DrawToolModeBtn();
     }
 
-    private void DrawToolModeBtn()
+    private void DrawMenu()
     {
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-
-        if (GUILayout.Button(GetToolModeBtnName(), GUIUtil.ButtonStyle(), GUILayout.Height(50)))
-        {
-            switch (ToolMode)
-            {
-            case ToolMode.None:
-                {
-                    Save();
-                }
-                break;
-
-            default:
-                {
-                    ClearMode();
-                }
-                break;
-            }
-        }
-
+        DrawDiffBtn();
+        DrawConfirmBtn();
         EditorGUILayout.EndHorizontal();
     }
 
-    private void ClearMode()
+    private void DrawDiffBtn()
     {
-        End(ToolMode.Compare);
-        ToolMode = ToolMode.None;
+        if (GUILayout.Button("변경된 에셋 보기", GUIUtil.ButtonStyle(), GUILayout.Height(_drawMenuBtn)) == false)
+        {
+            return;
+        }
+
+        foreach (var assetImporterPart in _assetImporterParts)
+        {
+            if (assetImporterPart.IsOn)
+            {
+                assetImporterPart.ShowDiff();
+            }
+        }
     }
-    
-    private string GetToolModeBtnName()
+
+    private void DrawConfirmBtn()
+    {
+        if (GUILayout.Button(ConfirmBtnName(), GUIUtil.ButtonStyle(), GUILayout.Height(_drawMenuBtn)) == false)
+        {
+            return;
+        }
+
+        switch (ToolMode)
+        {
+        case ToolMode.None:
+            {
+                Save();
+            }
+            break;
+
+        default:
+            {
+                Reset();
+            }
+            break;
+        }
+    }
+
+    private string ConfirmBtnName()
     {
         return ToolMode switch
         {
-            ToolMode.None => "변경된 사항 적용",
+            ToolMode.None => "변경된 에셋 적용",
             ToolMode.Compare => "비교 모드 종료",
         };
     }
-
-    private void ToolOn(AssetImporterPart part)
-    {
-        foreach (var assetImporterPart in _assetImporterParts)
-        {
-            assetImporterPart.IsOn = false;
-        }
-
-        part.IsOn = true;
-    }
-
-    private void End(ToolMode toolMode)
-    {
-        foreach (var assetImporterPart in _assetImporterParts)
-        {
-            assetImporterPart.End(toolMode);
-        }
-    }
-
+    
     private void Save()
     {
         var changed = false;
         
         foreach (var assetImporterPart in _assetImporterParts)
         {
-            if (assetImporterPart.TrySave())
+            if (assetImporterPart.IsOn && assetImporterPart.TrySave())
             {
                 changed = true;
             }
         }
 
-        var msg = changed ? "변경된 사항을 적용했습니다." : "변경된 사항이 없습니다.";
+        var msg = changed ? "변경된 에셋을 적용했습니다." : "변경된 에셋이 없습니다.";
         EditorUtility.DisplayDialog("알림", msg, "확인");
+    }
+    
+    private void Reset()
+    {
+        End(ToolMode.Compare);
+        ToolMode = ToolMode.None;
+    }
+    
+    private void End(ToolMode toolMode)
+    {
+        foreach (var assetImporterPart in _assetImporterParts)
+        {
+            assetImporterPart.End(toolMode);
+        }
     }
 }

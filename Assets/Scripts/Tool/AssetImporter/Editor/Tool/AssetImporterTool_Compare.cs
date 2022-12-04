@@ -26,19 +26,7 @@ public sealed class AssetImporterTool_Compare : EditorWindow
         Set(_right);
         EditorGUILayout.EndHorizontal();
     }
-    
-    private void Desc(string key, string value, object lValue, object rValue)
-    {
-        if (lValue.Equals(rValue))
-        {
-            GUIUtil.Desc(key, value, _keyWidth, _valueWidth);
-        }
-        else
-        {
-            GUIUtil.DescColor(key, value, _keyWidth, _valueWidth);
-        }
-    }
-    
+
     private void Set(AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
         var tex = assetInfo.Texture2D;
@@ -56,11 +44,11 @@ public sealed class AssetImporterTool_Compare : EditorWindow
         EditorGUILayout.EndVertical();
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        Desc("Texture Type", assetInfo.TextureType.ToString(), _left.TextureType, _right.TextureType);
-        Desc("Wrap Mode", assetInfo.WrapMode.ToString(), _left.WrapMode, _right.WrapMode);
-        Desc("Filter Mode", assetInfo.FilterMode.ToString(), _left.FilterMode, _right.FilterMode);
-        Desc("Max Size", importer.maxTextureSize.ToString(), _left.TextureImporter.maxTextureSize, _right.TextureImporter.maxTextureSize);
-        Desc("Format", assetInfo.AOSSettings.format.ToString(), _left.AOSSettings.format, _right.AOSSettings.format);
+        GUIUtil.Desc("Texture Type", assetInfo.TextureType.ToString(), _keyWidth, _valueWidth, _left.TextureType, _right.TextureType);
+        GUIUtil.Desc("Wrap Mode", assetInfo.WrapMode.ToString(), _keyWidth, _valueWidth, _left.WrapMode, _right.WrapMode);
+        GUIUtil.Desc("Filter Mode", assetInfo.FilterMode.ToString(), _keyWidth, _valueWidth, _left.FilterMode, _right.FilterMode);
+        GUIUtil.Desc("Max Size", assetInfo.MaxTextureSize.ToString(), _keyWidth, _valueWidth, _left.TextureImporter.maxTextureSize, _right.TextureImporter.maxTextureSize);
+        GUIUtil.Desc("Format", assetInfo.AOSSettings.format.ToString(), _keyWidth, _valueWidth, _left.AOSSettings.format, _right.AOSSettings.format);
         GUIUtil.Desc("Texture Size", $"{tex.width.ToString()}x{tex.height.ToString()}", _keyWidth, _valueWidth);
         EditorGUILayout.EndVertical();
 

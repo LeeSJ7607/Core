@@ -72,11 +72,21 @@ public sealed class GUIUtil
         
         EditorGUILayout.EndHorizontal();
     }
-    
-    public static void DescColor(string key, string value, float keyWidth, float valueWidth)
+
+    public static void Desc(string key, string value, float keyWidth, float valueWidth, object lValue, object rValue)
     {
-        var color = Color.red;
-        
+        if (lValue.Equals(rValue))
+        {
+            Desc(key, value, keyWidth, valueWidth);
+        }
+        else
+        {
+            DescColor(key, value, keyWidth, valueWidth, Color.red);
+        }
+    }
+
+    private static void DescColor(string key, string value, float keyWidth, float valueWidth, Color color)
+    {
         var keyLabelStyle = LabelStyle(TextAnchor.MiddleLeft);
         keyLabelStyle.normal.textColor = color;
         
