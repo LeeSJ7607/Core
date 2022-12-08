@@ -62,14 +62,31 @@ public sealed class AssetImporter_FX : AssetImporterPart
     {
         EditorGUILayout.BeginHorizontal();
         {
-            GUIUtil.Btn("모든 참조 찾기", () => DependencyImpl.Dependencies(_textureImpl.SearchedAssetInfos));
-            GUIUtil.Btn("동일한 텍스쳐 모두 찾기", () => DependencyImpl.SameAssets(_textureImpl.SearchedAssetInfos));
+            GUIUtil.Btn("모든 참조 찾기", () =>
+            {
+                DependencyImpl.Dependencies(_textureImpl.SearchedAssetInfos);
+                Sort((int)SortTexture.References, true);
+            });
+            GUIUtil.Btn("동일한 텍스쳐 모두 찾기", () =>
+            {
+                DependencyImpl.SameAssets(_textureImpl.SearchedAssetInfos);
+                Sort((int)SortTexture.Compare, true);
+            });
         }
         EditorGUILayout.EndHorizontal();
         
         EditorGUILayout.BeginHorizontal();
         {
             GUIUtil.DrawPopup("텍스쳐 압축 포맷", ref _selectedTextureFormatIdx, AssetImporter_TextureImpl.TextureFormats);
+        }
+        EditorGUILayout.EndHorizontal();
+        
+        EditorGUILayout.BeginHorizontal();
+        {
+            GUIUtil.DrawPopup("정렬", ref _selectedTextureSortIdx, _sortTextures, () => Sort(_selectedTextureSortIdx, false));
+            GUIUtil.Btn("▼", 25, () => Sort(_selectedTextureSortIdx, true));
+            GUIUtil.Btn("▲", 25, () => Sort(_selectedTextureSortIdx, false));
+            
             GUIUtil.DrawPopup("레이블 검색", ref _selectedLabelIdx, _textureImpl.Labels, CalcSearchedAssetInfos);
         }
         EditorGUILayout.EndHorizontal();
@@ -93,6 +110,12 @@ public sealed class AssetImporter_FX : AssetImporterPart
         {
             _textureImpl.CalcSearchedAssetInfos(_selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx, _searchedTextureName);
         }
+    }
+    
+    private void Sort(int sortIdx, bool descending)
+    {
+        _textureImpl.CurSort = ((SortTexture)sortIdx, descending);
+        _textureImpl.CalcSearchedAssetInfos(_selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx, _searchedTextureName);
     }
     
     private void DrawAssets()

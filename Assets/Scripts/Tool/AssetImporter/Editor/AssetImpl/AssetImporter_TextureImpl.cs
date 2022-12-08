@@ -110,7 +110,9 @@ public sealed class AssetImporter_TextureImpl
         }
     }
     
-    public List<AssetInfo> SearchedAssetInfos { get; } = new();
+    public (SortTexture sortType, bool descending) CurSort { private get; set; }
+    public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;
+    private List<AssetInfo> _searchedAssetInfos = new();
     public IReadOnlyList<AssetInfo> AssetInfos => _assetInfos;
     private readonly List<AssetInfo> _assetInfos = new();
     private string _curRootFindAssets = "Assets/Temp";
@@ -161,17 +163,17 @@ public sealed class AssetImporter_TextureImpl
             var assetInfo = new AssetInfo(guid);
             
             _assetInfos.Add(assetInfo);
-            SearchedAssetInfos.Add(assetInfo);
+            _searchedAssetInfos.Add(assetInfo);
         }
     }
-    
+
     public void CalcSearchedAssetInfos(
         int selectedLabelIdx, 
         int selectedTextureMaxSizeIdx, 
         int selectedTextureMinSizeIdx,
         string searchedTextureName)
     {
-        SearchedAssetInfos.Clear();
+        _searchedAssetInfos.Clear();
 
         foreach (var assetInfo in _assetInfos)
         {
@@ -191,7 +193,7 @@ public sealed class AssetImporter_TextureImpl
             {
                 if (existLabel && checkSizeTexture)
                 {
-                    SearchedAssetInfos.Add(assetInfo);
+                    _searchedAssetInfos.Add(assetInfo);
                 }
                 continue;
             }
@@ -200,17 +202,19 @@ public sealed class AssetImporter_TextureImpl
             {
                 if (checkSizeTexture)
                 {
-                    SearchedAssetInfos.Add(assetInfo);
+                    _searchedAssetInfos.Add(assetInfo);
                 }
             }
             else
             {
                 if (existLabel)
                 {
-                    SearchedAssetInfos.Add(assetInfo);
+                    _searchedAssetInfos.Add(assetInfo);
                 }
             }
         }
+
+        Sort();
         
         bool ExistLabel(Texture2D tex, string label) => AssetDatabase.GetLabels(tex).Contains(label);
         bool SearchedTextureName(string name)
@@ -224,7 +228,93 @@ public sealed class AssetImporter_TextureImpl
                 && tex.width >= minSize && tex.height >= minSize;
         }
     }
+    
+    private void Sort()
+    {
+        switch (CurSort.sortType)
+        {
+        case SortTexture.Name:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.Texture2D.name).ToList()
+                    : _searchedAssetInfos.OrderBy(_ => _.Texture2D.name).ToList();
+            }
+            break;
 
+        case SortTexture.FileSize:
+            {
+                _searchedAssetInfos = CurSort.descending
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.FileSize).ToList()
+                    : _searchedAssetInfos.OrderBy(_ => _.FileSize).ToList();
+            }
+            break;
+        
+        case SortTexture.TextureSize:
+            {
+                _searchedAssetInfos = CurSort.descending
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.Texture2D.width).ToList()
+                    : _searchedAssetInfos.OrderBy(_ => _.Texture2D.width).ToList();
+            }
+            break;
+        
+        case SortTexture.MipMap:
+            {
+                _searchedAssetInfos = CurSort.descending
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.TextureImporter.mipmapEnabled).ToList()
+                    : _searchedAssetInfos.OrderBy(_ => _.TextureImporter.mipmapEnabled).ToList();
+            }
+            break;
+        
+        case SortTexture.Format:
+            {
+                _searchedAssetInfos = CurSort.descending
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.AOSSettings.format).ToList()
+                    : _searchedAssetInfos.OrderBy(_ => _.AOSSettings.format).ToList();
+            }
+            break;
+        
+        case SortTexture.WrapMode:
+            {
+                _searchedAssetInfos = CurSort.descending
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.WrapMode).ToList()
+                    : _searchedAssetInfos.OrderBy(_ => _.WrapMode).ToList();
+            }
+            break;
+        
+        case SortTexture.FilterMode:
+            {
+                _searchedAssetInfos = CurSort.descending
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.FilterMode).ToList()
+                    : _searchedAssetInfos.OrderBy(_ => _.FilterMode).ToList();
+            }
+            break;
+        
+        case SortTexture.TextureType:
+            {
+                _searchedAssetInfos = CurSort.descending
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.TextureType).ToList()
+                    : _searchedAssetInfos.OrderBy(_ => _.TextureType).ToList();
+            }
+            break;
+        
+        case SortTexture.References:
+            {
+                _searchedAssetInfos = CurSort.descending
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.IsReferences).ToList()
+                    : _searchedAssetInfos.OrderBy(_ => _.IsReferences).ToList();
+            }
+            break;
+        
+        case SortTexture.Compare:
+            {
+                _searchedAssetInfos = CurSort.descending
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.IsCompare).ToList()
+                    : _searchedAssetInfos.OrderBy(_ => _.IsCompare).ToList();
+            }
+            break;
+        }
+    }
+    
     public bool CanDiff()
     {
         foreach (var assetInfo in _assetInfos)

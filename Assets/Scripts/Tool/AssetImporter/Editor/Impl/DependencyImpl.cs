@@ -120,17 +120,14 @@ public static class DependencyImpl
         EditorUtility.ClearProgressBar();
     }
     
-    private static IReadOnlyDictionary<Object, IReadOnlyList<Object>> GetDependencies(Object target)
+    private static (IReadOnlyDictionary<Object, IReadOnlyList<Object>> references, int cnt) GetDependencies(Object target)
     {
         var result = new Dictionary<Object, IReadOnlyList<Object>>();
         var targetPath = AssetDatabase.GetAssetPath(target);
+        var dependency = _dependencies[targetPath];
+        result.Add(target, dependency);
         
-        if (_dependencies.ContainsKey(targetPath))
-        {
-            result.Add(target, _dependencies[targetPath]);
-        }
-        
-        return result;
+        return (result, dependency.Count);
     }
     
     public static void Dependencies(IEnumerable<AssetImporter_TextureImpl.AssetInfo> assetInfos)
@@ -143,9 +140,10 @@ public static class DependencyImpl
             {
                 continue;
             }
-            
-            assetInfo.References = GetDependencies(assetInfo.Texture2D);
-            assetInfo.IsReferences = assetInfo.References.Count > 0;
+
+            var (references, cnt) = GetDependencies(assetInfo.Texture2D);
+            assetInfo.References = references;
+            assetInfo.IsReferences = cnt > 0;
         }
     }
     

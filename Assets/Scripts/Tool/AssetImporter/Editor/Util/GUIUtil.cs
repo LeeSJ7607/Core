@@ -59,6 +59,21 @@ public static class GUIUtil
         EditorGUILayout.EndVertical();
     }
     
+    public static void DrawPopup(string name, ref int idx, string[] options, float width, Action act = null)
+    {
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(width));
+        {
+            EditorGUI.BeginChangeCheck();
+            idx = EditorGUILayout.Popup(name, idx, options);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                act?.Invoke();
+            }
+        }
+        EditorGUILayout.EndVertical();
+    }
+    
     public static void Desc(string desc)
     {
         EditorGUILayout.BeginHorizontal();
