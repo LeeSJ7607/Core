@@ -165,17 +165,25 @@ public sealed class AssetImporter_TextureImpl
         }
     }
     
-    public void CalcSearchedAssetInfos(int selectedLabelIdx, int selectedTextureMaxSizeIdx, int selectedTextureMinSizeIdx)
+    public void CalcSearchedAssetInfos(
+        int selectedLabelIdx, 
+        int selectedTextureMaxSizeIdx, 
+        int selectedTextureMinSizeIdx,
+        string searchedTextureName)
     {
         SearchedAssetInfos.Clear();
 
         foreach (var assetInfo in _assetInfos)
         {
             var tex = assetInfo.Texture2D;
+            if (SearchedTextureName(tex.name) == false)
+            {
+                continue;
+            }
+            
             var label = Labels[selectedLabelIdx];
             var textureMaxSize = int.Parse(TextureSizes[selectedTextureMaxSizeIdx]);
             var textureMinSize = int.Parse(TextureSizes[selectedTextureMinSizeIdx]);
-
             var existLabel = ExistLabel(tex, label);
             var checkSizeTexture = CheckSizeTexture(tex, textureMaxSize, textureMinSize);
 
@@ -205,6 +213,11 @@ public sealed class AssetImporter_TextureImpl
         }
         
         bool ExistLabel(Texture2D tex, string label) => AssetDatabase.GetLabels(tex).Contains(label);
+        bool SearchedTextureName(string name)
+        {
+            return string.IsNullOrWhiteSpace(searchedTextureName) 
+                || name.ToLower().Contains(searchedTextureName.ToLower());
+        }
         bool CheckSizeTexture(Texture2D tex, int maxSize, int minSize)
         {
             return tex.width <= maxSize && tex.height <= maxSize

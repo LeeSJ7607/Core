@@ -30,6 +30,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
     private int _drawMaxRow = 5;
     private Texture2D _texModified;
     private Vector2 _scrollPos;
+    private string _searchedTextureName;
     private bool _initialized;
     
     private void Initialize()
@@ -65,13 +66,14 @@ public sealed class AssetImporter_FX : AssetImporterPart
             GUIUtil.Btn("동일한 텍스쳐 모두 찾기", () => DependencyImpl.SameAssets(_textureImpl.SearchedAssetInfos));
         }
         EditorGUILayout.EndHorizontal();
-
-        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        
+        EditorGUILayout.BeginHorizontal();
         {
-            _selectedTextureFormatIdx = EditorGUILayout.Popup("텍스쳐 압축 포맷", _selectedTextureFormatIdx, AssetImporter_TextureImpl.TextureFormats);
+            GUIUtil.DrawPopup("텍스쳐 압축 포맷", ref _selectedTextureFormatIdx, AssetImporter_TextureImpl.TextureFormats);
+            GUIUtil.DrawPopup("레이블 검색", ref _selectedLabelIdx, _textureImpl.Labels, CalcSearchedAssetInfos);
         }
-        EditorGUILayout.EndVertical();
-
+        EditorGUILayout.EndHorizontal();
+        
         EditorGUILayout.BeginHorizontal();
         {
             GUIUtil.DrawPopup("텍스쳐 최대 사이즈", ref _selectedTextureMaxSizeIdx, AssetImporter_TextureImpl.TextureSizes, CalcSearchedAssetInfos);
@@ -79,11 +81,17 @@ public sealed class AssetImporter_FX : AssetImporterPart
         }
         EditorGUILayout.EndHorizontal();
         
-        GUIUtil.DrawPopup("레이블 검색", ref _selectedLabelIdx, _textureImpl.Labels, CalcSearchedAssetInfos);
-
+        EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+        {
+            GUILayout.Label("텍스쳐 이름 검색", GUILayout.Width(150));
+            _searchedTextureName = GUILayout.TextField(_searchedTextureName, GUIUtil.TextFieldStyle());
+            CalcSearchedAssetInfos();
+        }
+        EditorGUILayout.EndHorizontal();
+        
         void CalcSearchedAssetInfos()
         {
-            _textureImpl.CalcSearchedAssetInfos(_selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx);
+            _textureImpl.CalcSearchedAssetInfos(_selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx, _searchedTextureName);
         }
     }
     

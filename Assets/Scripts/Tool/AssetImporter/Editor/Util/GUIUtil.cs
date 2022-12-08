@@ -5,6 +5,11 @@ using UnityEngine;
 
 public static class GUIUtil
 {
+    public static GUIStyle TextFieldStyle()
+    {
+        return new GUIStyle(GUI.skin.textField);
+    }
+    
     public static GUIStyle LabelStyle(TextAnchor textAnchor = TextAnchor.MiddleCenter)
     {
         return new GUIStyle(GUI.skin.label)
