@@ -15,9 +15,6 @@ public sealed class AssetImporterTool_Preview : EditorWindow
     
     private void OnGUI()
     {
-        if (GUILayout.Button(_texture2D, GUIUtil.ButtonStyle(), GUILayout.Width(_size), GUILayout.Height(_size)))
-        {
-            Close();
-        }
+        GUIUtil.Btn(_texture2D, _size, _size, Close);
     }
 }

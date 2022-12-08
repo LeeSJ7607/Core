@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public sealed class GUIUtil
+public static class GUIUtil
 {
     public static GUIStyle LabelStyle(TextAnchor textAnchor = TextAnchor.MiddleCenter)
     {
@@ -81,7 +82,7 @@ public sealed class GUIUtil
         }
         else
         {
-            DescColor(key, value, keyWidth, valueWidth, Color.red);
+            DescColor(key, value, keyWidth, valueWidth, Color.cyan);
         }
     }
 
@@ -102,5 +103,43 @@ public sealed class GUIUtil
         }
         
         EditorGUILayout.EndHorizontal();
+    }
+    
+    public static void Btn(string name, Action act)
+    {
+        if (GUILayout.Button(name, ButtonStyle()))
+        {
+            act?.Invoke();
+        }
+    }
+    
+    public static void Btn(string name, float width, Action act)
+    {
+        if (GUILayout.Button(name, ButtonStyle(), GUILayout.Width(width)))
+        {
+            act();
+        }
+    }
+    
+    public static void Btn(string name, float width, float height, Action act)
+    {
+        if (GUILayout.Button(name, ButtonStyle(), GUILayout.Width(width), GUILayout.Height(height)))
+        {
+            act();
+        }
+    }
+    
+    public static void Btn(Texture2D tex, float width, float height, Action act)
+    {
+        var option = new List<GUILayoutOption>(2)
+        {
+            GUILayout.Width(width),
+            GUILayout.Height(height)
+        };
+        
+        if (GUILayout.Button(tex, ButtonStyle(), option.ToArray()))
+        {
+            act();
+        }
     }
 }

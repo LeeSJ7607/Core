@@ -23,7 +23,6 @@ public sealed class AssetImporter_FX : AssetImporterPart
     
     private readonly AssetImporter_TextureImpl _originTextureImpl = new();
     private readonly AssetImporter_TextureImpl _textureImpl = new();
-    private AssetImporter_TextureImpl.AssetInfo _compareAssetInfo;
     private int _selectedTextureFormatIdx = Array.FindIndex(AssetImporter_TextureImpl.TextureFormats, _ => _.Equals(TextureImporterFormat.ASTC_6x6.ToString()));
     private int _selectedTextureMaxSizeIdx;
     private int _selectedTextureMinSizeIdx = AssetImporter_TextureImpl.TextureSizes.Length - 1;
@@ -166,11 +165,11 @@ public sealed class AssetImporter_FX : AssetImporterPart
 
         if (assetInfo.IsReferences)
         {
-            Btn("참조", () => AssetImporterTool_References.Open(assetInfo.References));
+            Btn("참조", () => AssetImporterTool_ReferenceList.Open(assetInfo));
         }
         if (assetInfo.IsCompare)
         {
-            Btn("비교", () => AssetImporterTool_Compare.Open(_compareAssetInfo, assetInfo));
+            Btn("비교", () => AssetImporterTool_CompareList.Open(assetInfo));
         }
 
         EditorGUILayout.EndVertical();

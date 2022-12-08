@@ -13,4 +13,4 @@
 //TODO: FBX, Material, Animation, Audio
 //TODO: 동일한 텍스쳐 모두 찾기
 //TODO: Audio는 compressionFormat 이 ADPCM 일 경우, sampleRateSetting 를 OptimizeSampleRate 로 고정
-//TODO: References 창 커스텀
+//TODO: Button => GUIUtil.Btn 으로 모듈화.

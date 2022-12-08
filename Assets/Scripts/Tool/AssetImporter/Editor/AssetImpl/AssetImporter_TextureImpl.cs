@@ -43,8 +43,9 @@ public sealed class AssetImporter_TextureImpl
         public FilterMode FilterMode { get; set; }
         public int MaxTextureSize { get; set; }
         public string FileSize { get; set; }
-        public IReadOnlyDictionary<UnityEngine.Object, IReadOnlyList<string>> References { get; set; } 
+        public IReadOnlyDictionary<UnityEngine.Object, IReadOnlyList<UnityEngine.Object>> References { get; set; } 
         public bool IsReferences { get; set; }
+        public IReadOnlyDictionary<int, DependencyImpl.SameAssetInfo> Compares { get; set; }
         public bool IsCompare { get; set; }
         public bool Changed { get; set; }
 

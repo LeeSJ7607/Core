@@ -1,21 +1,35 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 public sealed class AssetImporterTool_Compare : EditorWindow
 {
+    private sealed class TextureInfo
+    {
+        public Texture Tex { get; }
+        public TextureImporter Importer { get; }
+        public TextureImporterPlatformSettings Settings { get; }
+        public string FileSize { get; }
+        
+        public TextureInfo(Texture tex)
+        {
+            Tex = tex;
+            Importer = (TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(tex));
+            Settings = Importer.GetPlatformTextureSettings("Android");
+            FileSize = EditorTextureUtil.TextureSize(Tex);
+        }
+    }
+    
     private const float _keyWidth = 80;
     private const float _valueWidth = 170;
     private const float _textureSize = 200;
-    private AssetImporter_TextureImpl.AssetInfo _left;
-    private AssetImporter_TextureImpl.AssetInfo _right;
+    private TextureInfo _left, _right;
     
-    public static void Open(AssetImporter_TextureImpl.AssetInfo left, AssetImporter_TextureImpl.AssetInfo right)
+    public static void Open(Texture left, Texture right)
     {
         var tool = GetWindow<AssetImporterTool_Compare>("Compare");
         tool.minSize = tool.maxSize = new Vector2(_textureSize * 3, _textureSize * 2);
-        tool._left = left;
-        tool._right = right;
+        tool._left = new TextureInfo(left);
+        tool._right = new TextureInfo(right);
     }
     
     private void OnGUI()
@@ -26,44 +40,37 @@ public sealed class AssetImporterTool_Compare : EditorWindow
         Set(_right);
         EditorGUILayout.EndHorizontal();
     }
-
-    private void Set(AssetImporter_TextureImpl.AssetInfo assetInfo)
+    
+    private void Set(TextureInfo textureInfo)
     {
-        var tex = assetInfo.Texture2D;
-        var importer = assetInfo.TextureImporter;
+        var tex = textureInfo.Tex;
+        var importer = textureInfo.Importer;
+        var setting = textureInfo.Settings;
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         if (GUILayout.Button(tex, GUIUtil.ButtonStyle(), GUILayout.Width(_textureSize + 60), GUILayout.Height(_textureSize)))
         {
-            
+            Selection.activeObject = tex;
         }
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        GUIUtil.Desc($"{importer.assetPath} ({assetInfo.FileSize})");
+        GUIUtil.Desc($"{importer.assetPath} ({textureInfo.FileSize})");
         GUIUtil.Desc(tex.name);
         EditorGUILayout.EndVertical();
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        GUIUtil.Desc("Texture Type", assetInfo.TextureType.ToString(), _keyWidth, _valueWidth, _left.TextureType, _right.TextureType);
-        GUIUtil.Desc("Wrap Mode", assetInfo.WrapMode.ToString(), _keyWidth, _valueWidth, _left.WrapMode, _right.WrapMode);
-        GUIUtil.Desc("Filter Mode", assetInfo.FilterMode.ToString(), _keyWidth, _valueWidth, _left.FilterMode, _right.FilterMode);
-        GUIUtil.Desc("Max Size", assetInfo.MaxTextureSize.ToString(), _keyWidth, _valueWidth, _left.TextureImporter.maxTextureSize, _right.TextureImporter.maxTextureSize);
-        GUIUtil.Desc("Format", assetInfo.AOSSettings.format.ToString(), _keyWidth, _valueWidth, _left.AOSSettings.format, _right.AOSSettings.format);
+        GUIUtil.Desc("Texture Type", importer.textureType.ToString(), _keyWidth, _valueWidth, _left.Importer.textureType, _right.Importer.textureType);
+        GUIUtil.Desc("Wrap Mode", tex.wrapMode.ToString(), _keyWidth, _valueWidth, _left.Tex.wrapMode, _right.Tex.wrapMode);
+        GUIUtil.Desc("Filter Mode", tex.filterMode.ToString(), _keyWidth, _valueWidth, _left.Tex.filterMode, _right.Tex.filterMode);
+        GUIUtil.Desc("Max Size", importer.maxTextureSize.ToString(), _keyWidth, _valueWidth, _left.Importer.maxTextureSize, _right.Importer.maxTextureSize);
+        GUIUtil.Desc("Format", setting.format.ToString(), _keyWidth, _valueWidth, _left.Settings.format, _right.Settings.format);
         GUIUtil.Desc("Texture Size", $"{tex.width.ToString()}x{tex.height.ToString()}", _keyWidth, _valueWidth);
         EditorGUILayout.EndVertical();
-
+        
         EditorGUILayout.BeginHorizontal();
-        Btn("선택", () => Selection.activeObject = assetInfo.Texture2D);
-        Btn("열기", () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
+        GUIUtil.Btn("선택", () => Selection.activeObject = tex);
+        GUIUtil.Btn("열기", () => EditorUtility.RevealInFinder(importer.assetPath));
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.EndVertical();
-        
-        void Btn(string name, Action act)
-        {
-            if (GUILayout.Button(name, GUIUtil.ButtonStyle(), GUILayout.ExpandWidth(true)))
-            {
-                act();
-            }
-        }
     }
 }

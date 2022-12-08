@@ -73,7 +73,7 @@ public static class EditorTextureUtil
         return (bool)mMethod_IsNonPowerOfTwo.Invoke(null, new[] { texture });
     }
     
-    public static string TextureSize(Texture2D tex)
+    public static string TextureSize(Texture tex)
     {
         var size = GetStorageMemorySize(tex);
         return EditorUtility.FormatBytes(size);
