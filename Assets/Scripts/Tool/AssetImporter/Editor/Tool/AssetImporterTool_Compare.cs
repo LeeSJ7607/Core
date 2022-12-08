@@ -48,10 +48,7 @@ public sealed class AssetImporterTool_Compare : EditorWindow
         var setting = textureInfo.Settings;
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        if (GUILayout.Button(tex, GUIUtil.ButtonStyle(), GUILayout.Width(_textureSize + 60), GUILayout.Height(_textureSize)))
-        {
-            Selection.activeObject = tex;
-        }
+        GUIUtil.Btn(tex, _textureSize + 60, _textureSize, () => Selection.activeObject = tex);
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         GUIUtil.Desc($"{importer.assetPath} ({textureInfo.FileSize})");

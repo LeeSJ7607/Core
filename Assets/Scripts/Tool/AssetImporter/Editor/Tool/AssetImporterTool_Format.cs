@@ -83,11 +83,7 @@ internal sealed class AssetImporterTool_Format : EditorWindow
     private void DrawTexture(TextureInfo textureInfo)
     {
         var tex = textureInfo.Tex;
-        
-        if (GUILayout.Button(tex, GUILayout.Width(_size), GUILayout.Height(_size)))
-        {
-            AssetImporterTool_Preview.Open(tex);
-        }
+        GUIUtil.Btn(tex, _size, _size, () => AssetImporterTool_Preview.Open(tex));
     }
 
     private void DrawDesc(TextureInfo textureInfo)

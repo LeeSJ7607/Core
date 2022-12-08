@@ -97,29 +97,24 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
     
     private void DrawMenus()
     {
+        const float width = 100;
+        
         EditorGUILayout.Space(_guiSpace);
         EditorGUILayout.BeginHorizontal();
         {
-            Btn("선택", () => Selection.activeObject = _assetInfo.Texture2D);
-            Btn("열기", () => EditorUtility.RevealInFinder(_assetInfo.TextureImporter.assetPath));
+            GUIUtil.BtnExpand("선택", width, () => Selection.activeObject = _assetInfo.Texture2D);
+            GUIUtil.BtnExpand("열기", width, () => EditorUtility.RevealInFinder(_assetInfo.TextureImporter.assetPath));
         }
         EditorGUILayout.EndHorizontal();
         
         EditorGUILayout.BeginHorizontal();
         {
-            Btn("저장", Save);
-            Btn("설정 값 되돌리기", ReSetOption);
+            GUIUtil.BtnExpand("저장", width, Save);
+            GUIUtil.BtnExpand("설정 값 되돌리기", width, ReSetOption);
         }
         EditorGUILayout.EndHorizontal();
         
-        Btn("압축 포맷 별로 보기", () => AssetImporterTool_Format.Open(_assetInfo));
-        void Btn(string name, Action act)
-        {
-            if (GUILayout.Button(name, GUIUtil.ButtonStyle(), GUILayout.Width(180), GUILayout.ExpandWidth(true)))
-            {
-                act();
-            }
-        }
+        GUIUtil.BtnExpand("압축 포맷 별로 보기", width, () => AssetImporterTool_Format.Open(_assetInfo));
     }
     
     private void DrawTexture()

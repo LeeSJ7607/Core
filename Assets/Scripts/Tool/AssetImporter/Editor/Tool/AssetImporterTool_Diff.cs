@@ -73,14 +73,9 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         EditorGUILayout.BeginHorizontal();
         for (var type = AssetType.All; type < AssetType.End; type++)
         {
-            if (CanDrawCategory(type) == false)
+            if (CanDrawCategory(type))
             {
-                continue;
-            }
-            
-            if (GUILayout.Button(type.ToString()))
-            {
-                _curAssetType = type;
+                GUIUtil.Btn(type.ToString(), () => _curAssetType = type);
             }
         }
         EditorGUILayout.EndHorizontal();
@@ -161,11 +156,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
             }
 
             EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-            if (GUILayout.Button(assetInfo.Texture2D, GUILayout.Width(50), GUILayout.Height(50)))
-            {
-                AssetImporterTool_Preview.Open(assetInfo.Texture2D);
-            }
-
+            GUIUtil.Btn(assetInfo.Texture2D, 50, 50, () => AssetImporterTool_Preview.Open(assetInfo.Texture2D));
             DrawTextureImplDesc(assetInfo, _before.TextureImpl.AssetInfos[i], _after.TextureImpl.AssetInfos[i]);
             EditorGUILayout.EndHorizontal();
         }

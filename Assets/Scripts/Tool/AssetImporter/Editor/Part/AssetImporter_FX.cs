@@ -61,14 +61,8 @@ public sealed class AssetImporter_FX : AssetImporterPart
     {
         EditorGUILayout.BeginHorizontal();
         {
-            if (GUILayout.Button("모든 참조 찾기"))
-            {
-                DependencyImpl.Dependencies(_textureImpl.SearchedAssetInfos);
-            }
-            if (GUILayout.Button("동일한 텍스쳐 모두 찾기"))
-            {
-                DependencyImpl.SameAssets(_textureImpl.SearchedAssetInfos);
-            }
+            GUIUtil.Btn("모든 참조 찾기", () => DependencyImpl.Dependencies(_textureImpl.SearchedAssetInfos));
+            GUIUtil.Btn("동일한 텍스쳐 모두 찾기", () => DependencyImpl.SameAssets(_textureImpl.SearchedAssetInfos));
         }
         EditorGUILayout.EndHorizontal();
 
@@ -127,11 +121,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
     private void DrawTexture(AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
         var tex = assetInfo.Texture2D;
-        
-        if (GUILayout.Button(tex, GUILayout.Width(50), GUILayout.Height(50)))
-        {
-            AssetImporterTool_Preview.Open(tex);
-        }
+        GUIUtil.Btn(tex, 50, 50, () => AssetImporterTool_Preview.Open(tex));
     }
     
     //TODO: 설명 우선 순위도 결정하게 해주면 좋을듯.
@@ -156,31 +146,25 @@ public sealed class AssetImporter_FX : AssetImporterPart
     
     private void DrawOption(AssetImporter_TextureImpl.AssetInfo assetInfo)
     {
+        const float width = 50;
+
         EditorGUILayout.BeginVertical();
         
-        Btn("선택", () => Selection.activeObject = assetInfo.Texture2D);
-        Btn("열기", () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
-        Btn("수정", () => AssetImporterTool_Modify.Open(assetInfo));
-        Btn("포맷", () => assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx));
+        GUIUtil.Btn("선택", width, () => Selection.activeObject = assetInfo.Texture2D);
+        GUIUtil.Btn("열기", width, () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
+        GUIUtil.Btn("수정", width, () => AssetImporterTool_Modify.Open(assetInfo));
+        GUIUtil.Btn("포맷", width, () => assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx));
 
         if (assetInfo.IsReferences)
         {
-            Btn("참조", () => AssetImporterTool_ReferenceList.Open(assetInfo));
+            GUIUtil.Btn("참조", width, () => AssetImporterTool_ReferenceList.Open(assetInfo));
         }
         if (assetInfo.IsCompare)
         {
-            Btn("비교", () => AssetImporterTool_CompareList.Open(assetInfo));
+            GUIUtil.Btn("비교", width, () => AssetImporterTool_CompareList.Open(assetInfo));
         }
 
         EditorGUILayout.EndVertical();
-        
-        void Btn(string name, Action act)
-        {
-            if (GUILayout.Button(name, GUIUtil.ButtonStyle(), GUILayout.Width(50)))
-            {
-                act();
-            }
-        }
     }
     
     public override void ShowDiff()

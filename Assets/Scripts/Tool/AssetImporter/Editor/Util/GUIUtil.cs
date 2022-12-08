@@ -121,6 +121,14 @@ public static class GUIUtil
         }
     }
     
+    public static void BtnExpand(string name, float width, Action act)
+    {
+        if (GUILayout.Button(name, ButtonStyle(), GUILayout.Width(width), GUILayout.ExpandWidth(true)))
+        {
+            act();
+        }
+    }
+    
     public static void Btn(string name, float width, float height, Action act)
     {
         if (GUILayout.Button(name, ButtonStyle(), GUILayout.Width(width), GUILayout.Height(height)))
@@ -129,7 +137,7 @@ public static class GUIUtil
         }
     }
     
-    public static void Btn(Texture2D tex, float width, float height, Action act)
+    public static void Btn(Texture tex, float width, float height, Action act)
     {
         var option = new List<GUILayoutOption>(2)
         {
