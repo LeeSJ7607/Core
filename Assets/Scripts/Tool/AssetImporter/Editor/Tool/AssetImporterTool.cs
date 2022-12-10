@@ -29,17 +29,6 @@ internal sealed class AssetImporterTool : EditorWindow
         tool._assetImporterParts[0].IsOn = true;
     }
     
-    private void OnDisable()
-    {
-        GetWindow<AssetImporterTool_Compare>().Close();
-        GetWindow<AssetImporterTool_CompareList>().Close();
-        GetWindow<AssetImporterTool_Diff>().Close();
-        GetWindow<AssetImporterTool_Format>().Close();
-        GetWindow<AssetImporterTool_Modify>().Close();
-        GetWindow<AssetImporterTool_Preview>().Close();
-        GetWindow<AssetImporterTool_ReferenceList>().Close();
-    }
-    
     private void OnGUI()
     {
         DrawCategory();
