@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,38 +8,15 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
     private const float _toolWidth = 400;
     private const float _guiSpace = 10;
     
-    private static readonly string[] _textureTypes =
-    {
-        TextureImporterType.Default.ToString(),
-        TextureImporterType.NormalMap.ToString(),
-        TextureImporterType.GUI.ToString(),
-        TextureImporterType.Sprite.ToString(),
-        TextureImporterType.Cursor.ToString(),
-        TextureImporterType.Cookie.ToString(),
-        TextureImporterType.Lightmap.ToString(),
-        TextureImporterType.DirectionalLightmap.ToString(),
-        TextureImporterType.Shadowmask.ToString(),
-        TextureImporterType.SingleChannel.ToString(),
-    };
+    private static readonly string[] _textureTypes = Enum.GetNames(typeof(TextureImporterType)).ToArray();
     private int _selectedTextureTypesIdx;
     private int _originTextureTypesIdx;
 
-    private static readonly string[] _wrapModes =
-    {
-        TextureWrapMode.Repeat.ToString(),
-        TextureWrapMode.Clamp.ToString(),
-        TextureWrapMode.Mirror.ToString(),
-        TextureWrapMode.MirrorOnce.ToString()
-    };
+    private static readonly string[] _wrapModes = Enum.GetNames(typeof(TextureWrapMode)).ToArray();
     private int _selectedWrapModeIdx;
     private int _originWrapModeIdx;
     
-    private static readonly string[] _filterModes =
-    {
-        FilterMode.Point.ToString(),
-        FilterMode.Bilinear.ToString(),
-        FilterMode.Trilinear.ToString()
-    };
+    private static readonly string[] _filterModes = Enum.GetNames(typeof(FilterMode)).ToArray();
     private int _selectedFilterModeIdx;
     private int _originFilterModeIdx;
     
