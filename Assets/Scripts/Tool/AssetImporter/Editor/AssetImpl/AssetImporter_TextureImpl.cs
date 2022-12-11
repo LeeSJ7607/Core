@@ -38,6 +38,7 @@ public sealed class AssetImporter_TextureImpl
         public Texture2D Texture2D { get; private set; }
         public TextureImporter TextureImporter { get; }
         public TextureImporterPlatformSettings AOSSettings { get; }
+        public TextureImporterFormat FormatType { get; private set; }
         public TextureImporterType TextureType { get; set; }
         public TextureWrapMode WrapMode { get; set; }
         public FilterMode FilterMode { get; set; }
@@ -55,6 +56,7 @@ public sealed class AssetImporter_TextureImpl
             Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(_path);
             TextureImporter = (TextureImporter)AssetImporter.GetAtPath(_path);
             AOSSettings = TextureImporter.GetPlatformTextureSettings("Android");
+            FormatType = AOSSettings.format;
             TextureType = TextureImporter.textureType;
             WrapMode = TextureImporter.wrapMode;
             FilterMode = TextureImporter.filterMode;
@@ -65,17 +67,17 @@ public sealed class AssetImporter_TextureImpl
         private void Refresh()
         {
             Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(_path);
+            FormatType = AOSSettings.format;
             FileSize = EditorTextureUtil.TextureSize(Texture2D);
             Changed = false;
         }
 
         private void SetTextureImporter()
         {
-            var importer = TextureImporter;
-            importer.textureType = TextureType;
-            importer.wrapMode = WrapMode;
-            importer.filterMode = FilterMode;
-            importer.maxTextureSize = MaxTextureSize;
+            TextureImporter.textureType = TextureType;
+            TextureImporter.wrapMode = WrapMode;
+            TextureImporter.filterMode = FilterMode;
+            TextureImporter.maxTextureSize = MaxTextureSize;
         }
         
         private void SetPlatformTextureSettings()
@@ -93,7 +95,7 @@ public sealed class AssetImporter_TextureImpl
         public void SetTextureImporterFormat(int formatIdx)
         {
             var format = Enum.Parse<TextureImporterFormat>(TextureFormats[formatIdx]);
-            if (AOSSettings.format == format)
+            if (format == AOSSettings.format)
             {
                 return;
             }
@@ -103,8 +105,14 @@ public sealed class AssetImporter_TextureImpl
         }
 
         public void ReSetTextureImporterFormat()
-        {
-            AOSSettings.format = TextureImporter.GetPlatformTextureSettings("Android").format;
+        { 
+            var format = TextureImporter.GetPlatformTextureSettings("Android").format;
+            if (format == AOSSettings.format)
+            {
+                return;
+            }
+
+            AOSSettings.format = format;
             Changed = false;
         }
 
