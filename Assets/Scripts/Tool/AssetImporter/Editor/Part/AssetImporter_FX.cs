@@ -31,7 +31,6 @@ public sealed class AssetImporter_FX : AssetImporterPart
     private Texture2D _texModified;
     private Vector2 _scrollPos;
     private string _searchedTextureName;
-    private bool _curChangeTextureImporterFormat;
     private bool _initialized;
     
     private void Initialize()
@@ -102,20 +101,6 @@ public sealed class AssetImporter_FX : AssetImporterPart
         _textureImpl.CalcSearchedAssetInfos(_selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx, _searchedTextureName);
     }
     
-    private void ChangeTextureImporterFormat(AssetImporter_TextureImpl.AssetInfo assetInfo, bool active)
-    {
-        _curChangeTextureImporterFormat = !active;
-        
-        if (active)
-        {
-            assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx);
-        }
-        else
-        {
-            assetInfo.ReSetTextureImporterFormat();
-        }
-    }
-    
     private void DrawTextureFormat()
     {
         EditorGUILayout.BeginHorizontal();
@@ -128,7 +113,16 @@ public sealed class AssetImporter_FX : AssetImporterPart
         {
             foreach (var assetInfo in _textureImpl.SearchedAssetInfos)
             {
-                ChangeTextureImporterFormat(assetInfo, active);
+                if (active)
+                {
+                    var formatStr = AssetImporter_TextureImpl.TextureFormats[_selectedTextureFormatIdx];
+                    var format = Enum.Parse<TextureImporterFormat>(formatStr);
+                    assetInfo.SetTextureImporterFormat(format, true);
+                }
+                else
+                {
+                    assetInfo.SetTextureImporterFormat(assetInfo.FormatType, false);
+                }
             }
         }
     }
@@ -208,7 +202,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         GUIUtil.Desc("Wrap Mode", assetInfo.WrapMode.ToString(), keyWidth, valueWidth);
         GUIUtil.Desc("Filter Mode", assetInfo.FilterMode.ToString(), keyWidth, valueWidth);
         GUIUtil.Desc("Max Size", assetInfo.MaxTextureSize.ToString(), keyWidth, valueWidth);
-        GUIUtil.Desc("Format", assetInfo.AOSSettings.format.ToString(), keyWidth, valueWidth);
+        GUIUtil.Desc("Format", assetInfo.FormatStr, keyWidth, valueWidth);
         GUIUtil.Desc("Texture Size", $"{tex.width.ToString()}x{tex.height.ToString()}", keyWidth, valueWidth);
         GUILayout.EndVertical();
     }
@@ -222,7 +216,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         GUIUtil.Btn("선택", width, () => Selection.activeObject = assetInfo.Texture2D);
         GUIUtil.Btn("열기", width, () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
         GUIUtil.Btn("수정", width, () => AssetImporterTool_Modify.Open(assetInfo));
-        GUIUtil.Btn("포맷", width, () => ChangeTextureImporterFormat(assetInfo, _curChangeTextureImporterFormat));
+        GUIUtil.Btn("리셋", width, assetInfo.Reset);
 
         if (assetInfo.IsReferences)
         {

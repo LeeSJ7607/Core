@@ -23,8 +23,8 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
     private int _selectedMaxTextureSizeIdx;
     private int _originMaxTextureSizeIdx;
 
-    private int _selectedMaxTextureFormatIdx;
-    private int _originMaxTextureFormatIdx;
+    private int _selectedTextureFormatIdx;
+    private int _originTextureFormatIdx;
     
     private AssetImporter_TextureImpl.AssetInfo _assetInfo;
     
@@ -45,7 +45,7 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
         tool._originWrapModeIdx = tool._selectedWrapModeIdx = Array.FindIndex(_wrapModes, _ => _.Equals(assetInfo.WrapMode.ToString()));
         tool._originFilterModeIdx = tool._selectedFilterModeIdx = Array.FindIndex(_filterModes, _ => _.Equals(assetInfo.FilterMode.ToString()));
         tool._originMaxTextureSizeIdx = tool._selectedMaxTextureSizeIdx = Array.FindIndex(AssetImporter_TextureImpl.TextureSizes, _ => _.Equals(assetInfo.MaxTextureSize.ToString()));
-        tool._originMaxTextureFormatIdx = tool._selectedMaxTextureFormatIdx = Array.FindIndex(AssetImporter_TextureImpl.TextureFormats, _ => _.Equals(assetInfo.AOSSettings.format.ToString()));
+        tool._originTextureFormatIdx = tool._selectedTextureFormatIdx = Array.FindIndex(AssetImporter_TextureImpl.TextureFormats, _ => _.Equals(assetInfo.AOSSettings.format.ToString()));
     }
 
     private void ReSetOption()
@@ -54,7 +54,7 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
         _selectedWrapModeIdx = _originWrapModeIdx;
         _selectedFilterModeIdx = _originFilterModeIdx;
         _selectedMaxTextureSizeIdx = _originMaxTextureSizeIdx;
-        _selectedMaxTextureFormatIdx = _originMaxTextureFormatIdx;
+        _selectedTextureFormatIdx = _originTextureFormatIdx;
         _assetInfo.FileSize = EditorTextureUtil.TextureSize(_assetInfo.Texture2D);
     }
     
@@ -122,7 +122,7 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
         GUIUtil.DrawPopup("Wrap Mode", ref _selectedWrapModeIdx, _wrapModes);
         GUIUtil.DrawPopup("Filter Mode", ref _selectedFilterModeIdx, _filterModes);
         GUIUtil.DrawPopup("Max Size", ref _selectedMaxTextureSizeIdx, AssetImporter_TextureImpl.TextureSizes, () => _assetInfo.AOSSettings.overridden = true);
-        GUIUtil.DrawPopup("Format", ref _selectedMaxTextureFormatIdx, AssetImporter_TextureImpl.TextureFormats, () => _assetInfo.AOSSettings.overridden = true); 
+        GUIUtil.DrawPopup("Format", ref _selectedTextureFormatIdx, AssetImporter_TextureImpl.TextureFormats, () => _assetInfo.AOSSettings.overridden = true); 
     }
     
     private void Save()
@@ -131,7 +131,7 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
                           || _selectedWrapModeIdx != _originWrapModeIdx
                           || _selectedFilterModeIdx != _originFilterModeIdx
                           || _selectedMaxTextureSizeIdx != _originMaxTextureSizeIdx
-                          || _selectedMaxTextureFormatIdx != _originMaxTextureFormatIdx;
+                          || _selectedTextureFormatIdx != _originTextureFormatIdx;
 
         if (_assetInfo.Changed == false)
         {
@@ -144,9 +144,11 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
         _assetInfo.FilterMode = Enum.Parse<FilterMode>(_filterModes[_selectedFilterModeIdx]);
         _assetInfo.MaxTextureSize = int.Parse(AssetImporter_TextureImpl.TextureSizes[_selectedMaxTextureSizeIdx]);
    
-        if (_selectedMaxTextureFormatIdx > -1)
+        if (_selectedTextureFormatIdx > -1)
         {
-            _assetInfo.AOSSettings.format = Enum.Parse<TextureImporterFormat>(AssetImporter_TextureImpl.TextureFormats[_selectedMaxTextureFormatIdx]);
+            var formatStr = AssetImporter_TextureImpl.TextureFormats[_selectedTextureFormatIdx];
+            var format = Enum.Parse<TextureImporterFormat>(formatStr);
+            _assetInfo.SetTextureImporterFormat(format, true);
         }
         
         Close();

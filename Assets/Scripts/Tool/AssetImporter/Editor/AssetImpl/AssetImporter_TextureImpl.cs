@@ -39,6 +39,7 @@ public sealed class AssetImporter_TextureImpl
         public TextureImporter TextureImporter { get; }
         public TextureImporterPlatformSettings AOSSettings { get; }
         public TextureImporterFormat FormatType { get; private set; }
+        public string FormatStr { get; private set; }
         public TextureImporterType TextureType { get; set; }
         public TextureWrapMode WrapMode { get; set; }
         public FilterMode FilterMode { get; set; }
@@ -57,6 +58,7 @@ public sealed class AssetImporter_TextureImpl
             TextureImporter = (TextureImporter)AssetImporter.GetAtPath(_path);
             AOSSettings = TextureImporter.GetPlatformTextureSettings("Android");
             FormatType = AOSSettings.format;
+            FormatStr = AOSSettings.overridden ? AOSSettings.format.ToString() : "비압축";
             TextureType = TextureImporter.textureType;
             WrapMode = TextureImporter.wrapMode;
             FilterMode = TextureImporter.filterMode;
@@ -64,10 +66,27 @@ public sealed class AssetImporter_TextureImpl
             FileSize = EditorTextureUtil.TextureSize(Texture2D);
         }
 
+        public void Reset()
+        {
+            if (Changed == false)
+            {
+                return;
+            }
+            
+            TextureType = TextureImporter.textureType;
+            WrapMode = TextureImporter.wrapMode;
+            FilterMode = TextureImporter.filterMode;
+            MaxTextureSize = TextureImporter.maxTextureSize;
+            AOSSettings.format = FormatType;
+            FormatStr = FormatType.ToString();
+            Changed = false;
+        }
+
         private void Refresh()
         {
             Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(_path);
             FormatType = AOSSettings.format;
+            FormatStr = AOSSettings.overridden ? AOSSettings.format.ToString() : "비압축";
             FileSize = EditorTextureUtil.TextureSize(Texture2D);
             Changed = false;
         }
@@ -92,28 +111,16 @@ public sealed class AssetImporter_TextureImpl
             TextureImporter.SaveAndReimport();
         }
 
-        public void SetTextureImporterFormat(int formatIdx)
+        public void SetTextureImporterFormat(TextureImporterFormat format, bool changed)
         {
-            var format = Enum.Parse<TextureImporterFormat>(TextureFormats[formatIdx]);
-            if (format == AOSSettings.format)
+            if (format == AOSSettings.format || AOSSettings.overridden == false)
             {
                 return;
             }
 
             AOSSettings.format = format;
-            Changed = true;
-        }
-
-        public void ReSetTextureImporterFormat()
-        { 
-            var format = TextureImporter.GetPlatformTextureSettings("Android").format;
-            if (format == AOSSettings.format)
-            {
-                return;
-            }
-
-            AOSSettings.format = format;
-            Changed = false;
+            FormatStr = format.ToString();
+            Changed = changed;
         }
 
         public void Save()
