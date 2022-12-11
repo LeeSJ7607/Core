@@ -102,6 +102,12 @@ public sealed class AssetImporter_TextureImpl
             Changed = true;
         }
 
+        public void ReSetTextureImporterFormat()
+        {
+            AOSSettings.format = TextureImporter.GetPlatformTextureSettings("Android").format;
+            Changed = false;
+        }
+
         public void Save()
         {
             SetTextureImporter();

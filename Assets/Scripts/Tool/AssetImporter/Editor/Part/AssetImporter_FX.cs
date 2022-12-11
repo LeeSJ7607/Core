@@ -75,11 +75,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         }
         EditorGUILayout.EndHorizontal();
         
-        EditorGUILayout.BeginHorizontal();
-        {
-            GUIUtil.DrawPopup("텍스쳐 압축 포맷", ref _selectedTextureFormatIdx, AssetImporter_TextureImpl.TextureFormats);
-        }
-        EditorGUILayout.EndHorizontal();
+        DrawTextureFormat();
         
         EditorGUILayout.BeginHorizontal();
         {
@@ -109,6 +105,30 @@ public sealed class AssetImporter_FX : AssetImporterPart
         void CalcSearchedAssetInfos()
         {
             _textureImpl.CalcSearchedAssetInfos(_selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx, _searchedTextureName);
+        }
+    }
+    
+    private void DrawTextureFormat()
+    {
+        EditorGUILayout.BeginHorizontal();
+        GUIUtil.DrawPopup("텍스쳐 압축 포맷", ref _selectedTextureFormatIdx, AssetImporter_TextureImpl.TextureFormats);
+        GUIUtil.Btn("전체 텍스쳐 압축 포맷 지정", () => Set(true));
+        GUIUtil.Btn("전체 텍스쳐 압축 포맷 취소", () => Set(false));
+        EditorGUILayout.EndHorizontal();
+
+        void Set(bool active)
+        {
+            foreach (var assetInfo in _textureImpl.SearchedAssetInfos)
+            {
+                if (active)
+                {
+                    assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx);
+                }
+                else
+                {
+                    assetInfo.ReSetTextureImporterFormat();
+                }
+            }
         }
     }
     
