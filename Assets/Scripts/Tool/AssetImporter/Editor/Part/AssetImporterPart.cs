@@ -15,10 +15,21 @@ public enum SortTexture
     Compare,
 }
 
+public enum FilterTexture
+{
+    None,
+    MipMap,
+    References,
+    Compare,
+}
+
 public abstract class AssetImporterPart
 {
     protected int _selectedTextureSortIdx;
     protected readonly string[] _sortTextures = Enum.GetNames(typeof(SortTexture)).ToArray();
+    
+    protected int _selectedTextureFilterIdx;
+    protected readonly string[] _filterTextures = Enum.GetNames(typeof(FilterTexture)).ToArray();
     
     public abstract string Name { get; }
     public abstract bool IsOn { get; set; }

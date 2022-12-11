@@ -76,16 +76,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         EditorGUILayout.EndHorizontal();
         
         DrawTextureFormat();
-        
-        EditorGUILayout.BeginHorizontal();
-        {
-            GUIUtil.DrawPopup("정렬", ref _selectedTextureSortIdx, _sortTextures, () => Sort(_selectedTextureSortIdx, false));
-            GUIUtil.Btn("▼", 25, () => Sort(_selectedTextureSortIdx, true));
-            GUIUtil.Btn("▲", 25, () => Sort(_selectedTextureSortIdx, false));
-            
-            GUIUtil.DrawPopup("레이블 검색", ref _selectedLabelIdx, _textureImpl.Labels, CalcSearchedAssetInfos);
-        }
-        EditorGUILayout.EndHorizontal();
+        DrawSortAndFilter();
         
         EditorGUILayout.BeginHorizontal();
         {
@@ -97,15 +88,17 @@ public sealed class AssetImporter_FX : AssetImporterPart
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
         {
             GUILayout.Label("텍스쳐 이름 검색", GUILayout.Width(150));
-            _searchedTextureName = GUILayout.TextField(_searchedTextureName, GUIUtil.TextFieldStyle());
+            _searchedTextureName = GUILayout.TextField(_searchedTextureName, GUIUtil.TextFieldStyle(), GUILayout.Width(794));
             CalcSearchedAssetInfos();
+            
+            GUIUtil.DrawPopup("레이블 검색", ref _selectedLabelIdx, _textureImpl.Labels, CalcSearchedAssetInfos);
         }
         EditorGUILayout.EndHorizontal();
-        
-        void CalcSearchedAssetInfos()
-        {
-            _textureImpl.CalcSearchedAssetInfos(_selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx, _searchedTextureName);
-        }
+    }
+    
+    private void CalcSearchedAssetInfos()
+    {
+        _textureImpl.CalcSearchedAssetInfos(_selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx, _searchedTextureName);
     }
     
     private void DrawTextureFormat()
@@ -132,10 +125,27 @@ public sealed class AssetImporter_FX : AssetImporterPart
         }
     }
     
+    private void DrawSortAndFilter()
+    {
+        EditorGUILayout.BeginHorizontal();
+        GUIUtil.DrawPopup("필터", ref _selectedTextureFilterIdx, _filterTextures, 952, () => Filter(_selectedTextureFilterIdx));
+        
+        GUIUtil.DrawPopup("정렬", ref _selectedTextureSortIdx, _sortTextures, () => Sort(_selectedTextureSortIdx, false));
+        GUIUtil.Btn("▼", 25, () => Sort(_selectedTextureSortIdx, true));
+        GUIUtil.Btn("▲", 25, () => Sort(_selectedTextureSortIdx, false));
+        EditorGUILayout.EndHorizontal();
+    }
+    
     private void Sort(int sortIdx, bool descending)
     {
         _textureImpl.CurSort = ((SortTexture)sortIdx, descending);
-        _textureImpl.CalcSearchedAssetInfos(_selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx, _searchedTextureName);
+        CalcSearchedAssetInfos();
+    }
+    
+    private void Filter(int idx)
+    {
+        _textureImpl.CurFilterType = (FilterTexture)idx;
+        CalcSearchedAssetInfos();
     }
     
     private void DrawAssets()

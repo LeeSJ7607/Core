@@ -117,6 +117,7 @@ public sealed class AssetImporter_TextureImpl
     }
     
     public (SortTexture sortType, bool descending) CurSort { private get; set; }
+    public FilterTexture CurFilterType { private get; set; }
     public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;
     private List<AssetInfo> _searchedAssetInfos = new();
     public IReadOnlyList<AssetInfo> AssetInfos => _assetInfos;
@@ -220,6 +221,7 @@ public sealed class AssetImporter_TextureImpl
             }
         }
 
+        Filter();
         Sort();
         
         bool ExistLabel(Texture2D tex, string label) => AssetDatabase.GetLabels(tex).Contains(label);
@@ -316,6 +318,30 @@ public sealed class AssetImporter_TextureImpl
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.IsCompare).ToList()
                     : _searchedAssetInfos.OrderBy(_ => _.IsCompare).ToList();
+            }
+            break;
+        }
+    }
+    
+    private void Filter()
+    {
+        switch (CurFilterType)
+        {
+        case FilterTexture.MipMap:
+            {
+                _searchedAssetInfos = _searchedAssetInfos.Where(_ => _.TextureImporter.mipmapEnabled).ToList();
+            }
+            break;
+
+        case FilterTexture.References:
+            {
+                _searchedAssetInfos = _searchedAssetInfos.Where(_ => _.IsReferences).ToList();
+            }
+            break;
+
+        case FilterTexture.Compare:
+            {
+                _searchedAssetInfos = _searchedAssetInfos.Where(_ => _.IsCompare).ToList();
             }
             break;
         }
