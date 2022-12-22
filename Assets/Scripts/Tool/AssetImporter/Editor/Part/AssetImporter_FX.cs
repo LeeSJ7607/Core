@@ -48,8 +48,9 @@ public sealed class AssetImporter_FX : AssetImporterPart
         //TODO: 저장된 TexModified를 적용한다.
         _texModified = Resources.Load<Texture2D>("AssetImporterTool_TexModified");
 
-        _originTextureImpl.Initialize();
-        _textureImpl.Initialize();
+        var path = new [] { "Assets/Temp" };
+        _originTextureImpl.Initialize(path);
+        _textureImpl.Initialize(path);
     }
     
     public override void Draw()

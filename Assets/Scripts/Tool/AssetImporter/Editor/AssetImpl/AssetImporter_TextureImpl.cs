@@ -135,12 +135,11 @@ public sealed class AssetImporter_TextureImpl
     public FilterTexture CurFilterType { private get; set; }
     public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;
     private List<AssetInfo> _searchedAssetInfos = new();
-    public IReadOnlyList<AssetInfo> AssetInfos => _assetInfos;
-    private readonly List<AssetInfo> _assetInfos = new();
-    private string _curRootFindAssets = "Assets/Temp";
+    public IReadOnlyDictionary<string, IReadOnlyList<AssetInfo>> AssetInfoMap => _assetInfoMap;
+    private readonly Dictionary<string, IReadOnlyList<AssetInfo>> _assetInfoMap = new();
     private bool _initialized;
 
-    public void Initialize()
+    public void Initialize(IEnumerable<string> paths)
     {
         if (_initialized)
         {
@@ -155,17 +154,20 @@ public sealed class AssetImporter_TextureImpl
         //TODO: 저장된 경로를 적용한다.
         //_curRootFindAssets
         
-        CreateLabelsAndAssets();
+        CreateLabelsAndAssets(paths);
     }
 
-    private void CreateLabelsAndAssets()
+    private void CreateLabelsAndAssets(IEnumerable<string> paths)
     {
-        var guids = AssetDatabase.FindAssets("t:texture", new[] { _curRootFindAssets });
-        
-        CreateLabels(guids);
-        CreateAssets(guids);
+        foreach (var path in paths)
+        {
+            var guids = AssetDatabase.FindAssets("t:texture", new[] { path });
+
+            CreateLabels(guids);
+            _assetInfoMap.Add(path, CreateAssets(guids));
+        }
     }
-    
+
     private void CreateLabels(IEnumerable<string> guids)
     {
         var str = new List<string> { _noneLabel };
@@ -178,18 +180,34 @@ public sealed class AssetImporter_TextureImpl
         Labels = str.ToArray();
     }
     
-    private void CreateAssets(IEnumerable<string> guids)
+    private List<AssetInfo> CreateAssets(IReadOnlyList<string> guids)
     {
+        var result = new List<AssetInfo>(guids.Count);
+
         foreach (var guid in guids)
         {
-            var assetInfo = new AssetInfo(guid);
-            
-            _assetInfos.Add(assetInfo);
-            _searchedAssetInfos.Add(assetInfo);
+            result.Add(new AssetInfo(guid));
         }
+
+        return result;
     }
 
     public void CalcSearchedAssetInfos(
+        int selectedLabelIdx,
+        int selectedTextureMaxSizeIdx,
+        int selectedTextureMinSizeIdx,
+        string searchedTextureName)
+    {
+        CalcSearchedAssetInfos(
+            string.Empty,
+            selectedLabelIdx, 
+            selectedTextureMaxSizeIdx, 
+            selectedTextureMinSizeIdx, 
+            searchedTextureName);
+    }
+    
+    private void CalcSearchedAssetInfos(
+        string path,
         int selectedLabelIdx, 
         int selectedTextureMaxSizeIdx, 
         int selectedTextureMinSizeIdx,
@@ -197,49 +215,70 @@ public sealed class AssetImporter_TextureImpl
     {
         _searchedAssetInfos.Clear();
 
-        foreach (var assetInfo in _assetInfos)
+        var selectedAssetInfos = GetSelectedAssetInfos(path);
+        foreach (var assetInfo in selectedAssetInfos)
         {
-            var tex = assetInfo.Texture2D;
-            if (SearchedTextureName(tex.name) == false)
+            if (TryCalcAssetInfo(selectedLabelIdx, selectedTextureMaxSizeIdx, selectedTextureMinSizeIdx, searchedTextureName, assetInfo))
             {
-                continue;
-            }
-            
-            var label = Labels[selectedLabelIdx];
-            var textureMaxSize = int.Parse(TextureSizes[selectedTextureMaxSizeIdx]);
-            var textureMinSize = int.Parse(TextureSizes[selectedTextureMinSizeIdx]);
-            var existLabel = ExistLabel(tex, label);
-            var checkSizeTexture = CheckSizeTexture(tex, textureMaxSize, textureMinSize);
-
-            if (label.Equals(_noneLabel) == false && textureMaxSize > 0)
-            {
-                if (existLabel && checkSizeTexture)
-                {
-                    _searchedAssetInfos.Add(assetInfo);
-                }
-                continue;
-            }
-
-            if (textureMaxSize > 0)
-            {
-                if (checkSizeTexture)
-                {
-                    _searchedAssetInfos.Add(assetInfo);
-                }
-            }
-            else
-            {
-                if (existLabel)
-                {
-                    _searchedAssetInfos.Add(assetInfo);
-                }
+                _searchedAssetInfos.Add(assetInfo);
             }
         }
 
         Filter();
         Sort();
+    }
+    
+    private IEnumerable<AssetInfo> GetSelectedAssetInfos(string path)
+    {
+        return string.IsNullOrEmpty(path) 
+            ? _assetInfoMap.First().Value 
+            : _assetInfoMap[path];
+    }
+
+    private bool TryCalcAssetInfo(
+        int selectedLabelIdx, 
+        int selectedTextureMaxSizeIdx, 
+        int selectedTextureMinSizeIdx,
+        string searchedTextureName,
+        AssetInfo assetInfo)
+    {
+        var tex = assetInfo.Texture2D;
+        if (SearchedTextureName(tex.name) == false)
+        {
+            return false;
+        }
         
-        bool ExistLabel(Texture2D tex, string label) => AssetDatabase.GetLabels(tex).Contains(label);
+        var label = Labels[selectedLabelIdx];
+        var textureMaxSize = int.Parse(TextureSizes[selectedTextureMaxSizeIdx]);
+        var textureMinSize = int.Parse(TextureSizes[selectedTextureMinSizeIdx]);
+        var existLabel = ExistLabel(tex, label);
+        var checkSizeTexture = CheckSizeTexture(tex, textureMaxSize, textureMinSize);
+        
+        if (label.Equals(_noneLabel) == false && textureMaxSize > 0)
+        {
+            return existLabel && checkSizeTexture;
+        }
+
+        if (textureMaxSize > 0)
+        {
+            if (checkSizeTexture)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if (existLabel)
+            {
+                return true;
+            }
+        }
+        return false;
+
+        bool ExistLabel(Texture2D tex, string label)
+        {
+            return AssetDatabase.GetLabels(tex).Contains(label);
+        }
         bool SearchedTextureName(string name)
         {
             return string.IsNullOrWhiteSpace(searchedTextureName) 
@@ -364,15 +403,7 @@ public sealed class AssetImporter_TextureImpl
     
     public bool CanDiff()
     {
-        foreach (var assetInfo in _assetInfos)
-        {
-            if (assetInfo.Changed)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return _assetInfoMap.SelectMany(pair => pair.Value).Any(assetInfo => assetInfo.Changed);
     }
 
     public bool TrySave()
@@ -380,16 +411,19 @@ public sealed class AssetImporter_TextureImpl
         var changed = false;
         UnityEngine.Object activeObject = null;
 
-        foreach (var assetInfo in _assetInfos)
+        foreach (var pair in _assetInfoMap)
         {
-            if (assetInfo.Changed == false)
+            foreach (var assetInfo in pair.Value)
             {
-                continue;
+                if (assetInfo.Changed == false)
+                {
+                    continue;
+                }
+
+                activeObject = assetInfo.Texture2D;
+                assetInfo.Save();
+                changed = true;
             }
-            
-            activeObject = assetInfo.Texture2D;
-            assetInfo.Save();
-            changed = true;
         }
 
         if (changed)

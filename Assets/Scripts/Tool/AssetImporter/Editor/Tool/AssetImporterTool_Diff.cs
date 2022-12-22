@@ -47,12 +47,15 @@ public sealed class AssetImporterTool_Diff : EditorWindow
 
     private static void Sync(AssetImporterTool_Diff diff)
     {
-        var beforeTextures = diff._before.TextureImpl.AssetInfos;
-        var afterTextures = diff._after.TextureImpl.AssetInfos;
+        var beforeAssetInfoMap = diff._before.TextureImpl.AssetInfoMap;
+        var afterAssetInfoMap = diff._after.TextureImpl.AssetInfoMap;
 
-        for (var i = 0; i < afterTextures.Count; i++)
+        foreach (var (path, beforeTextures) in beforeAssetInfoMap)
         {
-            beforeTextures[i].Changed = afterTextures[i].Changed;
+            for (var i = 0; i < beforeTextures.Count; i++)
+            {
+                beforeTextures[i].Changed = afterAssetInfoMap[path][i].Changed;
+            }
         }
     }
     
@@ -147,18 +150,21 @@ public sealed class AssetImporterTool_Diff : EditorWindow
             return;
         }
 
-        for (var i = 0; i < textureImpl.AssetInfos.Count; i++)
+        foreach (var (path, assetInfos) in textureImpl.AssetInfoMap)
         {
-            var assetInfo = textureImpl.AssetInfos[i];
-            if (assetInfo.Changed == false)
+            for (var i = 0; i < assetInfos.Count; i++)
             {
-                continue;
-            }
+                var assetInfo = assetInfos[i];
+                if (assetInfo.Changed == false)
+                {
+                    continue;
+                }
 
-            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-            GUIUtil.Btn(assetInfo.Texture2D, 50, 50, () => AssetImporterTool_Preview.Open(assetInfo.Texture2D));
-            DrawTextureImplDesc(assetInfo, _before.TextureImpl.AssetInfos[i], _after.TextureImpl.AssetInfos[i]);
-            EditorGUILayout.EndHorizontal();
+                EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+                GUIUtil.Btn(assetInfo.Texture2D, 50, 50, () => AssetImporterTool_Preview.Open(assetInfo.Texture2D));
+                DrawTextureImplDesc(assetInfo, _before.TextureImpl.AssetInfoMap[path][i], _after.TextureImpl.AssetInfoMap[path][i]);
+                EditorGUILayout.EndHorizontal();
+            }
         }
     }
     
