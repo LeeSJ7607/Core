@@ -18,7 +18,7 @@ internal sealed class AssetImporterTool : EditorWindow
                                                        .ToArray();
     }
     
-    [MenuItem("THG/AssetImporterTool &Q")]
+    [MenuItem("Tool/AssetImporterTool &Q")]
     public static void Open()
     {
         var tool = GetWindow<AssetImporterTool>();
