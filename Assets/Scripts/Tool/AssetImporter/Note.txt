@@ -3,7 +3,6 @@
 //TODO: 텍스쳐를 돋보기처럼 확대해서 1픽셀 다 확인했으면 좋겠음
 //TODO: 카테고리 소팅 작업.
 //TODO: 텍스쳐가 많아지니 스크롤을 할 때, 스크롤 속도가 너무 느려서 페이징 풀링 해야함
-//TODO: 텍스쳐 로드 경로가 하나가 아닌 다수일 경우를 고려해야함
 //TODO: 아틀라스에 묶인 텍스쳐인데 압축을 한 경우 2중 압축이 되어 예외처리가 필요함.
 //TODO: FBX, Material, Animation
 //TODO: Audio는 compressionFormat 이 ADPCM 일 경우, sampleRateSetting 를 OptimizeSampleRate 로 고정
