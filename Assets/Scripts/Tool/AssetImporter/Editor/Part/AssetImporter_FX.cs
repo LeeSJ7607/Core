@@ -1,9 +1,14 @@
 using System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 public sealed class AssetImporter_FX : AssetImporterPart
 {
+    private const int _filterWidth = 952;
+
     public override string Name => "FX";
 
     public override bool IsOn
@@ -31,6 +36,9 @@ public sealed class AssetImporter_FX : AssetImporterPart
     private Texture2D _texModified;
     private Vector2 _scrollPos;
     private string _searchedTextureName;
+    private List<string> _texturePaths;
+    private string[] _btnNameTexturePaths;
+    private int _selectedTexturePathIdx;
     private bool _initialized;
     
     private void Initialize()
@@ -48,9 +56,29 @@ public sealed class AssetImporter_FX : AssetImporterPart
         //TODO: 저장된 TexModified를 적용한다.
         _texModified = Resources.Load<Texture2D>("AssetImporterTool_TexModified");
 
-        var path = new [] { "Assets/Temp" };
+        var path = GetTexturePaths();
         _originTextureImpl.Initialize(path);
         _textureImpl.Initialize(path);
+    }
+
+    private IEnumerable<string> GetTexturePaths()
+    {
+        var paths = Directory.GetDirectories("Assets/Temps");
+        _texturePaths = new List<string>(paths.Length);
+
+        foreach (var path in paths)
+        {
+            var guids = AssetDatabase.FindAssets("t:texture", new[] { path });
+            if (guids == null || guids.Length == 0)
+            {
+                continue;
+            }
+            
+            _texturePaths.Add(path);
+        }
+
+        _btnNameTexturePaths = _texturePaths.Select(Path.GetFileNameWithoutExtension).ToArray();
+        return _texturePaths;
     }
     
     public override void Draw()
@@ -95,17 +123,40 @@ public sealed class AssetImporter_FX : AssetImporterPart
             GUIUtil.DrawPopup("레이블 검색", ref _selectedLabelIdx, _textureImpl.Labels, CalcSearchedAssetInfos);
         }
         EditorGUILayout.EndHorizontal();
+        
+        DrawFolder();
+    }
+
+    private void DrawFolder()
+    {
+        EditorGUILayout.BeginHorizontal();
+        for (var i = 0; i < _btnNameTexturePaths.Length; i++)
+        {
+            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+            if (GUILayout.Toggle(_selectedTexturePathIdx == i, _btnNameTexturePaths[i], GUILayout.ExpandWidth(true)))
+            {
+                if (_selectedTexturePathIdx != i)
+                {
+                    _scrollPos = Vector2.zero;
+                }
+
+                _selectedTexturePathIdx = i;
+                CalcSearchedAssetInfos();
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+        EditorGUILayout.EndHorizontal();
     }
     
     private void CalcSearchedAssetInfos()
     {
-        _textureImpl.CalcSearchedAssetInfos(_selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx, _searchedTextureName);
+        _textureImpl.CalcSearchedAssetInfos(_texturePaths[_selectedTexturePathIdx], _selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx, _searchedTextureName);
     }
     
     private void DrawTextureFormat()
     {
         EditorGUILayout.BeginHorizontal();
-        GUIUtil.DrawPopup("텍스쳐 압축 포맷", ref _selectedTextureFormatIdx, AssetImporter_TextureImpl.TextureFormats);
+        GUIUtil.DrawPopup("텍스쳐 압축 포맷", ref _selectedTextureFormatIdx, AssetImporter_TextureImpl.TextureFormats, _filterWidth);
         GUIUtil.Btn("전체 텍스쳐 압축 포맷 지정", () => Set(true));
         GUIUtil.Btn("전체 텍스쳐 압축 포맷 취소", () => Set(false));
         EditorGUILayout.EndHorizontal();
@@ -131,7 +182,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
     private void DrawSortAndFilter()
     {
         EditorGUILayout.BeginHorizontal();
-        GUIUtil.DrawPopup("필터", ref _selectedTextureFilterIdx, _filterTextures, 952, () => Filter(_selectedTextureFilterIdx));
+        GUIUtil.DrawPopup("필터", ref _selectedTextureFilterIdx, _filterTextures, _filterWidth, () => Filter(_selectedTextureFilterIdx));
         
         GUIUtil.DrawPopup("정렬", ref _selectedTextureSortIdx, _sortTextures, () => Sort(_selectedTextureSortIdx, false));
         GUIUtil.Btn("▼", 25, () => Sort(_selectedTextureSortIdx, true));

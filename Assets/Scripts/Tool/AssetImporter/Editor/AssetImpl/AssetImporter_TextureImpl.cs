@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEditor;
@@ -51,11 +50,11 @@ public sealed class AssetImporter_TextureImpl
         public bool IsCompare { get; set; }
         public bool Changed { get; set; }
 
-        public AssetInfo(string guid)
+        public AssetInfo(string path, Texture2D tex, TextureImporter textureImporter)
         {
-            _path = AssetDatabase.GUIDToAssetPath(guid);
-            Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(_path);
-            TextureImporter = (TextureImporter)AssetImporter.GetAtPath(_path);
+            _path = path;
+            Texture2D = tex;
+            TextureImporter = textureImporter;
             AOSSettings = TextureImporter.GetPlatformTextureSettings("Android");
             FormatType = AOSSettings.format;
             FormatStr = AOSSettings.overridden ? AOSSettings.format.ToString() : "비압축";
@@ -186,27 +185,26 @@ public sealed class AssetImporter_TextureImpl
 
         foreach (var guid in guids)
         {
-            result.Add(new AssetInfo(guid));
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (tex == null)
+            {
+                continue;
+            }
+
+            var textureImporter = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (textureImporter == null)
+            {
+                continue;
+            }
+            
+            result.Add(new AssetInfo(path, tex, textureImporter));
         }
 
         return result;
     }
-
-    public void CalcSearchedAssetInfos(
-        int selectedLabelIdx,
-        int selectedTextureMaxSizeIdx,
-        int selectedTextureMinSizeIdx,
-        string searchedTextureName)
-    {
-        CalcSearchedAssetInfos(
-            string.Empty,
-            selectedLabelIdx, 
-            selectedTextureMaxSizeIdx, 
-            selectedTextureMinSizeIdx, 
-            searchedTextureName);
-    }
     
-    private void CalcSearchedAssetInfos(
+    public void CalcSearchedAssetInfos(
         string path,
         int selectedLabelIdx, 
         int selectedTextureMaxSizeIdx, 
