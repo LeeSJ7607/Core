@@ -33,7 +33,7 @@ public sealed class AssetImporter_TextureImpl
 
     public sealed class AssetInfo
     {
-        private readonly string _path;
+        public string Path { get; }
         public Texture2D Texture2D { get; private set; }
         public TextureImporter TextureImporter { get; }
         public TextureImporterPlatformSettings AOSSettings { get; }
@@ -52,7 +52,7 @@ public sealed class AssetImporter_TextureImpl
 
         public AssetInfo(string path, Texture2D tex, TextureImporter textureImporter)
         {
-            _path = path;
+            Path = path;
             Texture2D = tex;
             TextureImporter = textureImporter;
             AOSSettings = TextureImporter.GetPlatformTextureSettings("Android");
@@ -83,7 +83,7 @@ public sealed class AssetImporter_TextureImpl
 
         private void Refresh()
         {
-            Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(_path);
+            Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(Path);
             FormatType = AOSSettings.format;
             FormatStr = AOSSettings.overridden ? AOSSettings.format.ToString() : "비압축";
             FileSize = EditorTextureUtil.TextureSize(Texture2D);

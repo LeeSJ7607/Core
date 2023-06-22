@@ -8,6 +8,7 @@ using UnityEngine;
 public sealed class AssetImporter_FX : AssetImporterPart
 {
     private const int _filterWidth = 952;
+    private const int _drawMaxRow = 5; //TODO: 외부에서 변경이 가능하도록.
 
     public override string Name => "FX";
 
@@ -32,7 +33,6 @@ public sealed class AssetImporter_FX : AssetImporterPart
     private int _selectedTextureMaxSizeIdx;
     private int _selectedTextureMinSizeIdx = AssetImporter_TextureImpl.TextureSizes.Length - 1;
     private int _selectedLabelIdx;
-    private int _drawMaxRow = 5;
     private Texture2D _texModified;
     private Vector2 _scrollPos;
     private string _searchedTextureName;
@@ -117,9 +117,8 @@ public sealed class AssetImporter_FX : AssetImporterPart
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
         {
             GUILayout.Label("텍스쳐 이름 검색", GUILayout.Width(150));
-            _searchedTextureName = GUILayout.TextField(_searchedTextureName, GUIUtil.TextFieldStyle(), GUILayout.Width(794));
-            CalcSearchedAssetInfos();
-            
+            _searchedTextureName = GUILayout.TextField(_searchedTextureName, GUIUtil.TextFieldStyle(), GUILayout.Width(690));
+            GUIUtil.Btn("파일 이름 변경", 100, () => AssetImporterTool_ChangeName.Open(_textureImpl.SearchedAssetInfos));
             GUIUtil.DrawPopup("레이블 검색", ref _selectedLabelIdx, _textureImpl.Labels, CalcSearchedAssetInfos);
         }
         EditorGUILayout.EndHorizontal();
