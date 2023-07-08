@@ -35,8 +35,9 @@ public sealed class AssetImporterTool_CompareList : EditorWindow
     {
         EditorGUILayout.BeginVertical();
         {
-            GUILayout.Label($"{_assetInfo.Texture2D.name} ({_assetInfo.FileSize})");
-            GUILayout.Label($"동일한 텍스쳐 수 {_assetInfo.Compares.Count.ToString()}");
+            GUILayout.Label($"Name: {_assetInfo.Texture2D.name}");
+            GUILayout.Label($"FileSize: {_assetInfo.FileSizeStr}");
+            GUILayout.Label($"동일한 텍스쳐 수: {_assetInfo.Compares.Count.ToString()}");
         }
         EditorGUILayout.EndVertical();
     }

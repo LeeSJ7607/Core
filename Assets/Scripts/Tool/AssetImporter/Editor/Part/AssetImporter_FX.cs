@@ -11,6 +11,8 @@ public sealed class AssetImporter_FX : AssetImporterPart
     private const int _drawMaxRow = 5; //TODO: 외부에서 변경이 가능하도록.
 
     public override string Name => "FX";
+    public override int TextureCnt => _textureCnt;
+    private int _textureCnt;
 
     public override bool IsOn
     {
@@ -59,6 +61,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         var path = GetTexturePaths();
         _originTextureImpl.Initialize(path);
         _textureImpl.Initialize(path);
+        _textureCnt = _textureImpl.TotalCnt;
     }
 
     private IEnumerable<string> GetTexturePaths()
@@ -255,6 +258,8 @@ public sealed class AssetImporter_FX : AssetImporterPart
         GUIUtil.Desc("Max Size", assetInfo.MaxTextureSize.ToString(), keyWidth, valueWidth);
         GUIUtil.Desc("Format", assetInfo.FormatStr, keyWidth, valueWidth);
         GUIUtil.Desc("Texture Size", $"{tex.width.ToString()}x{tex.height.ToString()}", keyWidth, valueWidth);
+        GUIUtil.Desc("File Size", assetInfo.FileSizeStr, keyWidth, valueWidth);
+        GUIUtil.Desc("MipMap", assetInfo.TextureImporter.mipmapEnabled ? "O" : "X", keyWidth, valueWidth);
         GUILayout.EndVertical();
     }
     

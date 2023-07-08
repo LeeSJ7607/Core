@@ -55,7 +55,7 @@ public static class EditorTextureUtil
         return (long)mMethod_GetRuntimeMemorySizeLong.Invoke(null, new[] { texture });
     }
 
-    private static long GetStorageMemorySize(Texture texture)
+    public static long GetStorageMemorySize(Texture texture)
     {
         if (mMethod_GetStorageMemorySizeLong == null)
             mMethod_GetStorageMemorySizeLong = cType.GetMethod("GetStorageMemorySizeLong", BindingFlags.Static | BindingFlags.Public);

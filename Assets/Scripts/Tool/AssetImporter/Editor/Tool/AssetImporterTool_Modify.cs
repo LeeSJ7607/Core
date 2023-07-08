@@ -19,7 +19,17 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
     private static readonly string[] _filterModes = Enum.GetNames(typeof(FilterMode)).ToArray();
     private int _selectedFilterModeIdx;
     private int _originFilterModeIdx;
-    
+
+    private static readonly string[] _textureSize =
+    {
+        "2048", 
+        "1024", 
+        "512", 
+        "256", 
+        "128", 
+        "64", 
+        "32",
+    };
     private int _selectedMaxTextureSizeIdx;
     private int _originMaxTextureSizeIdx;
 
@@ -55,14 +65,14 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
         _selectedFilterModeIdx = _originFilterModeIdx;
         _selectedMaxTextureSizeIdx = _originMaxTextureSizeIdx;
         _selectedTextureFormatIdx = _originTextureFormatIdx;
-        _assetInfo.FileSize = EditorTextureUtil.TextureSize(_assetInfo.Texture2D);
+        _assetInfo.FileSizeStr = EditorTextureUtil.TextureSize(_assetInfo.Texture2D);
     }
     
     private void OnDisable()
     {
         if (_assetInfo.Changed == false)
         {
-            _assetInfo.FileSize = EditorTextureUtil.TextureSize(_assetInfo.Texture2D);
+            _assetInfo.FileSizeStr = EditorTextureUtil.TextureSize(_assetInfo.Texture2D);
         }
     }
     
@@ -110,8 +120,7 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         {
-            GUILayout.Label($"{importer.assetPath} ({_assetInfo.FileSize})", GUIUtil.LabelStyle(TextAnchor.MiddleLeft));
-            GUILayout.Label(tex.name, GUIUtil.LabelStyle(TextAnchor.MiddleLeft));
+            GUILayout.Label($"{importer.assetPath} ({_assetInfo.FileSizeStr})", GUIUtil.LabelStyle(TextAnchor.MiddleLeft));
         }
         EditorGUILayout.EndVertical();
     }
@@ -121,29 +130,25 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
         GUIUtil.DrawPopup("Texture Type", ref _selectedTextureTypesIdx, _textureTypes);
         GUIUtil.DrawPopup("Wrap Mode", ref _selectedWrapModeIdx, _wrapModes);
         GUIUtil.DrawPopup("Filter Mode", ref _selectedFilterModeIdx, _filterModes);
-        GUIUtil.DrawPopup("Max Size", ref _selectedMaxTextureSizeIdx, AssetImporter_TextureImpl.TextureSizes, () => _assetInfo.AOSSettings.overridden = true);
+        GUIUtil.DrawPopup("Max Size", ref _selectedMaxTextureSizeIdx, _textureSize, () => _assetInfo.AOSSettings.overridden = true);
         GUIUtil.DrawPopup("Format", ref _selectedTextureFormatIdx, AssetImporter_TextureImpl.TextureFormats, () => _assetInfo.AOSSettings.overridden = true); 
     }
     
     private void Save()
     {
-        _assetInfo.Changed = _selectedTextureTypesIdx != _originTextureTypesIdx
-                          || _selectedWrapModeIdx != _originWrapModeIdx
-                          || _selectedFilterModeIdx != _originFilterModeIdx
-                          || _selectedMaxTextureSizeIdx != _originMaxTextureSizeIdx
-                          || _selectedTextureFormatIdx != _originTextureFormatIdx;
-
-        if (_assetInfo.Changed == false)
+        var changed = IsChanged();
+        if (changed == false)
         {
             EditorUtility.DisplayDialog("알림", "변경된 사항이 없습니다.", "확인");
             return;
         }
         
+        _assetInfo.Changed = !IsOriginChanged();
         _assetInfo.TextureType = Enum.Parse<TextureImporterType>(_textureTypes[_selectedTextureTypesIdx]);
         _assetInfo.WrapMode = Enum.Parse<TextureWrapMode>(_wrapModes[_selectedWrapModeIdx]);
         _assetInfo.FilterMode = Enum.Parse<FilterMode>(_filterModes[_selectedFilterModeIdx]);
         _assetInfo.MaxTextureSize = int.Parse(AssetImporter_TextureImpl.TextureSizes[_selectedMaxTextureSizeIdx]);
-   
+        
         if (_selectedTextureFormatIdx > -1)
         {
             var formatStr = AssetImporter_TextureImpl.TextureFormats[_selectedTextureFormatIdx];
@@ -152,5 +157,40 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
         }
         
         Close();
+    }
+
+    private bool IsChanged()
+    {
+        return _selectedTextureTypesIdx != _originTextureTypesIdx 
+            || _selectedWrapModeIdx != _originWrapModeIdx
+            || _selectedFilterModeIdx != _originFilterModeIdx 
+            || _selectedMaxTextureSizeIdx != _originMaxTextureSizeIdx 
+            || _selectedTextureFormatIdx != _originTextureFormatIdx;
+    }
+
+    private bool IsOriginChanged()
+    {
+        var textureImporter = _assetInfo.TextureImporter;
+        var textureType = Enum.Parse<TextureImporterType>(_textureTypes[_selectedTextureTypesIdx]);
+        var wrapMode = Enum.Parse<TextureWrapMode>(_wrapModes[_selectedWrapModeIdx]);
+        var filterMode = Enum.Parse<FilterMode>(_filterModes[_selectedFilterModeIdx]);
+        var maxTextureSize = int.Parse(AssetImporter_TextureImpl.TextureSizes[_selectedMaxTextureSizeIdx]);
+
+        if (_selectedTextureFormatIdx < 0)
+        {
+            return textureType == textureImporter.textureType
+                && wrapMode == textureImporter.wrapMode
+                && filterMode == textureImporter.filterMode
+                && maxTextureSize == textureImporter.maxTextureSize;
+        }
+        
+        var formatStr = AssetImporter_TextureImpl.TextureFormats[_selectedTextureFormatIdx];
+        var format = Enum.Parse<TextureImporterFormat>(formatStr);
+        
+        return textureType == textureImporter.textureType
+            && wrapMode == textureImporter.wrapMode
+            && filterMode == textureImporter.filterMode
+            && maxTextureSize == textureImporter.maxTextureSize
+            && format == _assetInfo.AOSSettings.format;
     }
 }

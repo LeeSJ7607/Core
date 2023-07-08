@@ -43,8 +43,9 @@ public sealed class AssetImporter_TextureImpl
         public TextureWrapMode WrapMode { get; set; }
         public FilterMode FilterMode { get; set; }
         public int MaxTextureSize { get; set; }
-        public string FileSize { get; set; }
-        public IReadOnlyDictionary<UnityEngine.Object, IReadOnlyList<UnityEngine.Object>> References { get; set; } 
+        public long FileSize { get; private set; }
+        public string FileSizeStr { get; set; }
+        public IReadOnlyDictionary<Object, IReadOnlyList<Object>> References { get; set; } 
         public bool IsReferences { get; set; }
         public IReadOnlyDictionary<int, DependencyImpl.SameAssetInfo> Compares { get; set; }
         public bool IsCompare { get; set; }
@@ -62,7 +63,8 @@ public sealed class AssetImporter_TextureImpl
             WrapMode = TextureImporter.wrapMode;
             FilterMode = TextureImporter.filterMode;
             MaxTextureSize = TextureImporter.maxTextureSize;
-            FileSize = EditorTextureUtil.TextureSize(Texture2D);
+            FileSize = EditorTextureUtil.GetStorageMemorySize(Texture2D);
+            FileSizeStr = EditorTextureUtil.TextureSize(Texture2D);
         }
 
         public void Reset()
@@ -86,7 +88,8 @@ public sealed class AssetImporter_TextureImpl
             Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(Path);
             FormatType = AOSSettings.format;
             FormatStr = AOSSettings.overridden ? AOSSettings.format.ToString() : "비압축";
-            FileSize = EditorTextureUtil.TextureSize(Texture2D);
+            FileSize = EditorTextureUtil.GetStorageMemorySize(Texture2D);
+            FileSizeStr = EditorTextureUtil.TextureSize(Texture2D);
             Changed = false;
         }
 
@@ -129,7 +132,8 @@ public sealed class AssetImporter_TextureImpl
             Refresh();
         }
     }
-    
+
+    public int TotalCnt => _assetInfoMap.Sum(_ => _.Value.Count);
     public (SortTexture sortType, bool descending) CurSort { private get; set; }
     public FilterTexture CurFilterType { private get; set; }
     public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;
@@ -179,7 +183,7 @@ public sealed class AssetImporter_TextureImpl
         Labels = str.ToArray();
     }
     
-    private List<AssetInfo> CreateAssets(IReadOnlyList<string> guids)
+    private IReadOnlyList<AssetInfo> CreateAssets(IReadOnlyList<string> guids)
     {
         var result = new List<AssetInfo>(guids.Count);
 

@@ -41,7 +41,7 @@ internal sealed class AssetImporterTool : EditorWindow
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
         foreach (var assetImporterPart in _assetImporterParts)
         {
-            if (GUILayout.Button(assetImporterPart.Name))
+            if (GUILayout.Button($"{assetImporterPart.Name} (텍스쳐 수: {assetImporterPart.TextureCnt.ToString()})"))
             {
                 ToolOn(assetImporterPart);
             }

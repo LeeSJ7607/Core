@@ -51,7 +51,7 @@ public sealed class AssetImporterTool_Compare : EditorWindow
         GUIUtil.Btn(tex, _textureSize + 60, _textureSize, () => Selection.activeObject = tex);
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        GUIUtil.Desc($"{importer.assetPath} ({textureInfo.FileSize})");
+        GUIUtil.Desc($"{importer.assetPath}");
         GUIUtil.Desc(tex.name);
         EditorGUILayout.EndVertical();
         
@@ -62,6 +62,7 @@ public sealed class AssetImporterTool_Compare : EditorWindow
         GUIUtil.Desc("Max Size", importer.maxTextureSize.ToString(), _keyWidth, _valueWidth, _left.Importer.maxTextureSize, _right.Importer.maxTextureSize);
         GUIUtil.Desc("Format", setting.format.ToString(), _keyWidth, _valueWidth, _left.Settings.format, _right.Settings.format);
         GUIUtil.Desc("Texture Size", $"{tex.width.ToString()}x{tex.height.ToString()}", _keyWidth, _valueWidth);
+        GUIUtil.Desc("File Size", textureInfo.FileSize, _keyWidth, _valueWidth);
         EditorGUILayout.EndVertical();
         
         EditorGUILayout.BeginHorizontal();

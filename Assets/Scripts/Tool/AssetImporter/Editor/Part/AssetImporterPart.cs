@@ -32,6 +32,8 @@ public abstract class AssetImporterPart
     protected readonly string[] _filterTextures = Enum.GetNames(typeof(FilterTexture)).ToArray();
     
     public abstract string Name { get; }
+    public abstract int TextureCnt { get; }
+    public virtual int FBXCnt { get; }
     public abstract bool IsOn { get; set; }
     public abstract void Draw();
     public abstract void ShowDiff();
