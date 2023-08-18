@@ -142,8 +142,14 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
             EditorUtility.DisplayDialog("알림", "변경된 사항이 없습니다.", "확인");
             return;
         }
-        
-        _assetInfo.Changed = !IsOriginChanged();
+
+        changed = !IsOriginChanged();
+        if (changed == false)
+        {
+            EditorUtility.DisplayDialog("알림", "기존 포맷 타입과 동일합니다.", "확인");
+            return;
+        }
+
         _assetInfo.TextureType = Enum.Parse<TextureImporterType>(_textureTypes[_selectedTextureTypesIdx]);
         _assetInfo.WrapMode = Enum.Parse<TextureWrapMode>(_wrapModes[_selectedWrapModeIdx]);
         _assetInfo.FilterMode = Enum.Parse<FilterMode>(_filterModes[_selectedFilterModeIdx]);
@@ -151,9 +157,7 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
         
         if (_selectedTextureFormatIdx > -1)
         {
-            var formatStr = AssetImporter_TextureImpl.TextureFormats[_selectedTextureFormatIdx];
-            var format = Enum.Parse<TextureImporterFormat>(formatStr);
-            _assetInfo.SetTextureImporterFormat(format, true);
+            _assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx, true);
         }
         
         Close();
@@ -191,6 +195,6 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
             && wrapMode == textureImporter.wrapMode
             && filterMode == textureImporter.filterMode
             && maxTextureSize == textureImporter.maxTextureSize
-            && format == _assetInfo.AOSSettings.format;
+            && format == _assetInfo.FormatType;
     }
 }

@@ -1,7 +1,9 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public sealed class AssetImporter_TextureImpl
 {
@@ -112,19 +114,28 @@ public sealed class AssetImporter_TextureImpl
             TextureImporter.SetPlatformTextureSettings(ios);
             TextureImporter.SaveAndReimport();
         }
-
-        public void SetTextureImporterFormat(TextureImporterFormat format, bool changed)
+        
+        public void SetTextureImporterFormat(int formatIdx, bool changed)
         {
-            if (format == AOSSettings.format || AOSSettings.overridden == false)
+            var format = Enum.Parse<TextureImporterFormat>(TextureFormats[formatIdx]);
+            if (format == FormatType || AOSSettings.overridden == false)
             {
+                EditorUtility.DisplayDialog("알림", "기존 포맷 타입과 동일합니다.", "확인");
                 return;
             }
-
+            
             AOSSettings.format = format;
             FormatStr = format.ToString();
             Changed = changed;
         }
-
+        
+        public void ReSetTextureImporterFormat()
+        {
+            AOSSettings.format = TextureImporter.GetPlatformTextureSettings("Android").format;
+            FormatStr = AOSSettings.overridden ? AOSSettings.format.ToString() : "비압축";
+            Changed = false;
+        }
+        
         public void Save()
         {
             SetTextureImporter();
@@ -276,20 +287,20 @@ public sealed class AssetImporter_TextureImpl
             }
         }
         return false;
-
-        bool ExistLabel(Texture2D tex, string label)
+        
+        bool ExistLabel(Texture2D t, string l)
         {
-            return AssetDatabase.GetLabels(tex).Contains(label);
+            return AssetDatabase.GetLabels(t).Contains(l);
         }
         bool SearchedTextureName(string name)
         {
             return string.IsNullOrWhiteSpace(searchedTextureName) 
                 || name.ToLower().Contains(searchedTextureName.ToLower());
         }
-        bool CheckSizeTexture(Texture2D tex, int maxSize, int minSize)
+        bool CheckSizeTexture(Texture2D t, int maxSize, int minSize)
         {
-            return tex.width <= maxSize && tex.height <= maxSize
-                && tex.width >= minSize && tex.height >= minSize;
+            return t.width <= maxSize && t.height <= maxSize
+                && t.width >= minSize && t.height >= minSize;
         }
     }
     
@@ -411,7 +422,7 @@ public sealed class AssetImporter_TextureImpl
     public bool TrySave()
     {
         var changed = false;
-        UnityEngine.Object activeObject = null;
+        Object activeObject = null;
 
         foreach (var pair in _assetInfoMap)
         {
