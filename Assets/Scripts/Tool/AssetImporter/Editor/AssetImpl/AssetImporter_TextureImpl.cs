@@ -115,8 +115,13 @@ public sealed class AssetImporter_TextureImpl
             TextureImporter.SaveAndReimport();
         }
         
-        public void SetTextureImporterFormat(int formatIdx, bool changed)
+        public void SetTextureImporterFormat(int formatIdx)
         {
+            if (formatIdx < 0)
+            {
+                return;
+            }
+            
             var format = Enum.Parse<TextureImporterFormat>(TextureFormats[formatIdx]);
             if (format == FormatType || AOSSettings.overridden == false)
             {
@@ -126,7 +131,7 @@ public sealed class AssetImporter_TextureImpl
             
             AOSSettings.format = format;
             FormatStr = format.ToString();
-            Changed = changed;
+            Changed = true;
         }
         
         public void ReSetTextureImporterFormat()

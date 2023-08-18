@@ -150,15 +150,12 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
             return;
         }
 
+        _assetInfo.Changed = true;
         _assetInfo.TextureType = Enum.Parse<TextureImporterType>(_textureTypes[_selectedTextureTypesIdx]);
         _assetInfo.WrapMode = Enum.Parse<TextureWrapMode>(_wrapModes[_selectedWrapModeIdx]);
         _assetInfo.FilterMode = Enum.Parse<FilterMode>(_filterModes[_selectedFilterModeIdx]);
         _assetInfo.MaxTextureSize = int.Parse(AssetImporter_TextureImpl.TextureSizes[_selectedMaxTextureSizeIdx]);
-        
-        if (_selectedTextureFormatIdx > -1)
-        {
-            _assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx, true);
-        }
+        _assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx);
         
         Close();
     }

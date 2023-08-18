@@ -169,7 +169,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
             {
                 if (active)
                 {
-                    assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx, true);
+                    assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx);
                 }
                 else
                 {
@@ -269,7 +269,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         
         GUIUtil.Btn("선택", width, () => Selection.activeObject = assetInfo.Texture2D);
         GUIUtil.Btn("열기", width, () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
-        GUIUtil.Btn("포맷", width, () => assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx, true));
+        GUIUtil.Btn("포맷", width, () => assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx));
         GUIUtil.Btn("수정", width, () => AssetImporterTool_Modify.Open(assetInfo));
         GUIUtil.Btn("리셋", width, assetInfo.Reset);
 
