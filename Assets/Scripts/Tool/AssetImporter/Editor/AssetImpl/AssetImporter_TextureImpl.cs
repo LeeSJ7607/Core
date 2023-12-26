@@ -60,7 +60,6 @@ public sealed class AssetImporter_TextureImpl
             TextureImporter = textureImporter;
             AOSSettings = TextureImporter.GetPlatformTextureSettings("Android");
             FormatType = AOSSettings.format;
-            FormatStr = AOSSettings.overridden ? AOSSettings.format.ToString() : "비압축";
             TextureType = TextureImporter.textureType;
             WrapMode = TextureImporter.wrapMode;
             FilterMode = TextureImporter.filterMode;
@@ -81,7 +80,6 @@ public sealed class AssetImporter_TextureImpl
             FilterMode = TextureImporter.filterMode;
             MaxTextureSize = TextureImporter.maxTextureSize;
             AOSSettings.format = FormatType;
-            FormatStr = FormatType.ToString();
             Changed = false;
         }
 
@@ -89,7 +87,6 @@ public sealed class AssetImporter_TextureImpl
         {
             Texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(Path);
             FormatType = AOSSettings.format;
-            FormatStr = AOSSettings.overridden ? AOSSettings.format.ToString() : "비압축";
             FileSize = EditorTextureUtil.GetStorageMemorySize(Texture2D);
             FileSizeStr = EditorTextureUtil.TextureSize(Texture2D);
             Changed = false;
@@ -114,8 +111,8 @@ public sealed class AssetImporter_TextureImpl
             TextureImporter.SetPlatformTextureSettings(ios);
             TextureImporter.SaveAndReimport();
         }
-        
-        public void SetTextureImporterFormat(int formatIdx)
+
+        public void ForceSetTextureImporterFormat(int formatIdx)
         {
             if (formatIdx < 0)
             {
@@ -123,21 +120,34 @@ public sealed class AssetImporter_TextureImpl
             }
             
             var format = Enum.Parse<TextureImporterFormat>(TextureFormats[formatIdx]);
-            if (format == FormatType || AOSSettings.overridden == false)
+            AOSSettings.format = format;
+            Changed = true;
+        }
+        
+        public void SetTextureImporterFormat(int formatIdx, bool showMsgBox)
+        {
+            if (formatIdx < 0)
             {
-                EditorUtility.DisplayDialog("알림", "기존 포맷 타입과 동일합니다.", "확인");
+                return;
+            }
+
+            var format = Enum.Parse<TextureImporterFormat>(TextureFormats[formatIdx]);
+            if (format == FormatType)
+            {
+                if (showMsgBox)
+                {
+                    EditorUtility.DisplayDialog("알림", "기존 포맷 타입과 동일합니다.", "확인");
+                }
                 return;
             }
             
             AOSSettings.format = format;
-            FormatStr = format.ToString();
             Changed = true;
         }
         
         public void ReSetTextureImporterFormat()
         {
             AOSSettings.format = TextureImporter.GetPlatformTextureSettings("Android").format;
-            FormatStr = AOSSettings.overridden ? AOSSettings.format.ToString() : "비압축";
             Changed = false;
         }
         

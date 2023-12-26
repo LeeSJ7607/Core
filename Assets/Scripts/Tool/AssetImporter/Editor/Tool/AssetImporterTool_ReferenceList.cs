@@ -42,7 +42,7 @@ public sealed class AssetImporterTool_ReferenceList : EditorWindow
     {
         EditorGUILayout.BeginVertical();
         {
-            GUILayout.Label($"{target.name} ({_assetInfo.FileSize})");
+            GUILayout.Label($"{target.name} ({_assetInfo.FileSizeStr})");
             GUILayout.Label($"참조 수 {cnt.ToString()}");
         }
         EditorGUILayout.EndVertical();

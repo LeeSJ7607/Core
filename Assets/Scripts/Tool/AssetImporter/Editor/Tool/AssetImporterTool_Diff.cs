@@ -184,7 +184,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         GUIUtil.Desc("Wrap Mode", assetInfo.WrapMode.ToString(), keyWidth, valueWidth, left.WrapMode, right.WrapMode);
         GUIUtil.Desc("Filter Mode", assetInfo.FilterMode.ToString(), keyWidth, valueWidth, left.FilterMode, right.FilterMode);
         GUIUtil.Desc("Max Size", assetInfo.MaxTextureSize.ToString(), keyWidth, valueWidth, left.MaxTextureSize, right.MaxTextureSize);
-        GUIUtil.Desc("Format", assetInfo.FormatStr, keyWidth, valueWidth, left.AOSSettings.format, right.AOSSettings.format);
+        GUIUtil.Desc("Format", assetInfo.FormatType.ToString(), keyWidth, valueWidth, left.AOSSettings.format, right.AOSSettings.format);
         GUIUtil.Desc("Texture Size", $"{tex.width.ToString()}x{tex.height.ToString()}", keyWidth, valueWidth);
         GUILayout.EndVertical();
     }

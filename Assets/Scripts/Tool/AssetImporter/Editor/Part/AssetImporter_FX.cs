@@ -169,7 +169,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
             {
                 if (active)
                 {
-                    assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx);
+                    assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx, false);
                 }
                 else
                 {
@@ -254,7 +254,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         GUIUtil.Desc("Wrap Mode", assetInfo.WrapMode.ToString(), keyWidth, valueWidth);
         GUIUtil.Desc("Filter Mode", assetInfo.FilterMode.ToString(), keyWidth, valueWidth);
         GUIUtil.Desc("Max Size", assetInfo.MaxTextureSize.ToString(), keyWidth, valueWidth);
-        GUIUtil.Desc("Format", assetInfo.FormatStr, keyWidth, valueWidth);
+        GUIUtil.Desc("Format", assetInfo.FormatType.ToString(), keyWidth, valueWidth);
         GUIUtil.Desc("Texture Size", $"{tex.width.ToString()}x{tex.height.ToString()}", keyWidth, valueWidth);
         GUIUtil.Desc("File Size", assetInfo.FileSizeStr, keyWidth, valueWidth);
         GUIUtil.Desc("MipMap", assetInfo.TextureImporter.mipmapEnabled ? "O" : "X", keyWidth, valueWidth);
@@ -269,7 +269,7 @@ public sealed class AssetImporter_FX : AssetImporterPart
         
         GUIUtil.Btn("선택", width, () => Selection.activeObject = assetInfo.Texture2D);
         GUIUtil.Btn("열기", width, () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
-        GUIUtil.Btn("포맷", width, () => assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx));
+        GUIUtil.Btn("포맷", width, () => assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx, true));
         GUIUtil.Btn("수정", width, () => AssetImporterTool_Modify.Open(assetInfo));
         GUIUtil.Btn("리셋", width, assetInfo.Reset);
 

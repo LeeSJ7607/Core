@@ -146,7 +146,7 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
         changed = !IsOriginChanged();
         if (changed == false)
         {
-            EditorUtility.DisplayDialog("알림", "기존 포맷 타입과 동일합니다.", "확인");
+            EditorUtility.DisplayDialog("알림", "변경전 사항과 동일합니다.", "확인");
             return;
         }
 
@@ -155,7 +155,7 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
         _assetInfo.WrapMode = Enum.Parse<TextureWrapMode>(_wrapModes[_selectedWrapModeIdx]);
         _assetInfo.FilterMode = Enum.Parse<FilterMode>(_filterModes[_selectedFilterModeIdx]);
         _assetInfo.MaxTextureSize = int.Parse(AssetImporter_TextureImpl.TextureSizes[_selectedMaxTextureSizeIdx]);
-        _assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx);
+        _assetInfo.ForceSetTextureImporterFormat(_selectedTextureFormatIdx);
         
         Close();
     }
