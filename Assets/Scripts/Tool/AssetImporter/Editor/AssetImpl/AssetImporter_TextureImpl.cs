@@ -160,6 +160,7 @@ public sealed class AssetImporter_TextureImpl
     }
 
     public int TotalCnt => _assetInfoMap.Sum(_ => _.Value.Count);
+    public int SearchedCnt(string path) => _assetInfoMap[path].Count;
     public (SortTexture sortType, bool descending) CurSort { private get; set; }
     public FilterTexture CurFilterType { private get; set; }
     public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;

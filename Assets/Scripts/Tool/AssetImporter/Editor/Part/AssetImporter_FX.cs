@@ -135,7 +135,11 @@ public sealed class AssetImporter_FX : AssetImporterPart
         for (var i = 0; i < _btnNameTexturePaths.Length; i++)
         {
             EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-            if (GUILayout.Toggle(_selectedTexturePathIdx == i, _btnNameTexturePaths[i], GUILayout.ExpandWidth(true)))
+            
+            var cnt = _textureImpl.SearchedCnt(_texturePaths[i]);
+            var toggleName = $"{_btnNameTexturePaths[i]} ({cnt.ToString()})";
+            
+            if (GUILayout.Toggle(_selectedTexturePathIdx == i, toggleName, GUILayout.ExpandWidth(true)))
             {
                 if (_selectedTexturePathIdx != i)
                 {
