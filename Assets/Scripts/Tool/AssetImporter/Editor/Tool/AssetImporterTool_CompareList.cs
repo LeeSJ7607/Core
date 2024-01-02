@@ -3,10 +3,10 @@ using UnityEngine;
 
 public sealed class AssetImporterTool_CompareList : EditorWindow
 {
-    private AssetImporter_TextureImpl.AssetInfo _assetInfo;
+    private AssetImporterImpl_Texture.AssetInfo _assetInfo;
     private Vector2 _scrollPos;
     
-    public static void Open(AssetImporter_TextureImpl.AssetInfo assetInfo)
+    public static void Open(AssetImporterImpl_Texture.AssetInfo assetInfo)
     {
         var tool = GetWindow<AssetImporterTool_CompareList>();
         tool._assetInfo = assetInfo;
@@ -61,7 +61,7 @@ public sealed class AssetImporterTool_CompareList : EditorWindow
         EditorGUILayout.EndVertical();
     }
     
-    private void DrawSameAssetBtn(DependencyImpl.SameAssetInfo sameAsset)
+    private void DrawSameAssetBtn(DependencyUtil.SameAssetInfo sameAsset)
     {
         GUIUtil.Btn("비교", () => AssetImporterTool_Compare.Open(_assetInfo.Texture2D, sameAsset.Tex));
         GUIUtil.Btn("텍스쳐 선택", () => Selection.activeObject = sameAsset.Tex);

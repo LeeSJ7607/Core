@@ -14,14 +14,14 @@ public sealed class AssetImporterTool_Diff : EditorWindow
 
     private sealed class AssetInfo
     {
-        public AssetImporter_TextureImpl TextureImpl { get; }
-        public AssetImporter_FBXImpl FBXImpl { get; }
-        public AssetImporter_SoundImpl SoundImpl { get; }
+        public AssetImporterImpl_Texture TextureImpl { get; }
+        public AssetImporterImpl_FBX FBXImpl { get; }
+        public AssetImporterImpl_Sound SoundImpl { get; }
 
         public AssetInfo(
-            AssetImporter_TextureImpl textureImpl = null,
-            AssetImporter_FBXImpl fbxImpl = null,
-            AssetImporter_SoundImpl soundImpl = null)
+            AssetImporterImpl_Texture textureImpl = null,
+            AssetImporterImpl_FBX fbxImpl = null,
+            AssetImporterImpl_Sound soundImpl = null)
         {
             TextureImpl = textureImpl;
             FBXImpl = fbxImpl;
@@ -29,16 +29,16 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         }
     }
 
-    private AssetImporterPart _part;
+    private AssetImporter _importer;
     private AssetInfo _before, _after;
     private AssetType _curAssetType;
     private Vector2 _scrollPos;
 
-    public static void Open(AssetImporterPart part, AssetImporter_TextureImpl before, AssetImporter_TextureImpl after)
+    public static void Open(AssetImporter importer, AssetImporterImpl_Texture before, AssetImporterImpl_Texture after)
     {
         var tool = GetWindow<AssetImporterTool_Diff>("Diff");
         tool.minSize = tool.maxSize = new Vector2(660, 800);
-        tool._part = part;
+        tool._importer = importer;
         tool._before = new AssetInfo(before);
         tool._after = new AssetInfo(after);
 
@@ -143,7 +143,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         EditorGUILayout.EndVertical();
     }
 
-    private void DrawTextureImpl(AssetImporter_TextureImpl textureImpl)
+    private void DrawTextureImpl(AssetImporterImpl_Texture textureImpl)
     {
         if (textureImpl == null)
         {
@@ -169,9 +169,9 @@ public sealed class AssetImporterTool_Diff : EditorWindow
     }
     
     private void DrawTextureImplDesc(
-        AssetImporter_TextureImpl.AssetInfo assetInfo, 
-        AssetImporter_TextureImpl.AssetInfo left, 
-        AssetImporter_TextureImpl.AssetInfo right)
+        AssetImporterImpl_Texture.AssetInfo assetInfo, 
+        AssetImporterImpl_Texture.AssetInfo left, 
+        AssetImporterImpl_Texture.AssetInfo right)
     {
         const float keyWidth = 80;
         const float valueWidth = 170;
@@ -189,7 +189,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         GUILayout.EndVertical();
     }
     
-    private void DrawFBXImpl(AssetImporter_FBXImpl fbxImpl)
+    private void DrawFBXImpl(AssetImporterImpl_FBX fbxImpl)
     {
         if (fbxImpl == null)
         {
@@ -197,7 +197,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         }
     }
     
-    private void DrawSoundImpl(AssetImporter_SoundImpl soundImpl)
+    private void DrawSoundImpl(AssetImporterImpl_Sound soundImpl)
     {
         if (soundImpl == null)
         {
@@ -213,7 +213,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         }
 
         EditorUtility.DisplayDialog("알림", "변경된 에셋을 적용했습니다.", "확인");
-        _part.TrySave();
+        _importer.TrySave();
         Close();
     }
 }

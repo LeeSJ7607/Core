@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-public sealed class AssetImporter_TextureImpl
+public sealed class AssetImporterImpl_Texture
 {
     private const string _noneLabel = "None";
     
@@ -49,7 +49,7 @@ public sealed class AssetImporter_TextureImpl
         public string FileSizeStr { get; set; }
         public IReadOnlyDictionary<Object, IReadOnlyList<Object>> References { get; set; } 
         public bool IsReferences { get; set; }
-        public IReadOnlyDictionary<int, DependencyImpl.SameAssetInfo> Compares { get; set; }
+        public IReadOnlyDictionary<int, DependencyUtil.SameAssetInfo> Compares { get; set; }
         public bool IsCompare { get; set; }
         public bool Changed { get; set; }
 
@@ -161,8 +161,8 @@ public sealed class AssetImporter_TextureImpl
 
     public int TotalCnt => _assetInfoMap.Sum(_ => _.Value.Count);
     public int SearchedCnt(string path) => _assetInfoMap[path].Count;
-    public (SortTexture sortType, bool descending) CurSort { private get; set; }
-    public FilterTexture CurFilterType { private get; set; }
+    public (AssetImporterConsts.SortTexture sortType, bool descending) CurSort { private get; set; }
+    public AssetImporterConsts.FilterTexture CurFilterType { private get; set; }
     public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;
     private List<AssetInfo> _searchedAssetInfos = new();
     public IReadOnlyDictionary<string, IReadOnlyList<AssetInfo>> AssetInfoMap => _assetInfoMap;
@@ -223,7 +223,7 @@ public sealed class AssetImporter_TextureImpl
                 continue;
             }
 
-            var textureImporter = AssetImporter.GetAtPath(path) as TextureImporter;
+            var textureImporter = UnityEditor.AssetImporter.GetAtPath(path) as TextureImporter;
             if (textureImporter == null)
             {
                 continue;
@@ -324,7 +324,7 @@ public sealed class AssetImporter_TextureImpl
     {
         switch (CurSort.sortType)
         {
-        case SortTexture.Name:
+        case AssetImporterConsts.SortTexture.Name:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.Texture2D.name).ToList()
@@ -332,7 +332,7 @@ public sealed class AssetImporter_TextureImpl
             }
             break;
 
-        case SortTexture.FileSize:
+        case AssetImporterConsts.SortTexture.FileSize:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.FileSize).ToList()
@@ -340,7 +340,7 @@ public sealed class AssetImporter_TextureImpl
             }
             break;
         
-        case SortTexture.TextureSize:
+        case AssetImporterConsts.SortTexture.TextureSize:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.Texture2D.width).ToList()
@@ -348,7 +348,7 @@ public sealed class AssetImporter_TextureImpl
             }
             break;
         
-        case SortTexture.MipMap:
+        case AssetImporterConsts.SortTexture.MipMap:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.TextureImporter.mipmapEnabled).ToList()
@@ -356,7 +356,7 @@ public sealed class AssetImporter_TextureImpl
             }
             break;
         
-        case SortTexture.Format:
+        case AssetImporterConsts.SortTexture.Format:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.AOSSettings.format).ToList()
@@ -364,7 +364,7 @@ public sealed class AssetImporter_TextureImpl
             }
             break;
         
-        case SortTexture.WrapMode:
+        case AssetImporterConsts.SortTexture.WrapMode:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.WrapMode).ToList()
@@ -372,7 +372,7 @@ public sealed class AssetImporter_TextureImpl
             }
             break;
         
-        case SortTexture.FilterMode:
+        case AssetImporterConsts.SortTexture.FilterMode:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.FilterMode).ToList()
@@ -380,7 +380,7 @@ public sealed class AssetImporter_TextureImpl
             }
             break;
         
-        case SortTexture.TextureType:
+        case AssetImporterConsts.SortTexture.TextureType:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.TextureType).ToList()
@@ -388,7 +388,7 @@ public sealed class AssetImporter_TextureImpl
             }
             break;
         
-        case SortTexture.References:
+        case AssetImporterConsts.SortTexture.References:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.IsReferences).ToList()
@@ -396,7 +396,7 @@ public sealed class AssetImporter_TextureImpl
             }
             break;
         
-        case SortTexture.Compare:
+        case AssetImporterConsts.SortTexture.Compare:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.IsCompare).ToList()
@@ -410,19 +410,19 @@ public sealed class AssetImporter_TextureImpl
     {
         switch (CurFilterType)
         {
-        case FilterTexture.MipMap:
+        case AssetImporterConsts.FilterTexture.MipMap:
             {
                 _searchedAssetInfos = _searchedAssetInfos.Where(_ => _.TextureImporter.mipmapEnabled).ToList();
             }
             break;
 
-        case FilterTexture.References:
+        case AssetImporterConsts.FilterTexture.References:
             {
                 _searchedAssetInfos = _searchedAssetInfos.Where(_ => _.IsReferences).ToList();
             }
             break;
 
-        case FilterTexture.Compare:
+        case AssetImporterConsts.FilterTexture.Compare:
             {
                 _searchedAssetInfos = _searchedAssetInfos.Where(_ => _.IsCompare).ToList();
             }

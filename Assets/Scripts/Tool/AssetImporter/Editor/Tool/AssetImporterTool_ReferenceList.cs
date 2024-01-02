@@ -4,10 +4,10 @@ using UnityEngine;
 
 public sealed class AssetImporterTool_ReferenceList : EditorWindow
 {
-    private AssetImporter_TextureImpl.AssetInfo _assetInfo;
+    private AssetImporterImpl_Texture.AssetInfo _assetInfo;
     private Vector2 _scrollPos;
     
-    public static void Open(AssetImporter_TextureImpl.AssetInfo assetInfo)
+    public static void Open(AssetImporterImpl_Texture.AssetInfo assetInfo)
     {
         var tool = GetWindow<AssetImporterTool_ReferenceList>("References");
         tool._assetInfo = assetInfo;

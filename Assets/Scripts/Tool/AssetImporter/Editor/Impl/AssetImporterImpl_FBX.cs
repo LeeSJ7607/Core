@@ -1,4 +1,4 @@
-﻿public sealed class AssetImporter_FBXImpl
+﻿public sealed class AssetImporterImpl_FBX
 {
     public sealed class AssetInfo
     {

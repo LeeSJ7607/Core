@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public static class DependencyImpl
+public static class DependencyUtil
 {
     public sealed class SameAssetInfo
     {
@@ -130,7 +130,7 @@ public static class DependencyImpl
         return (result, dependency.Count);
     }
     
-    public static void Dependencies(IEnumerable<AssetImporter_TextureImpl.AssetInfo> assetInfos)
+    public static void Dependencies(IEnumerable<AssetImporterImpl_Texture.AssetInfo> assetInfos)
     {
         InitDependencies();
         
@@ -147,7 +147,7 @@ public static class DependencyImpl
         }
     }
     
-    public static void SameAssets(IEnumerable<AssetImporter_TextureImpl.AssetInfo> assetInfos)
+    public static void SameAssets(IEnumerable<AssetImporterImpl_Texture.AssetInfo> assetInfos)
     {
         InitSameAssets();
         

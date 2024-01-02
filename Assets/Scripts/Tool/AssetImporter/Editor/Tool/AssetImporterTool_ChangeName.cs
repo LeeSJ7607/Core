@@ -8,10 +8,10 @@ public sealed class AssetImporterTool_ChangeName : EditorWindow
 {
     private const int _textFieldWidth = 200;
     
-    private IEnumerable<AssetImporter_TextureImpl.AssetInfo> _assetInfos;
+    private IEnumerable<AssetImporterImpl_Texture.AssetInfo> _assetInfos;
     private string _originName, _changeName, _addName, _lowerAndUpperName;
 
-    public static void Open(IEnumerable<AssetImporter_TextureImpl.AssetInfo> assetInfos)
+    public static void Open(IEnumerable<AssetImporterImpl_Texture.AssetInfo> assetInfos)
     {
         var tool = GetWindow<AssetImporterTool_ChangeName>();
         tool._assetInfos = assetInfos;

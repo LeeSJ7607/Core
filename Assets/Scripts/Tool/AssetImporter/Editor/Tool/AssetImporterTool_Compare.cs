@@ -13,7 +13,7 @@ public sealed class AssetImporterTool_Compare : EditorWindow
         public TextureInfo(Texture tex)
         {
             Tex = tex;
-            Importer = (TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(tex));
+            Importer = (TextureImporter)UnityEditor.AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(tex));
             Settings = Importer.GetPlatformTextureSettings("Android");
             FileSize = EditorTextureUtil.TextureSize(Tex);
         }
