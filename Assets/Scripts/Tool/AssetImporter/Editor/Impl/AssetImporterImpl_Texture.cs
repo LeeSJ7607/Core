@@ -40,7 +40,6 @@ public sealed class AssetImporterImpl_Texture
         public TextureImporter TextureImporter { get; }
         public TextureImporterPlatformSettings AOSSettings { get; }
         public TextureImporterFormat FormatType { get; private set; }
-        public string FormatStr { get; private set; }
         public TextureImporterType TextureType { get; set; }
         public TextureWrapMode WrapMode { get; set; }
         public FilterMode FilterMode { get; set; }

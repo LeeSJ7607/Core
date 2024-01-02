@@ -93,6 +93,8 @@ public sealed class AssetImporter
     
     private void DrawMenus()
     {
+        DrawFolder();
+        
         EditorGUILayout.BeginHorizontal();
         {
             GUIUtil.Btn("모든 참조 찾기", () =>
@@ -126,8 +128,6 @@ public sealed class AssetImporter
             GUIUtil.DrawPopup("레이블 검색", ref _selectedLabelIdx, _textureImpl.Labels, CalcSearchedAssetInfos);
         }
         EditorGUILayout.EndHorizontal();
-        
-        DrawFolder();
     }
 
     private void DrawFolder()
