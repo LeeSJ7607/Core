@@ -86,7 +86,7 @@ public static class GUIUtil
         EditorGUILayout.BeginHorizontal();
 
         EditorGUILayout.LabelField(key, LabelStyle(TextAnchor.MiddleLeft), GUILayout.Width(keyWidth));
-        if (string.IsNullOrEmpty(value) == false)
+        if (!string.IsNullOrEmpty(value))
         {
             EditorGUILayout.LabelField(value, LabelStyle(TextAnchor.MiddleRight), GUILayout.Width(valueWidth));
         }
@@ -117,7 +117,7 @@ public static class GUIUtil
         EditorGUILayout.BeginHorizontal();
 
         EditorGUILayout.LabelField(key, keyLabelStyle, GUILayout.Width(keyWidth));
-        if (string.IsNullOrEmpty(value) == false)
+        if (!string.IsNullOrEmpty(value))
         {
             EditorGUILayout.LabelField(value, valueLabelStyle, GUILayout.Width(valueWidth));
         }

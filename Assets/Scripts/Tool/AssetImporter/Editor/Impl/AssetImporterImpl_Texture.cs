@@ -69,7 +69,7 @@ public sealed class AssetImporterImpl_Texture
 
         public void Reset()
         {
-            if (Changed == false)
+            if (!Changed)
             {
                 return;
             }
@@ -176,13 +176,6 @@ public sealed class AssetImporterImpl_Texture
         }
 
         _initialized = true;
-        
-        //TODO: 저장된 포맷을 적용한다.
-        //_selectedTextureFormatIdx
-        
-        //TODO: 저장된 경로를 적용한다.
-        //_curRootFindAssets
-        
         CreateLabelsAndAssets(paths);
     }
 
@@ -271,7 +264,7 @@ public sealed class AssetImporterImpl_Texture
         AssetInfo assetInfo)
     {
         var tex = assetInfo.Texture2D;
-        if (SearchedTextureName(tex.name) == false)
+        if (!SearchedTextureName(tex.name))
         {
             return false;
         }
@@ -282,7 +275,7 @@ public sealed class AssetImporterImpl_Texture
         var existLabel = ExistLabel(tex, label);
         var checkSizeTexture = CheckSizeTexture(tex, textureMaxSize, textureMinSize);
         
-        if (label.Equals(_noneLabel) == false && textureMaxSize > 0)
+        if (!label.Equals(_noneLabel) && textureMaxSize > 0)
         {
             return existLabel && checkSizeTexture;
         }
@@ -443,7 +436,7 @@ public sealed class AssetImporterImpl_Texture
         {
             foreach (var assetInfo in pair.Value)
             {
-                if (assetInfo.Changed == false)
+                if (!assetInfo.Changed)
                 {
                     continue;
                 }

@@ -62,7 +62,7 @@ internal sealed class AssetImporterTool : EditorWindow
 
     private void DrawDiffBtn()
     {
-        if (GUILayout.Button("변경된 에셋 보기", GUIUtil.ButtonStyle(), GUILayout.Height(_drawMenuBtn)) == false)
+        if (!GUILayout.Button("변경된 에셋 보기", GUIUtil.ButtonStyle(), GUILayout.Height(_drawMenuBtn)))
         {
             return;
         }

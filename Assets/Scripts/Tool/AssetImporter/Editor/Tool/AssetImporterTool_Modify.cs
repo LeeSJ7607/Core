@@ -70,7 +70,7 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
     
     private void OnDisable()
     {
-        if (_assetInfo.Changed == false)
+        if (!_assetInfo.Changed)
         {
             _assetInfo.FileSizeStr = EditorTextureUtil.TextureSize(_assetInfo.Texture2D);
         }
@@ -137,14 +137,14 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
     private void Save()
     {
         var changed = IsChanged();
-        if (changed == false)
+        if (!changed)
         {
             EditorUtility.DisplayDialog("알림", "변경된 사항이 없습니다.", "확인");
             return;
         }
 
         changed = !IsOriginChanged();
-        if (changed == false)
+        if (!changed)
         {
             EditorUtility.DisplayDialog("알림", "변경전 사항과 동일합니다.", "확인");
             return;

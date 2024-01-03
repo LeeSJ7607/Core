@@ -155,7 +155,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
             for (var i = 0; i < assetInfos.Count; i++)
             {
                 var assetInfo = assetInfos[i];
-                if (assetInfo.Changed == false)
+                if (!assetInfo.Changed)
                 {
                     continue;
                 }
@@ -207,7 +207,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
     
     private void DrawConfirmBtn()
     {
-        if (GUILayout.Button("저장", GUIUtil.ButtonStyle(), GUILayout.Height(30)) == false)
+        if (!GUILayout.Button("저장", GUIUtil.ButtonStyle(), GUILayout.Height(30)))
         {
             return;
         }

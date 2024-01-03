@@ -8,7 +8,7 @@ using UnityEngine;
 public sealed class AssetImporter
 {
     private const int _filterWidth = 952;
-    private const int _drawMaxRow = 5; //TODO: 외부에서 변경이 가능하도록.
+    private const int _drawMaxRow = 5;
 
     public bool IsOn
     {
@@ -53,16 +53,11 @@ public sealed class AssetImporter
 
         _initialized = true;
 
-        //TODO: 저장된 DrawMaxRow를 적용한다.
-        //_drawMaxRow
-        
-        //TODO: 저장된 TexModified를 적용한다.
-        _texModified = Resources.Load<Texture2D>("AssetImporterTool_TexModified");
-
         var path = GetTexturePaths();
         _originTextureImpl.Initialize(path);
         _textureImpl.Initialize(path);
         TextureCnt = _textureImpl.TotalCnt;
+        _texModified = Resources.Load<Texture2D>("AssetImporter_Modified");
     }
 
     private IEnumerable<string> GetTexturePaths()
@@ -244,8 +239,6 @@ public sealed class AssetImporter
         GUIUtil.Btn(tex, 50, 50, () => AssetImporterTool_Preview.Open(tex));
     }
     
-    //TODO: 설명 우선 순위도 결정하게 해주면 좋을듯.
-    //TODO: 폰트 크기도 수정해주면 좋을듯.
     private void DrawDesc(AssetImporterImpl_Texture.AssetInfo assetInfo)
     {
         const float keyWidth = 80;
@@ -292,7 +285,7 @@ public sealed class AssetImporter
     
     public void ShowDiff()
     {
-        if (_textureImpl.CanDiff() == false)
+        if (!_textureImpl.CanDiff())
         {
             const string msg = "변경된 에셋이 없습니다.\n에셋을 변경 후, 다시 시도해주세요.";
             EditorUtility.DisplayDialog("알림", msg, "확인");
