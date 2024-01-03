@@ -52,9 +52,10 @@ public sealed class AssetImporterTool_ChangeName : EditorWindow
             {
                 var assetPath = assetInfo.Path;
                 var path = Path.GetDirectoryName(assetPath);
+                var oldPath = Path.Combine(path, $"{assetInfo.Texture2D.name}{Path.GetExtension(assetPath)}");
                 var newName = assetInfo.Texture2D.name.Replace(_originName, _changeName);
                 var newPath = Path.Combine(path, $"{newName}{Path.GetExtension(assetPath)}");
-                AssetDatabase.MoveAsset(assetPath, newPath);
+                AssetDatabase.MoveAsset(oldPath, newPath);
             }
         });
         GUILayout.EndVertical();
@@ -84,9 +85,10 @@ public sealed class AssetImporterTool_ChangeName : EditorWindow
             {
                 var assetPath = assetInfo.Path;
                 var path = Path.GetDirectoryName(assetPath);
+                var oldPath = Path.Combine(path, $"{assetInfo.Texture2D.name}{Path.GetExtension(assetPath)}");
                 var newName = first ? $"{_addName}{assetInfo.Texture2D.name}" : $"{assetInfo.Texture2D.name}{_addName}";
                 var newPath = Path.Combine(path, $"{newName}{Path.GetExtension(assetPath)}");
-                AssetDatabase.MoveAsset(assetPath, newPath);
+                AssetDatabase.MoveAsset(oldPath, newPath);
             }
         }
     }
@@ -115,10 +117,11 @@ public sealed class AssetImporterTool_ChangeName : EditorWindow
             {
                 var assetPath = assetInfo.Path;
                 var path = Path.GetDirectoryName(assetPath);
+                var oldPath = Path.Combine(path, $"{assetInfo.Texture2D.name}{Path.GetExtension(assetPath)}");
                 var changeName = lower ? _lowerAndUpperName.ToLower() : _lowerAndUpperName.ToUpper();
                 var newName = assetInfo.Texture2D.name.ToLower().Replace(_lowerAndUpperName.ToLower(), changeName);
                 var newPath = Path.Combine(path, $"{newName}{Path.GetExtension(assetPath)}");
-                AssetDatabase.MoveAsset(assetPath, newPath);
+                AssetDatabase.MoveAsset(oldPath, newPath);
             }
         }
     }
@@ -132,9 +135,10 @@ public sealed class AssetImporterTool_ChangeName : EditorWindow
             {
                 var assetPath = assetInfo.Path;
                 var path = Path.GetDirectoryName(assetPath);
+                var oldPath = Path.Combine(path, $"{assetInfo.Texture2D.name}{Path.GetExtension(assetPath)}");
                 var newName = Regex.Replace(assetInfo.Texture2D.name, @"\d", "");
                 var newPath = Path.Combine(path, $"{newName}{Path.GetExtension(assetPath)}");
-                AssetDatabase.MoveAsset(assetInfo.Path, newPath);
+                AssetDatabase.MoveAsset(oldPath, newPath);
             }
         });
         GUILayout.EndVertical();
