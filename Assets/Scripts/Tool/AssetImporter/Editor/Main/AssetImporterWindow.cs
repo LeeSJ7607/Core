@@ -3,14 +3,21 @@ using UnityEngine;
 
 internal sealed class AssetImporterWindow : EditorWindow
 {
+    private const string _keySelectedFilePath = "_keySelectedFilePath";
     private const float _drawMenuBtn = 30;
     private readonly AssetImporterGUI _importerGUI = new();
+    private string _selectedFolderPath;
     
     [MenuItem("Tool/AssetImporterTool &Q")]
     public static void Open()
     {
         var tool = GetWindow<AssetImporterWindow>();
-        tool._importerGUI.Initialize();
+        var selectedFilePath = tool._selectedFolderPath = PlayerPrefs.GetString(_keySelectedFilePath);
+        
+        if (!string.IsNullOrEmpty(selectedFilePath))
+        {
+            tool._importerGUI.Initialize(selectedFilePath);
+        }
     }
     
     private void OnGUI()
@@ -23,9 +30,14 @@ internal sealed class AssetImporterWindow : EditorWindow
     private void DrawCategory()
     {
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-        if (GUILayout.Button($"텍스쳐 수: {_importerGUI.TextureCnt.ToString()}"))
+        if (GUILayout.Button("Specify the folder path", GUILayout.Width(135)))
         {
+            _selectedFolderPath = EditorUtility.OpenFolderPanel("Specify the folder path", _selectedFolderPath, "");
+            _importerGUI.Initialize(_selectedFolderPath);
+            PlayerPrefs.SetString(_keySelectedFilePath, _selectedFolderPath);
         }
+        
+        GUILayout.Label($"{_selectedFolderPath} \t\t Texture Count: {_importerGUI.TextureCnt.ToString()}");
         EditorGUILayout.EndHorizontal();
     }
     

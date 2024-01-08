@@ -166,21 +166,16 @@ public sealed class AssetImporterImpl_Texture
     private List<AssetInfo> _searchedAssetInfos = new();
     public IReadOnlyDictionary<string, IReadOnlyList<AssetInfo>> AssetInfoMap => _assetInfoMap;
     private readonly Dictionary<string, IReadOnlyList<AssetInfo>> _assetInfoMap = new();
-    private bool _initialized;
 
     public void Initialize(IEnumerable<string> paths)
     {
-        if (_initialized)
-        {
-            return;
-        }
-
-        _initialized = true;
         CreateLabelsAndAssets(paths);
     }
 
     private void CreateLabelsAndAssets(IEnumerable<string> paths)
     {
+        _assetInfoMap.Clear();
+        
         foreach (var path in paths)
         {
             var guids = AssetDatabase.FindAssets("t:texture", new[] { path });
@@ -215,7 +210,7 @@ public sealed class AssetImporterImpl_Texture
                 continue;
             }
 
-            var textureImporter = UnityEditor.AssetImporter.GetAtPath(path) as TextureImporter;
+            var textureImporter = AssetImporter.GetAtPath(path) as TextureImporter;
             if (textureImporter == null)
             {
                 continue;

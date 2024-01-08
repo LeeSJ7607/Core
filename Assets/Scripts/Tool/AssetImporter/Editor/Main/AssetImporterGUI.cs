@@ -27,46 +27,49 @@ public sealed class AssetImporterGUI
     private List<string> _texturePaths;
     private string[] _btnNameTexturePaths;
     private int _selectedTexturePathIdx;
-    private bool _initialized;
     
-    public void Initialize()
+    public void Initialize(string selectedFilePath)
     {
-        if (_initialized)
-        {
-            return;
-        }
-        
-        _initialized = true;
-
-        var path = GetTexturePaths();
-        _originTextureImpl.Initialize(path);
-        _textureImpl.Initialize(path);
+        var texturePaths = GetTexturePaths(selectedFilePath);
+        _originTextureImpl.Initialize(texturePaths);
+        _textureImpl.Initialize(texturePaths);
         TextureCnt = _textureImpl.TotalCnt;
-        _texModified = Resources.Load<Texture2D>("AssetImporter_Modified");
+        _texModified ??= Resources.Load<Texture2D>("AssetImporter_Modified");
     }
 
-    private IEnumerable<string> GetTexturePaths()
+    private IEnumerable<string> GetTexturePaths(string selectedFilePath)
     {
-        var paths = Directory.GetDirectories("Assets/Temps");
-        _texturePaths = new List<string>(paths.Length);
+        var path = selectedFilePath.Split(Application.dataPath);
+        var directoryPaths = Directory.GetDirectories($"Assets{path[1]}");
+        _texturePaths = new List<string>(directoryPaths.Length);
 
-        foreach (var path in paths)
+        foreach (var dirPath in directoryPaths)
         {
-            var guids = AssetDatabase.FindAssets("t:texture", new[] { path });
+            var guids = AssetDatabase.FindAssets("t:texture", new[] { dirPath });
             if (guids == null || guids.Length == 0)
             {
                 continue;
             }
             
-            _texturePaths.Add(path);
+            _texturePaths.Add(dirPath);
         }
 
         _btnNameTexturePaths = _texturePaths.Select(Path.GetFileNameWithoutExtension).ToArray();
         return _texturePaths;
     }
+
+    private bool IsValid()
+    {
+        return _btnNameTexturePaths.Length > 0;
+    }
     
     public void Draw()
     {
+        if (!IsValid())
+        {
+            return;
+        }
+        
         DrawFolder();
         DrawMenus();
         DrawAssets();
