@@ -29,16 +29,16 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         }
     }
 
-    private AssetImporter _importer;
+    private AssetImporterGUI _importerGUI;
     private AssetInfo _before, _after;
     private AssetType _curAssetType;
     private Vector2 _scrollPos;
 
-    public static void Open(AssetImporter importer, AssetImporterImpl_Texture before, AssetImporterImpl_Texture after)
+    public static void Open(AssetImporterGUI importerGUI, AssetImporterImpl_Texture before, AssetImporterImpl_Texture after)
     {
         var tool = GetWindow<AssetImporterTool_Diff>("Diff");
         tool.minSize = tool.maxSize = new Vector2(660, 800);
-        tool._importer = importer;
+        tool._importerGUI = importerGUI;
         tool._before = new AssetInfo(before);
         tool._after = new AssetInfo(after);
 
@@ -213,7 +213,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         }
 
         EditorUtility.DisplayDialog("알림", "변경된 에셋을 적용했습니다.", "확인");
-        _importer.TrySave();
+        _importerGUI.TrySave();
         Close();
     }
 }

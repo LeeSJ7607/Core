@@ -5,25 +5,10 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public sealed class AssetImporter
+public sealed class AssetImporterGUI
 {
     private const int _filterWidth = 952;
     private const int _drawMaxRow = 5;
-
-    public bool IsOn
-    {
-        get => _isOn;
-        set
-        {
-            _isOn = value;
-
-            if (value)
-            {
-                Initialize();
-            }
-        }
-    }
-    private bool _isOn;
     
     private readonly AssetImporterImpl_Texture _originTextureImpl = new();
     private readonly AssetImporterImpl_Texture _textureImpl = new();
@@ -44,13 +29,13 @@ public sealed class AssetImporter
     private int _selectedTexturePathIdx;
     private bool _initialized;
     
-    private void Initialize()
+    public void Initialize()
     {
         if (_initialized)
         {
             return;
         }
-
+        
         _initialized = true;
 
         var path = GetTexturePaths();
@@ -82,14 +67,38 @@ public sealed class AssetImporter
     
     public void Draw()
     {
+        DrawFolder();
         DrawMenus();
         DrawAssets();
     }
     
+    private void DrawFolder()
+    {
+        EditorGUILayout.BeginHorizontal();
+        for (var i = 0; i < _btnNameTexturePaths.Length; i++)
+        {
+            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+            
+            var cnt = _textureImpl.SearchedCnt(_texturePaths[i]);
+            var toggleName = $"{_btnNameTexturePaths[i]} ({cnt.ToString()})";
+            
+            if (GUILayout.Toggle(_selectedTexturePathIdx == i, toggleName, GUILayout.ExpandWidth(true)))
+            {
+                if (_selectedTexturePathIdx != i)
+                {
+                    _scrollPos = Vector2.zero;
+                }
+
+                _selectedTexturePathIdx = i;
+                CalcSearchedAssetInfos();
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+        EditorGUILayout.EndHorizontal();
+    }
+    
     private void DrawMenus()
     {
-        DrawFolder();
-        
         EditorGUILayout.BeginHorizontal();
         {
             GUIUtil.Btn("모든 참조 찾기", () =>
@@ -121,31 +130,6 @@ public sealed class AssetImporter
             _searchedTextureName = GUILayout.TextField(_searchedTextureName, GUIUtil.TextFieldStyle(), GUILayout.Width(690));
             GUIUtil.Btn("파일 이름 변경", 100, () => AssetImporterTool_ChangeName.Open(_textureImpl.SearchedAssetInfos));
             GUIUtil.DrawPopup("레이블 검색", ref _selectedLabelIdx, _textureImpl.Labels, CalcSearchedAssetInfos);
-        }
-        EditorGUILayout.EndHorizontal();
-    }
-
-    private void DrawFolder()
-    {
-        EditorGUILayout.BeginHorizontal();
-        for (var i = 0; i < _btnNameTexturePaths.Length; i++)
-        {
-            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-            
-            var cnt = _textureImpl.SearchedCnt(_texturePaths[i]);
-            var toggleName = $"{_btnNameTexturePaths[i]} ({cnt.ToString()})";
-            
-            if (GUILayout.Toggle(_selectedTexturePathIdx == i, toggleName, GUILayout.ExpandWidth(true)))
-            {
-                if (_selectedTexturePathIdx != i)
-                {
-                    _scrollPos = Vector2.zero;
-                }
-
-                _selectedTexturePathIdx = i;
-                CalcSearchedAssetInfos();
-            }
-            EditorGUILayout.EndHorizontal();
         }
         EditorGUILayout.EndHorizontal();
     }
