@@ -30,7 +30,7 @@ internal sealed class AssetImporterWindow : EditorWindow
     private void DrawCategory()
     {
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-        if (GUILayout.Button("Specify the folder path", GUILayout.Width(135)))
+        if (GUILayout.Button("Specify the folder path", GUILayout.Width(140)))
         {
             _selectedFolderPath = EditorUtility.OpenFolderPanel("Specify the folder path", _selectedFolderPath, "");
             _importerGUI.Initialize(_selectedFolderPath);

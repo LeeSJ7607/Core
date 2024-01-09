@@ -27,19 +27,34 @@ public sealed class AssetImporterGUI
     private List<string> _texturePaths;
     private string[] _btnNameTexturePaths;
     private int _selectedTexturePathIdx;
+
+    private void Clear()
+    {
+        _btnNameTexturePaths = null;
+    }
     
     public void Initialize(string selectedFilePath)
     {
+        Clear();
+        
         var texturePaths = GetTexturePaths(selectedFilePath);
-        _originTextureImpl.Initialize(texturePaths);
-        _textureImpl.Initialize(texturePaths);
-        TextureCnt = _textureImpl.TotalCnt;
-        _texModified ??= Resources.Load<Texture2D>("AssetImporter_Modified");
+        if (texturePaths != null)
+        {
+            _originTextureImpl.Initialize(texturePaths);
+            _textureImpl.Initialize(texturePaths);
+            TextureCnt = _textureImpl.TotalCnt;
+            _texModified ??= Resources.Load<Texture2D>("AssetImporter_Modified");
+        }
     }
 
     private IEnumerable<string> GetTexturePaths(string selectedFilePath)
     {
         var path = selectedFilePath.Split(Application.dataPath);
+        if (path.Length < 2)
+        {
+            return null;
+        }
+        
         var directoryPaths = Directory.GetDirectories($"Assets{path[1]}");
         _texturePaths = new List<string>(directoryPaths.Length);
 
@@ -60,7 +75,7 @@ public sealed class AssetImporterGUI
 
     private bool IsValid()
     {
-        return _btnNameTexturePaths.Length > 0;
+        return _btnNameTexturePaths is {Length: > 0};
     }
     
     public void Draw()
