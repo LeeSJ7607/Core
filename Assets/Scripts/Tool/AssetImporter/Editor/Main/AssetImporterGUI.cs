@@ -12,6 +12,7 @@ public sealed class AssetImporterGUI
     
     private readonly AssetImporterImpl_Texture _originTextureImpl = new();
     private readonly AssetImporterImpl_Texture _textureImpl = new();
+    private readonly AssetImporterImpl_FBX _fbxImpl = new();
     public int TextureCnt { get; private set; }
     private int _selectedTextureFormatIdx = Array.FindIndex(AssetImporterImpl_Texture.TextureFormats, _ => _.Equals(TextureImporterFormat.ASTC_6x6.ToString()));
     private int _selectedTextureFilterIdx;

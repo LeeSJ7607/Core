@@ -14,7 +14,7 @@ internal sealed class AssetImporterWindow : EditorWindow
         var tool = GetWindow<AssetImporterWindow>();
         var selectedFilePath = tool._selectedFolderPath = PlayerPrefs.GetString(_keySelectedFilePath);
         
-        if (!string.IsNullOrEmpty(selectedFilePath))
+        if (!selectedFilePath.IsNullOrEmpty())
         {
             tool._importerGUI.Initialize(selectedFilePath);
         }

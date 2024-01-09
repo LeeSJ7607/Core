@@ -169,7 +169,9 @@ public sealed class AssetImporterImpl_Texture
 
     public void Initialize(IEnumerable<string> paths)
     {
+        EditorUtility.DisplayProgressBar("텍스쳐를 불러오는 중입니다.", "", 1);
         CreateLabelsAndAssets(paths);
+        EditorUtility.ClearProgressBar();
     }
 
     private void CreateLabelsAndAssets(IEnumerable<string> paths)
@@ -246,7 +248,7 @@ public sealed class AssetImporterImpl_Texture
     
     private IEnumerable<AssetInfo> GetSelectedAssetInfos(string path)
     {
-        return string.IsNullOrEmpty(path) 
+        return path.IsNullOrEmpty() 
             ? _assetInfoMap.First().Value 
             : _assetInfoMap[path];
     }
@@ -297,7 +299,7 @@ public sealed class AssetImporterImpl_Texture
         }
         bool SearchedTextureName(string name)
         {
-            return string.IsNullOrWhiteSpace(searchedTextureName) 
+            return searchedTextureName.IsNullOrWhiteSpace() 
                 || name.ToLower().Contains(searchedTextureName.ToLower());
         }
         bool CheckSizeTexture(Texture2D t, int maxSize, int minSize)
