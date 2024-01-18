@@ -36,8 +36,10 @@ internal sealed class AssetImporterWindow : EditorWindow
             _importerGUI.Initialize(_selectedFolderPath);
             PlayerPrefs.SetString(_keySelectedFilePath, _selectedFolderPath);
         }
-        
-        GUILayout.Label($"{_selectedFolderPath} \t\t Texture Count: {_importerGUI.TextureCnt.ToString()}");
+
+        var texCnt = $"Texture Count {_importerGUI.TextureCnt.ToString()}";
+        var fbxCnt = $"FBX Count {_importerGUI.FBXCnt.ToString()}";
+        GUILayout.Label($"{_selectedFolderPath} \t\t {texCnt} \t\t {fbxCnt}");
         EditorGUILayout.EndHorizontal();
     }
     

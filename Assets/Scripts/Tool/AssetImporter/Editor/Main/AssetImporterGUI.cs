@@ -14,6 +14,7 @@ public sealed class AssetImporterGUI
     private readonly AssetImporterImpl_Texture _textureImpl = new();
     private readonly AssetImporterImpl_FBX _fbxImpl = new();
     public int TextureCnt { get; private set; }
+    public int FBXCnt { get; private set; }
     private int _selectedTextureFormatIdx = Array.FindIndex(AssetImporterImpl_Texture.TextureFormats, _ => _.Equals(TextureImporterFormat.ASTC_6x6.ToString()));
     private int _selectedTextureFilterIdx;
     private readonly string[] _filterTextures = Enum.GetNames(typeof(AssetImporterConsts.FilterTexture)).ToArray();
@@ -25,58 +26,74 @@ public sealed class AssetImporterGUI
     private Texture2D _texModified;
     private Vector2 _scrollPos;
     private string _searchedTextureName;
-    private List<string> _texturePaths;
-    private string[] _btnNameTexturePaths;
     private int _selectedTexturePathIdx;
-
+    private List<string> _textureDirPaths;
+    private List<string> _btnNameTextureDirPaths;
+    private List<string> _fbxDirPaths;
+    private List<string> _btnNameFbxDirPaths;
+    private int _selectedAssetTypeIdx;
+    
     private void Clear()
     {
-        _btnNameTexturePaths = null;
+        _textureDirPaths?.Clear();
+        _btnNameTextureDirPaths?.Clear();
+        _fbxDirPaths?.Clear();
+        _btnNameFbxDirPaths?.Clear();
     }
     
     public void Initialize(string selectedFilePath)
     {
         Clear();
-        
-        var texturePaths = GetTexturePaths(selectedFilePath);
-        if (texturePaths != null)
+        SetDirPath(selectedFilePath, "t:texture", ref _textureDirPaths, ref _btnNameTextureDirPaths);
+        SetDirPath(selectedFilePath, "t:Model", ref _fbxDirPaths, ref _btnNameFbxDirPaths);
+
+        if (_textureDirPaths != null)
         {
-            _originTextureImpl.Initialize(texturePaths);
-            _textureImpl.Initialize(texturePaths);
+            _originTextureImpl.Initialize(_textureDirPaths);
+            _textureImpl.Initialize(_textureDirPaths);
             TextureCnt = _textureImpl.TotalCnt;
-            _texModified ??= Resources.Load<Texture2D>("AssetImporter_Modified");
         }
+        if (_fbxDirPaths != null)
+        {
+            _fbxImpl.Initialize(_fbxDirPaths);
+            FBXCnt = _fbxImpl.TotalCnt;
+        }
+
+        _texModified ??= Resources.Load<Texture2D>("AssetImporter_Modified");
     }
 
-    private IEnumerable<string> GetTexturePaths(string selectedFilePath)
+    private void SetDirPath(
+        string selectedFilePath, 
+        string filter, 
+        ref List<string> calcDirPaths, 
+        ref List<string> btnNamePaths)
     {
         var path = selectedFilePath.Split(Application.dataPath);
         if (path.Length < 2)
         {
-            return null;
+            return;
         }
         
         var directoryPaths = Directory.GetDirectories($"Assets{path[1]}");
-        _texturePaths = new List<string>(directoryPaths.Length);
+        calcDirPaths = new List<string>(directoryPaths.Length);
 
         foreach (var dirPath in directoryPaths)
         {
-            var guids = AssetDatabase.FindAssets("t:texture", new[] { dirPath });
+            var guids = AssetDatabase.FindAssets(filter, new[] { dirPath });
             if (guids == null || guids.Length == 0)
             {
                 continue;
             }
             
-            _texturePaths.Add(dirPath);
+            calcDirPaths.Add(dirPath);
         }
 
-        _btnNameTexturePaths = _texturePaths.Select(Path.GetFileNameWithoutExtension).ToArray();
-        return _texturePaths;
+        btnNamePaths = calcDirPaths.Select(Path.GetFileNameWithoutExtension).ToList();
     }
-
+   
     private bool IsValid()
     {
-        return _btnNameTexturePaths is {Length: > 0};
+        return _btnNameTextureDirPaths is {Count: > 0};
     }
     
     public void Draw()
@@ -86,20 +103,43 @@ public sealed class AssetImporterGUI
             return;
         }
         
+        DrawAssetType();
         DrawFolder();
         DrawMenus();
         DrawAssets();
     }
     
+    private void DrawAssetType()
+    {
+        EditorGUILayout.BeginHorizontal();
+        for (var type = AssetImporterConsts.AssetType.Texture; type < AssetImporterConsts.AssetType.End; type++)
+        {
+            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+            var typeIdx = (int)type;
+
+            if (GUILayout.Toggle(_selectedAssetTypeIdx == typeIdx, type.ToString()))
+            {
+                if (_selectedAssetTypeIdx != typeIdx)
+                {
+                    _scrollPos = Vector2.zero;
+                }
+
+                _selectedAssetTypeIdx = typeIdx;
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+        EditorGUILayout.EndHorizontal();
+    }
+    
     private void DrawFolder()
     {
         EditorGUILayout.BeginHorizontal();
-        for (var i = 0; i < _btnNameTexturePaths.Length; i++)
+        for (var i = 0; i < _btnNameTextureDirPaths.Count; i++)
         {
             EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
             
-            var cnt = _textureImpl.SearchedCnt(_texturePaths[i]);
-            var toggleName = $"{_btnNameTexturePaths[i]} ({cnt.ToString()})";
+            var cnt = _textureImpl.SearchedCnt(_textureDirPaths[i]);
+            var toggleName = $"{_btnNameTextureDirPaths[i]} ({cnt.ToString()})";
             
             if (GUILayout.Toggle(_selectedTexturePathIdx == i, toggleName, GUILayout.ExpandWidth(true)))
             {
@@ -155,7 +195,7 @@ public sealed class AssetImporterGUI
     
     private void CalcSearchedAssetInfos()
     {
-        _textureImpl.CalcSearchedAssetInfos(_texturePaths[_selectedTexturePathIdx], _selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx, _searchedTextureName);
+        _textureImpl.CalcSearchedAssetInfos(_textureDirPaths[_selectedTexturePathIdx], _selectedLabelIdx, _selectedTextureMaxSizeIdx, _selectedTextureMinSizeIdx, _searchedTextureName);
     }
     
     private void DrawTextureFormat()

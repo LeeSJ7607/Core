@@ -1,5 +1,21 @@
 ﻿public sealed class AssetImporterConsts
 {
+    public enum AssetType
+    {
+        Texture,
+        FBX,
+        Sound,
+        End,
+    }
+    
+    public enum FilterTexture
+    {
+        None,
+        MipMap,
+        References,
+        Compare,
+    }
+    
     public enum SortTexture
     {
         Name,
@@ -13,12 +29,12 @@
         References,
         Compare,
     }
-
-    public enum FilterTexture
+    
+    public enum SortFBX
     {
-        None,
-        MipMap,
+        Name,
+        FileSize,
+        ReadAndWrite,
         References,
-        Compare,
     }
 }

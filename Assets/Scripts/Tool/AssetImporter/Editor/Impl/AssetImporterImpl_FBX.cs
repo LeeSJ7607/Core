@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,12 +8,25 @@ public sealed class AssetImporterImpl_FBX
 {
     public sealed class AssetInfo
     {
+        public GameObject FBX { get; private set; }
+        public ModelImporter ModelImporter { get; }
+        public long FileSize { get; private set; } 
+        public string FileSizeStr { get; set; }
+        public IReadOnlyDictionary<Object, IReadOnlyList<Object>> References { get; set; } 
+        public bool IsReferences { get; set; }
+        public bool Changed { get; set; }
+        
         public AssetInfo(ModelImporter importer)
         {
-            
+            FBX = AssetDatabase.LoadAssetAtPath<GameObject>(importer.assetPath);
+            ModelImporter = importer;
+            FileSize = new FileInfo(importer.assetPath).Length;
+            FileSizeStr = $"{FileSize / 1000:#,###} KB";
         }
     }
     
+    public int TotalCnt => AssetInfoMap.Sum(_ => _.Value.Count);
+    public (AssetImporterConsts.SortFBX sortType, bool descending) CurSort { private get; set; }
     public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;
     private List<AssetInfo> _searchedAssetInfos = new();
     public IReadOnlyDictionary<string, List<AssetInfo>> AssetInfoMap => _assetInfoMap;
@@ -59,6 +74,52 @@ public sealed class AssetImporterImpl_FBX
                     _searchedAssetInfos.Add(assetInfo);
                 }
             }
+        }
+    }
+    
+    public void CalcSearchedAssetInfos(string path)
+    {
+        _searchedAssetInfos.Clear();
+        _searchedAssetInfos.AddRange(_assetInfoMap[path]);
+
+        Sort();
+    }
+    
+    private void Sort()
+    {
+        switch (CurSort.sortType)
+        {
+        case AssetImporterConsts.SortFBX.Name:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.FBX.name).ToList() 
+                    : _searchedAssetInfos.OrderBy(_ => _.FBX.name).ToList();
+            }
+            break;
+
+        case AssetImporterConsts.SortFBX.FileSize:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.FileSize).ToList() 
+                    : _searchedAssetInfos.OrderBy(_ => _.FileSize).ToList();
+            }
+            break;
+
+        case AssetImporterConsts.SortFBX.ReadAndWrite:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.IsReferences).ToList() 
+                    : _searchedAssetInfos.OrderBy(_ => _.IsReferences).ToList();
+            }
+            break;
+
+        case AssetImporterConsts.SortFBX.References:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.ModelImporter.isReadable).ToList() 
+                    : _searchedAssetInfos.OrderBy(_ => _.ModelImporter.isReadable).ToList();
+            }
+            break;
         }
     }
     
