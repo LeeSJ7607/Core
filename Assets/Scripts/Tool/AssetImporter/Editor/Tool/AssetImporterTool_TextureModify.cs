@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-internal sealed class AssetImporterTool_Modify : EditorWindow
+internal sealed class AssetImporterTool_TextureModify : EditorWindow
 {
     private const float _toolWidth = 400;
     private const float _guiSpace = 10;
@@ -40,14 +40,14 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
     
     public static void Open(AssetImporterImpl_Texture.AssetInfo assetInfo)
     {
-        var tool = GetWindow<AssetImporterTool_Modify>("Modify");
+        var tool = GetWindow<AssetImporterTool_TextureModify>("Modify");
         tool.minSize = tool.maxSize = new Vector2(_toolWidth, 540);
         tool._assetInfo = assetInfo;
 
         SetOption(tool);
     }
 
-    private static void SetOption(AssetImporterTool_Modify tool)
+    private static void SetOption(AssetImporterTool_TextureModify tool)
     {
         var assetInfo = tool._assetInfo;
         
@@ -83,28 +83,6 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
         DrawMenus();
     }
     
-    private void DrawMenus()
-    {
-        const float width = 100;
-        
-        EditorGUILayout.Space(_guiSpace);
-        EditorGUILayout.BeginHorizontal();
-        {
-            GUIUtil.BtnExpand("선택", width, () => Selection.activeObject = _assetInfo.Texture2D);
-            GUIUtil.BtnExpand("열기", width, () => EditorUtility.RevealInFinder(_assetInfo.TextureImporter.assetPath));
-        }
-        EditorGUILayout.EndHorizontal();
-        
-        EditorGUILayout.BeginHorizontal();
-        {
-            GUIUtil.BtnExpand("저장", width, Save);
-            GUIUtil.BtnExpand("설정 값 되돌리기", width, ReSetOption);
-        }
-        EditorGUILayout.EndHorizontal();
-        
-        GUIUtil.BtnExpand("압축 포맷 별로 보기", width, () => AssetImporterTool_Format.Open(_assetInfo));
-    }
-    
     private void DrawTexture()
     {
         var tex = _assetInfo.Texture2D;
@@ -132,6 +110,28 @@ internal sealed class AssetImporterTool_Modify : EditorWindow
         GUIUtil.DrawPopup("Filter Mode", ref _selectedFilterModeIdx, _filterModes);
         GUIUtil.DrawPopup("Max Size", ref _selectedMaxTextureSizeIdx, _textureSize, () => _assetInfo.AOSSettings.overridden = true);
         GUIUtil.DrawPopup("Format", ref _selectedTextureFormatIdx, AssetImporterImpl_Texture.TextureFormats, () => _assetInfo.AOSSettings.overridden = true); 
+    }
+    
+    private void DrawMenus()
+    {
+        const float width = 100;
+        
+        EditorGUILayout.Space(_guiSpace);
+        EditorGUILayout.BeginHorizontal();
+        {
+            GUIUtil.BtnExpand("선택", width, () => Selection.activeObject = _assetInfo.Texture2D);
+            GUIUtil.BtnExpand("열기", width, () => EditorUtility.RevealInFinder(_assetInfo.TextureImporter.assetPath));
+        }
+        EditorGUILayout.EndHorizontal();
+        
+        EditorGUILayout.BeginHorizontal();
+        {
+            GUIUtil.BtnExpand("저장", width, Save);
+            GUIUtil.BtnExpand("설정 값 되돌리기", width, ReSetOption);
+        }
+        EditorGUILayout.EndHorizontal();
+        
+        GUIUtil.BtnExpand("압축 포맷 별로 보기", width, () => AssetImporterTool_Format.Open(_assetInfo));
     }
     
     private void Save()

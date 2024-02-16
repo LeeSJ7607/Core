@@ -128,13 +128,16 @@ public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
 
     private void DrawDesc(AssetImporterImpl_FBX.AssetInfo assetInfo)
     {
-        const float keyWidth = 100;
-        const float valueWidth = 200;
+        const float keyWidth = 110;
+        const float valueWidth = 220;
         
         EditorGUILayout.Space(1);
         GUILayout.BeginVertical();
         
         GUIUtil.Desc("Name", assetInfo.FBX.name, keyWidth, valueWidth);
+        GUIUtil.Desc("Normals", assetInfo.Normals.ToString(), keyWidth, valueWidth);
+        GUIUtil.Desc("Tangents", assetInfo.Tangents.ToString(), keyWidth, valueWidth);
+        GUIUtil.Desc("Mesh Compression", assetInfo.MeshCompression.ToString(), keyWidth, valueWidth);
         GUIUtil.Desc("Read/Write", assetInfo.IsReadable ? "O" : "X", keyWidth, valueWidth);
         GUIUtil.Desc("File Size", assetInfo.FileSizeStr, keyWidth, valueWidth);
         
@@ -143,15 +146,14 @@ public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
 
     private void DrawOption(AssetImporterImpl_FBX.AssetInfo assetInfo)
     {
+        const float width = 50;
+        
         EditorGUILayout.BeginVertical();
         
-        GUIUtil.Btn("선택", () => Selection.activeObject = assetInfo.FBX);
-        GUIUtil.Btn("열기", () => EditorUtility.RevealInFinder(assetInfo.ModelImporter.assetPath));
-        GUIUtil.Btn("수정", () =>
-        {
-            assetInfo.IsReadable = !assetInfo.IsReadable;
-            assetInfo.Changed = !assetInfo.Changed;
-        });
+        GUIUtil.Btn("선택", width, () => Selection.activeObject = assetInfo.FBX);
+        GUIUtil.Btn("열기", width, () => EditorUtility.RevealInFinder(assetInfo.ModelImporter.assetPath));
+        GUIUtil.Btn("수정", width, () => AssetImporterTool_FBXModify.Open(assetInfo));
+        GUIUtil.Btn("리셋", width, assetInfo.Reset);
         
         if (assetInfo.IsReferences)
         {

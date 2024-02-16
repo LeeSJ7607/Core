@@ -279,7 +279,7 @@ public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
         GUIUtil.Btn("선택", width, () => Selection.activeObject = assetInfo.Texture2D);
         GUIUtil.Btn("열기", width, () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
         GUIUtil.Btn("포맷", width, () => assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx, true));
-        GUIUtil.Btn("수정", width, () => AssetImporterTool_Modify.Open(assetInfo));
+        GUIUtil.Btn("수정", width, () => AssetImporterTool_TextureModify.Open(assetInfo));
         GUIUtil.Btn("리셋", width, assetInfo.Reset);
 
         if (assetInfo.IsReferences)

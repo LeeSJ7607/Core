@@ -10,6 +10,9 @@ public sealed class AssetImporterImpl_FBX : IAssetImporterImpl
     {
         public GameObject FBX { get; }
         public ModelImporter ModelImporter { get; }
+        public ModelImporterNormals Normals { get; set; }
+        public ModelImporterTangents Tangents { get; set; }
+        public ModelImporterMeshCompression MeshCompression { get; set; }
         public bool IsReadable { get; set; }
         public long FileSize { get; } 
         public string FileSizeStr { get; }
@@ -21,9 +24,26 @@ public sealed class AssetImporterImpl_FBX : IAssetImporterImpl
         {
             FBX = AssetDatabase.LoadAssetAtPath<GameObject>(importer.assetPath);
             ModelImporter = importer;
+            Normals = importer.importNormals;
+            Tangents = importer.importTangents;
+            MeshCompression = importer.meshCompression;
             IsReadable = importer.isReadable;
             FileSize = new FileInfo(importer.assetPath).Length;
             FileSizeStr = $"{FileSize / 1000:#,###} KB";
+        }
+        
+        public void Reset()
+        {
+            if (!Changed)
+            {
+                return;
+            }
+            
+            Normals = ModelImporter.importNormals;
+            Tangents = ModelImporter.importTangents;
+            MeshCompression = ModelImporter.meshCompression;
+            IsReadable = ModelImporter.isReadable;
+            Changed = false;
         }
         
         public void Save()

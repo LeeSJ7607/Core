@@ -1,5 +1,4 @@
-﻿using TMPro;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 public sealed class AssetImporterTool_Diff : EditorWindow
@@ -240,6 +239,9 @@ public sealed class AssetImporterTool_Diff : EditorWindow
                 
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox);
                 GUIUtil.Desc("Name", assetInfo.FBX.name, keyWidth, valueWidth);
+                GUIUtil.Desc("Normals", assetInfo.Normals.ToString(), keyWidth, valueWidth, left.Normals, right.Normals);
+                GUIUtil.Desc("Tangents", assetInfo.Tangents.ToString(), keyWidth, valueWidth, left.Tangents, right.Tangents);
+                GUIUtil.Desc("MeshCompression", assetInfo.MeshCompression.ToString(), keyWidth, valueWidth, left.MeshCompression, right.MeshCompression);
                 GUIUtil.Desc("Read/Write", assetInfo.IsReadable ? "O" : "X", keyWidth, valueWidth, left.IsReadable, right.IsReadable);
                 GUIUtil.Desc("File Size", assetInfo.FileSizeStr, keyWidth, valueWidth);
                 EditorGUILayout.EndHorizontal();
