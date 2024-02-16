@@ -1,6 +1,6 @@
 ﻿public sealed class AssetImporterConsts
 {
-    public enum AssetType
+    public enum AssetKind
     {
         Texture,
         FBX,
@@ -34,7 +34,7 @@
     {
         Name,
         FileSize,
-        ReadAndWrite,
+        ReadWrite,
         References,
     }
 }

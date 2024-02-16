@@ -130,6 +130,23 @@ public static class DependencyUtil
         return (result, dependency.Count);
     }
     
+    public static void Dependencies(IEnumerable<AssetImporterImpl_FBX.AssetInfo> assetInfos)
+    {
+        InitDependencies();
+        
+        foreach (var assetInfo in assetInfos)
+        {
+            if (assetInfo.References != null)
+            {
+                continue;
+            }
+
+            var (references, cnt) = GetDependencies(assetInfo.FBX);
+            assetInfo.References = references;
+            assetInfo.IsReferences = cnt > 0;
+        }
+    }
+    
     public static void Dependencies(IEnumerable<AssetImporterImpl_Texture.AssetInfo> assetInfos)
     {
         InitDependencies();

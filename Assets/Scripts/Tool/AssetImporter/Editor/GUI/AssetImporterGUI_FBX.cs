@@ -1,0 +1,176 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
+
+public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
+{
+    private const int _drawMaxRow = 5;
+    
+    public int Order => 1;
+    public int TotalCnt => _fbxImpl.TotalCnt;
+    public Vector2 ScrollPos { get; set; }
+    public IAssetImporterImpl OriginAssetImporterImpl => _originFBXImpl;
+    public IAssetImporterImpl AssetImporterImpl => _fbxImpl;
+    private readonly AssetImporterImpl_FBX _originFBXImpl = new();
+    private readonly AssetImporterImpl_FBX _fbxImpl = new();
+    private int _selectedFBXPathIdx;
+    private int _selectedFBXSortIdx;
+    private readonly string[] _sortFBX = Enum.GetNames(typeof(AssetImporterConsts.SortFBX)).ToArray();
+    private List<string> _fbxDirPaths;
+    private List<string> _btnNameFbxDirPaths;
+    private Texture2D _texModified;
+    
+    private void Clear()
+    {
+        _fbxDirPaths?.Clear();
+        _btnNameFbxDirPaths?.Clear();
+    }
+
+    public void Initialize(string selectedFilePath)
+    {
+        Clear();
+        AssetImporterGUI_Texture.SetDirPath(selectedFilePath, "t:Model", ref _fbxDirPaths, ref _btnNameFbxDirPaths);
+        
+        if (_fbxDirPaths != null)
+        {
+            _originFBXImpl.Initialize(_fbxDirPaths);
+            _fbxImpl.Initialize(_fbxDirPaths);
+        }
+        
+        _texModified ??= Resources.Load<Texture2D>("AssetImporter_Modified");
+    }
+
+    public void Draw()
+    {
+        DrawFolder();
+        DrawMenus();
+        DrawAssets();
+    }
+
+    private void DrawFolder()
+    {
+        EditorGUILayout.BeginHorizontal();
+
+        for (var i = 0; i < _btnNameFbxDirPaths.Count; i++)
+        {
+            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+            
+            var cnt = _fbxImpl.SearchedCnt(_fbxDirPaths[i]);
+            var toggleName = $"{_btnNameFbxDirPaths[i]} ({cnt.ToString()})";
+            
+            if (GUILayout.Toggle(_selectedFBXPathIdx == i, toggleName, GUILayout.ExpandWidth(true)))
+            {
+                if (_selectedFBXPathIdx != i)
+                {
+                    ScrollPos = Vector2.zero;
+                }
+
+                _selectedFBXPathIdx = i;
+                _fbxImpl.CalcSearchedAssetInfos(_fbxDirPaths[_selectedFBXPathIdx]);
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+        
+        EditorGUILayout.EndHorizontal();
+    }
+    
+    private void DrawMenus()
+    {
+        GUIUtil.Btn("모든 참조 찾기", () =>
+        {
+            DependencyUtil.Dependencies(_fbxImpl.SearchedAssetInfos);
+            Sort((int)AssetImporterConsts.SortTexture.References, true);
+        });
+        
+        DrawSort();
+    }
+    
+    private void DrawSort()
+    {
+        EditorGUILayout.BeginHorizontal();
+        GUIUtil.DrawPopup("정렬", ref _selectedFBXSortIdx, _sortFBX, () => Sort(_selectedFBXSortIdx, false));
+        GUIUtil.Btn("▲", 25, () => Sort(_selectedFBXSortIdx, false));
+        GUIUtil.Btn("▼", 25, () => Sort(_selectedFBXSortIdx, true));
+        EditorGUILayout.EndHorizontal();
+    }
+
+    private void DrawAssets()
+    {
+        ScrollPos = EditorGUILayout.BeginScrollView(ScrollPos);
+        
+        var totalCnt = _fbxImpl.SearchedAssetInfos.Count;
+        for (var i = 0; i < totalCnt; i++)
+        {
+            EditorGUILayout.BeginHorizontal();
+            for (var j = 0; j < _drawMaxRow; j++)
+            {
+                var idx = i + j;
+                if (idx >= totalCnt)
+                {
+                    break;
+                }
+                
+                var assetInfo = _fbxImpl.SearchedAssetInfos[idx];
+                EditorGUILayout.BeginHorizontal(GUIUtil.HelpBoxStyle(assetInfo.Changed ? _texModified : null), GUILayout.Width(375));
+                DrawDesc(assetInfo);
+                DrawOption(assetInfo);
+                EditorGUILayout.EndHorizontal();
+            }
+            
+            i += (_drawMaxRow - 1);
+            EditorGUILayout.EndHorizontal();
+        }
+        
+        EditorGUILayout.EndScrollView();
+    }
+
+    private void DrawDesc(AssetImporterImpl_FBX.AssetInfo assetInfo)
+    {
+        const float keyWidth = 100;
+        const float valueWidth = 200;
+        
+        EditorGUILayout.Space(1);
+        GUILayout.BeginVertical();
+        
+        GUIUtil.Desc("Name", assetInfo.FBX.name, keyWidth, valueWidth);
+        GUIUtil.Desc("Read/Write", assetInfo.IsReadable ? "O" : "X", keyWidth, valueWidth);
+        GUIUtil.Desc("File Size", assetInfo.FileSizeStr, keyWidth, valueWidth);
+        
+        GUILayout.EndVertical();
+    }
+
+    private void DrawOption(AssetImporterImpl_FBX.AssetInfo assetInfo)
+    {
+        EditorGUILayout.BeginVertical();
+        
+        GUIUtil.Btn("선택", () => Selection.activeObject = assetInfo.FBX);
+        GUIUtil.Btn("열기", () => EditorUtility.RevealInFinder(assetInfo.ModelImporter.assetPath));
+        GUIUtil.Btn("수정", () =>
+        {
+            assetInfo.IsReadable = !assetInfo.IsReadable;
+            assetInfo.Changed = !assetInfo.Changed;
+        });
+        
+        if (assetInfo.IsReferences)
+        {
+            GUIUtil.Btn("참조", () =>
+            {
+                AssetImporterTool_ReferenceList.Open(new AssetImporterTool_ReferenceList.ReferenceParam(
+                    AssetImporterConsts.AssetKind.FBX, assetInfo.References, assetInfo.FileSizeStr));
+            });
+        }
+        
+        EditorGUILayout.EndVertical();
+    }
+    
+    private void Sort(int sortIdx, bool descending)
+    {
+        _fbxImpl.CurSort = ((AssetImporterConsts.SortFBX)sortIdx, descending);
+        _fbxImpl.CalcSearchedAssetInfos(_fbxDirPaths[_selectedFBXPathIdx]);
+    }
+    
+    public bool CanDiff() => _fbxImpl.CanDiff();
+    public bool TrySave() => _fbxImpl.TrySave();
+}

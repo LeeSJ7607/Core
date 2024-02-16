@@ -1,4 +1,4 @@
-﻿public sealed class AssetImporterImpl_Sound
+﻿public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
 {
     public sealed class AssetInfo
     {

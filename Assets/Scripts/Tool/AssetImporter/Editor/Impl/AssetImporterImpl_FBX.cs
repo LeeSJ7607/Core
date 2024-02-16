@@ -4,14 +4,15 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-public sealed class AssetImporterImpl_FBX
+public sealed class AssetImporterImpl_FBX : IAssetImporterImpl
 {
     public sealed class AssetInfo
     {
-        public GameObject FBX { get; private set; }
+        public GameObject FBX { get; }
         public ModelImporter ModelImporter { get; }
-        public long FileSize { get; private set; } 
-        public string FileSizeStr { get; set; }
+        public bool IsReadable { get; set; }
+        public long FileSize { get; } 
+        public string FileSizeStr { get; }
         public IReadOnlyDictionary<Object, IReadOnlyList<Object>> References { get; set; } 
         public bool IsReferences { get; set; }
         public bool Changed { get; set; }
@@ -20,12 +21,21 @@ public sealed class AssetImporterImpl_FBX
         {
             FBX = AssetDatabase.LoadAssetAtPath<GameObject>(importer.assetPath);
             ModelImporter = importer;
+            IsReadable = importer.isReadable;
             FileSize = new FileInfo(importer.assetPath).Length;
             FileSizeStr = $"{FileSize / 1000:#,###} KB";
+        }
+        
+        public void Save()
+        {
+            ModelImporter.isReadable = IsReadable;
+            ModelImporter.SaveAndReimport();
+            Changed = false;
         }
     }
     
     public int TotalCnt => AssetInfoMap.Sum(_ => _.Value.Count);
+    public int SearchedCnt(string path) => _assetInfoMap[path].Count;
     public (AssetImporterConsts.SortFBX sortType, bool descending) CurSort { private get; set; }
     public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;
     private List<AssetInfo> _searchedAssetInfos = new();
@@ -41,6 +51,8 @@ public sealed class AssetImporterImpl_FBX
 
     private void CreateAssets(IEnumerable<string> paths)
     {
+        _assetInfoMap.Clear();
+        
         foreach (var path in paths)
         {
             var guids = AssetDatabase.FindAssets("t:Model", new [] { path });
@@ -105,19 +117,19 @@ public sealed class AssetImporterImpl_FBX
             }
             break;
 
-        case AssetImporterConsts.SortFBX.ReadAndWrite:
-            {
-                _searchedAssetInfos = CurSort.descending 
-                    ? _searchedAssetInfos.OrderByDescending(_ => _.IsReferences).ToList() 
-                    : _searchedAssetInfos.OrderBy(_ => _.IsReferences).ToList();
-            }
-            break;
-
-        case AssetImporterConsts.SortFBX.References:
+        case AssetImporterConsts.SortFBX.ReadWrite:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.ModelImporter.isReadable).ToList() 
                     : _searchedAssetInfos.OrderBy(_ => _.ModelImporter.isReadable).ToList();
+            }
+            break;
+        
+        case AssetImporterConsts.SortFBX.References:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.IsReferences).ToList() 
+                    : _searchedAssetInfos.OrderBy(_ => _.IsReferences).ToList();
             }
             break;
         }
@@ -125,6 +137,34 @@ public sealed class AssetImporterImpl_FBX
     
     public bool CanDiff()
     {
-        return false;
+        return _assetInfoMap.SelectMany(pair => pair.Value).Any(assetInfo => assetInfo.Changed);
+    }
+    
+    public bool TrySave()
+    {
+        var changed = false;
+        Object activeObject = null;
+
+        foreach (var pair in _assetInfoMap)
+        {
+            foreach (var assetInfo in pair.Value)
+            {
+                if (!assetInfo.Changed)
+                {
+                    continue;
+                }
+
+                activeObject = assetInfo.FBX;
+                assetInfo.Save();
+                changed = true;
+            }
+        }
+
+        if (changed)
+        {
+            Selection.activeObject = activeObject;
+        }
+        
+        return changed;
     }
 }

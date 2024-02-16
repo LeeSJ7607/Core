@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-public sealed class AssetImporterImpl_Texture
+public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
 {
     private const string _noneLabel = "None";
     
@@ -78,8 +78,7 @@ public sealed class AssetImporterImpl_Texture
             WrapMode = TextureImporter.wrapMode;
             FilterMode = TextureImporter.filterMode;
             MaxTextureSize = TextureImporter.maxTextureSize;
-            AOSSettings.format = FormatType;
-            Changed = false;
+            ReSetTextureImporterFormat();
         }
 
         private void Refresh()
@@ -120,6 +119,7 @@ public sealed class AssetImporterImpl_Texture
             
             var format = Enum.Parse<TextureImporterFormat>(TextureFormats[formatIdx]);
             AOSSettings.format = format;
+            FormatType = format;
             Changed = true;
         }
         
@@ -141,12 +141,14 @@ public sealed class AssetImporterImpl_Texture
             }
             
             AOSSettings.format = format;
+            FormatType = format;
             Changed = true;
         }
         
         public void ReSetTextureImporterFormat()
         {
             AOSSettings.format = TextureImporter.GetPlatformTextureSettings("Android").format;
+            FormatType = AOSSettings.format;
             Changed = false;
         }
         

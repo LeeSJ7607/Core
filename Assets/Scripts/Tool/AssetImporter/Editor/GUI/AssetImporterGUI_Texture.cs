@@ -5,16 +5,18 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public sealed class AssetImporterGUI
+public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
 {
     private const int _filterWidth = 952;
     private const int _drawMaxRow = 5;
     
+    public int Order => 0;
+    public int TotalCnt => _textureImpl.TotalCnt;
+    public Vector2 ScrollPos { get; set; }
+    public IAssetImporterImpl OriginAssetImporterImpl => _originTextureImpl;
+    public IAssetImporterImpl AssetImporterImpl => _textureImpl;
     private readonly AssetImporterImpl_Texture _originTextureImpl = new();
     private readonly AssetImporterImpl_Texture _textureImpl = new();
-    private readonly AssetImporterImpl_FBX _fbxImpl = new();
-    public int TextureCnt { get; private set; }
-    public int FBXCnt { get; private set; }
     private int _selectedTextureFormatIdx = Array.FindIndex(AssetImporterImpl_Texture.TextureFormats, _ => _.Equals(TextureImporterFormat.ASTC_6x6.ToString()));
     private int _selectedTextureFilterIdx;
     private readonly string[] _filterTextures = Enum.GetNames(typeof(AssetImporterConsts.FilterTexture)).ToArray();
@@ -23,46 +25,36 @@ public sealed class AssetImporterGUI
     private int _selectedTextureMaxSizeIdx;
     private int _selectedTextureMinSizeIdx = AssetImporterImpl_Texture.TextureSizes.Length - 1;
     private int _selectedLabelIdx;
-    private Texture2D _texModified;
-    private Vector2 _scrollPos;
     private string _searchedTextureName;
     private int _selectedTexturePathIdx;
+    private int _selectedAssetTypeIdx;
     private List<string> _textureDirPaths;
     private List<string> _btnNameTextureDirPaths;
     private List<string> _fbxDirPaths;
     private List<string> _btnNameFbxDirPaths;
-    private int _selectedAssetTypeIdx;
+    private Texture2D _texModified;
     
     private void Clear()
     {
         _textureDirPaths?.Clear();
         _btnNameTextureDirPaths?.Clear();
-        _fbxDirPaths?.Clear();
-        _btnNameFbxDirPaths?.Clear();
     }
-    
+
     public void Initialize(string selectedFilePath)
     {
         Clear();
         SetDirPath(selectedFilePath, "t:texture", ref _textureDirPaths, ref _btnNameTextureDirPaths);
-        SetDirPath(selectedFilePath, "t:Model", ref _fbxDirPaths, ref _btnNameFbxDirPaths);
 
         if (_textureDirPaths != null)
         {
             _originTextureImpl.Initialize(_textureDirPaths);
             _textureImpl.Initialize(_textureDirPaths);
-            TextureCnt = _textureImpl.TotalCnt;
         }
-        if (_fbxDirPaths != null)
-        {
-            _fbxImpl.Initialize(_fbxDirPaths);
-            FBXCnt = _fbxImpl.TotalCnt;
-        }
-
+        
         _texModified ??= Resources.Load<Texture2D>("AssetImporter_Modified");
     }
 
-    private void SetDirPath(
+    public static void SetDirPath(
         string selectedFilePath, 
         string filter, 
         ref List<string> calcDirPaths, 
@@ -103,32 +95,9 @@ public sealed class AssetImporterGUI
             return;
         }
         
-        DrawAssetType();
         DrawFolder();
         DrawMenus();
         DrawAssets();
-    }
-    
-    private void DrawAssetType()
-    {
-        EditorGUILayout.BeginHorizontal();
-        for (var type = AssetImporterConsts.AssetType.Texture; type < AssetImporterConsts.AssetType.End; type++)
-        {
-            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-            var typeIdx = (int)type;
-
-            if (GUILayout.Toggle(_selectedAssetTypeIdx == typeIdx, type.ToString()))
-            {
-                if (_selectedAssetTypeIdx != typeIdx)
-                {
-                    _scrollPos = Vector2.zero;
-                }
-
-                _selectedAssetTypeIdx = typeIdx;
-            }
-            EditorGUILayout.EndHorizontal();
-        }
-        EditorGUILayout.EndHorizontal();
     }
     
     private void DrawFolder()
@@ -145,7 +114,7 @@ public sealed class AssetImporterGUI
             {
                 if (_selectedTexturePathIdx != i)
                 {
-                    _scrollPos = Vector2.zero;
+                    ScrollPos = Vector2.zero;
                 }
 
                 _selectedTexturePathIdx = i;
@@ -226,10 +195,9 @@ public sealed class AssetImporterGUI
     {
         EditorGUILayout.BeginHorizontal();
         GUIUtil.DrawPopup("필터", ref _selectedTextureFilterIdx, _filterTextures, _filterWidth, () => Filter(_selectedTextureFilterIdx));
-        
         GUIUtil.DrawPopup("정렬", ref _selectedTextureSortIdx, _sortTextures, () => Sort(_selectedTextureSortIdx, false));
-        GUIUtil.Btn("▼", 25, () => Sort(_selectedTextureSortIdx, true));
         GUIUtil.Btn("▲", 25, () => Sort(_selectedTextureSortIdx, false));
+        GUIUtil.Btn("▼", 25, () => Sort(_selectedTextureSortIdx, true));
         EditorGUILayout.EndHorizontal();
     }
     
@@ -247,7 +215,7 @@ public sealed class AssetImporterGUI
     
     private void DrawAssets()
     {
-        _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
+        ScrollPos = EditorGUILayout.BeginScrollView(ScrollPos);
 
         var totalCnt = _textureImpl.SearchedAssetInfos.Count;
         for (var i = 0; i < totalCnt; i++)
@@ -316,7 +284,11 @@ public sealed class AssetImporterGUI
 
         if (assetInfo.IsReferences)
         {
-            GUIUtil.Btn("참조", width, () => AssetImporterTool_ReferenceList.Open(assetInfo));
+            GUIUtil.Btn("참조", width, () =>
+            {
+                AssetImporterTool_ReferenceList.Open(new AssetImporterTool_ReferenceList.ReferenceParam(
+                    AssetImporterConsts.AssetKind.Texture, assetInfo.References, assetInfo.FileSizeStr));
+            });
         }
         if (assetInfo.IsCompare)
         {
@@ -325,18 +297,7 @@ public sealed class AssetImporterGUI
 
         EditorGUILayout.EndVertical();
     }
-    
-    public void ShowDiff()
-    {
-        if (!_textureImpl.CanDiff())
-        {
-            const string msg = "변경된 에셋이 없습니다.\n에셋을 변경 후, 다시 시도해주세요.";
-            EditorUtility.DisplayDialog("알림", msg, "확인");
-            return;
-        }
-        
-        AssetImporterTool_Diff.Open(this, _originTextureImpl, _textureImpl);
-    }
 
+    public bool CanDiff() => _textureImpl.CanDiff();
     public bool TrySave() => _textureImpl.TrySave();
 }

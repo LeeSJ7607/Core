@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using TMPro;
+using UnityEditor;
 using UnityEngine;
 
 public sealed class AssetImporterTool_Diff : EditorWindow
@@ -29,34 +30,59 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         }
     }
 
-    private AssetImporterGUI _importerGUI;
+    private IAssetImporterGUI[] _importerGuis;
     private AssetInfo _before, _after;
     private AssetType _curAssetType;
     private Vector2 _scrollPos;
 
-    public static void Open(AssetImporterGUI importerGUI, AssetImporterImpl_Texture before, AssetImporterImpl_Texture after)
+    public static void Open(IAssetImporterGUI[] importerGuis) 
     {
         var tool = GetWindow<AssetImporterTool_Diff>("Diff");
         tool.minSize = tool.maxSize = new Vector2(660, 800);
-        tool._importerGUI = importerGUI;
-        tool._before = new AssetInfo(before);
-        tool._after = new AssetInfo(after);
-
+        tool._importerGuis = importerGuis;
+        tool._before = new AssetInfo(
+            (AssetImporterImpl_Texture)importerGuis[(int)AssetImporterConsts.AssetKind.Texture].OriginAssetImporterImpl, 
+            (AssetImporterImpl_FBX)importerGuis[(int)AssetImporterConsts.AssetKind.FBX].OriginAssetImporterImpl,
+            (AssetImporterImpl_Sound)importerGuis[(int)AssetImporterConsts.AssetKind.Sound].OriginAssetImporterImpl);
+        tool._after = new AssetInfo(
+            (AssetImporterImpl_Texture)importerGuis[(int)AssetImporterConsts.AssetKind.Texture].AssetImporterImpl, 
+            (AssetImporterImpl_FBX)importerGuis[(int)AssetImporterConsts.AssetKind.FBX].AssetImporterImpl,
+            (AssetImporterImpl_Sound)importerGuis[(int)AssetImporterConsts.AssetKind.Sound].AssetImporterImpl);
+        
         Sync(tool);
     }
 
     private static void Sync(AssetImporterTool_Diff diff)
     {
-        var beforeAssetInfoMap = diff._before.TextureImpl.AssetInfoMap;
-        var afterAssetInfoMap = diff._after.TextureImpl.AssetInfoMap;
-
-        foreach (var (path, beforeTextures) in beforeAssetInfoMap)
+        var beforeTextureAssetInfoMap = diff._before.TextureImpl.AssetInfoMap;
+        var afterTextureAssetInfoMap = diff._after.TextureImpl.AssetInfoMap;
+        foreach (var (path, beforeTextures) in beforeTextureAssetInfoMap)
         {
             for (var i = 0; i < beforeTextures.Count; i++)
             {
-                beforeTextures[i].Changed = afterAssetInfoMap[path][i].Changed;
+                beforeTextures[i].Changed = afterTextureAssetInfoMap[path][i].Changed;
             }
         }
+        
+        var beforeFBXAssetInfoMap = diff._before.FBXImpl.AssetInfoMap;
+        var afterFBXAssetInfoMap = diff._after.FBXImpl.AssetInfoMap;
+        foreach (var (path, beforeTextures) in beforeFBXAssetInfoMap)
+        {
+            for (var i = 0; i < beforeTextures.Count; i++)
+            {
+                beforeTextures[i].Changed = afterFBXAssetInfoMap[path][i].Changed;
+            }
+        }
+        
+        // var beforeSoundAssetInfoMap = diff._before.SoundImpl.AssetInfoMap;
+        // var afterSoundAssetInfoMap = diff._after.SoundImpl.AssetInfoMap;
+        // foreach (var (path, beforeTextures) in beforeFBXAssetInfoMap)
+        // {
+        //     for (var i = 0; i < beforeTextures.Count; i++)
+        //     {
+        //         beforeTextures[i].Changed = afterFBXAssetInfoMap[path][i].Changed;
+        //     }
+        // }
     }
     
     private void OnDisable()
@@ -174,7 +200,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         AssetImporterImpl_Texture.AssetInfo right)
     {
         const float keyWidth = 80;
-        const float valueWidth = 170;
+        const float valueWidth = 175;
         var tex = assetInfo.Texture2D;
         
         EditorGUILayout.Space(1);
@@ -195,6 +221,30 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         {
             return;
         }
+        
+        const float keyWidth = 80;
+        const float valueWidth = 230;
+
+        foreach (var (path, assetInfos) in fbxImpl.AssetInfoMap)
+        {
+            for (var i = 0; i < assetInfos.Count; i++)
+            {
+                var assetInfo = assetInfos[i];
+                if (!assetInfo.Changed)
+                {
+                    continue;
+                }
+                
+                var left = _before.FBXImpl.AssetInfoMap[path][i]; 
+                var right = _after.FBXImpl.AssetInfoMap[path][i];
+                
+                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                GUIUtil.Desc("Name", assetInfo.FBX.name, keyWidth, valueWidth);
+                GUIUtil.Desc("Read/Write", assetInfo.IsReadable ? "O" : "X", keyWidth, valueWidth, left.IsReadable, right.IsReadable);
+                GUIUtil.Desc("File Size", assetInfo.FileSizeStr, keyWidth, valueWidth);
+                EditorGUILayout.EndHorizontal();
+            }
+        }
     }
     
     private void DrawSoundImpl(AssetImporterImpl_Sound soundImpl)
@@ -213,7 +263,11 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         }
 
         EditorUtility.DisplayDialog("알림", "변경된 에셋을 적용했습니다.", "확인");
-        _importerGUI.TrySave();
+        foreach (var importerGui in _importerGuis)
+        {
+            importerGui.TrySave();
+        }
+        
         Close();
     }
 }

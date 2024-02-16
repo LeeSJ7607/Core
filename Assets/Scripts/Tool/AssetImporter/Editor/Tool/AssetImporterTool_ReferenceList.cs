@@ -4,48 +4,71 @@ using UnityEngine;
 
 public sealed class AssetImporterTool_ReferenceList : EditorWindow
 {
-    private AssetImporterImpl_Texture.AssetInfo _assetInfo;
+    public sealed class ReferenceParam
+    {
+        public AssetImporterConsts.AssetKind AssetKind { get; }
+        public IReadOnlyDictionary<Object, IReadOnlyList<Object>> References { get; }
+        public string FileSizeStr { get; }
+        
+        public ReferenceParam(
+            AssetImporterConsts.AssetKind assetKind, 
+            IReadOnlyDictionary<Object, IReadOnlyList<Object>> references, 
+            string fileSizeStr)
+        {
+            AssetKind = assetKind;
+            References = references;
+            FileSizeStr = fileSizeStr;
+        }
+    }
+    
+    private ReferenceParam _referenceParam;
     private Vector2 _scrollPos;
     
-    public static void Open(AssetImporterImpl_Texture.AssetInfo assetInfo)
+    public static void Open(ReferenceParam referenceParam)
     {
         var tool = GetWindow<AssetImporterTool_ReferenceList>("References");
-        tool._assetInfo = assetInfo;
+        tool._referenceParam = referenceParam;
     }
 
     private void OnGUI()
     {
-        foreach (var pair in _assetInfo.References)
+        foreach (var pair in _referenceParam.References)
         {
             var target = pair.Key;
             var dependencies = pair.Value;
-
-            DrawTarget((Texture2D)target, dependencies.Count);
+            
+            DrawTarget(target, dependencies.Count);
             DrawDependencies(dependencies);
         }
     }
 
-    private void DrawTarget(Texture2D target, int cnt)
+    private void DrawTarget(Object target, int cnt)
     {
         const float size = 40;
-
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+
+        if (_referenceParam.AssetKind == AssetImporterConsts.AssetKind.Texture)
         {
-            GUIUtil.Btn(target, size, size, () => AssetImporterTool_Preview.Open(target));
-            DrawTargetDesc(target, cnt);
-            GUIUtil.Btn("선택", size, size, () => Selection.activeObject = target);
+            GUIUtil.Btn((Texture2D)target, size, size, () => AssetImporterTool_Preview.Open((Texture2D)target));
+            EditorGUILayout.BeginVertical();
+            {
+                GUILayout.Label($"{target.name} ({_referenceParam.FileSizeStr})");
+                GUILayout.Label($"참조 수 {cnt.ToString()}");
+            }
+            EditorGUILayout.EndVertical();
         }
+        else
+        {
+            EditorGUILayout.BeginVertical();
+            {
+                GUILayout.Label($"{target.name} ({_referenceParam.FileSizeStr}), 참조 수 {cnt.ToString()}");
+                EditorGUILayout.ObjectField(target, typeof(Object), true);
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        GUIUtil.Btn("선택", size, size, () => Selection.activeObject = target);
         EditorGUILayout.EndHorizontal();
-    }
-    
-    private void DrawTargetDesc(Texture2D target, int cnt)
-    {
-        EditorGUILayout.BeginVertical();
-        {
-            GUILayout.Label($"{target.name} ({_assetInfo.FileSizeStr})");
-            GUILayout.Label($"참조 수 {cnt.ToString()}");
-        }
-        EditorGUILayout.EndVertical();
     }
 
     private void DrawDependencies(IEnumerable<Object> dependencies)
