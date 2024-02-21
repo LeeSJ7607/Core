@@ -48,7 +48,6 @@ public sealed class AssetImporterImpl_FBX : IAssetImporterImpl
         
         public void Save()
         {
-            ModelImporter.isReadable = IsReadable;
             ModelImporter.SaveAndReimport();
             Changed = false;
         }

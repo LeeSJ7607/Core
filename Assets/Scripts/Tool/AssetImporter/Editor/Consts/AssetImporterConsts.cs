@@ -37,4 +37,15 @@
         ReadWrite,
         References,
     }
+    
+    public enum SortSound
+    {
+        Name,
+        FileSize,
+        ForceToMono,
+        PreloadAudioData,
+        CompressionFormat,
+        LoadType,
+        References,
+    }
 }
