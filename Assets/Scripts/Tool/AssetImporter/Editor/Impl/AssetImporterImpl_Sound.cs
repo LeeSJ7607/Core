@@ -11,14 +11,16 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
         public AudioClip AudioClip { get; }
         public AudioImporter AudioImporter { get; }
         public AudioImporterSampleSettings AOSSettings { get; }
-        public bool ForceToMono { get; private set; }
-        public bool PreloadAudioData { get; private set; }
-        public AudioCompressionFormat CompressionFormat { get; private set; }
-        public AudioClipLoadType LoadType { get; private set; }
+        public bool ForceToMono { get; set; }
+        public bool PreloadAudioData { get; set; }
+        public AudioCompressionFormat CompressionFormat { get; set; }
+        public AudioClipLoadType LoadType { get; set; }
         public long FileSize { get; } 
         public string FileSizeStr { get; }
         public IReadOnlyDictionary<Object, IReadOnlyList<Object>> References { get; set; } 
         public bool IsReferences { get; set; }
+        public IReadOnlyDictionary<int, DependencyUtil.SameAssetInfo> Compares { get; set; }
+        public bool IsCompare { get; set; }
         public bool Changed { get; set; }
         
         public AssetInfo(AudioImporter importer)
@@ -110,8 +112,106 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
         }
     }
     
+    public void CalcSearchedAssetInfos(string path)
+    {
+        _searchedAssetInfos.Clear();
+        _searchedAssetInfos.AddRange(_assetInfoMap[path]);
+
+        Sort();
+    }
+    
+    private void Sort()
+    {
+        switch (CurSort.sortType)
+        {
+        case AssetImporterConsts.SortSound.Name:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.AudioClip.name).ToList() 
+                    : _searchedAssetInfos.OrderBy(_ => _.AudioClip.name).ToList();
+            }
+            break;
+        
+        case AssetImporterConsts.SortSound.FileSize:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.FileSize).ToList() 
+                    : _searchedAssetInfos.OrderBy(_ => _.FileSize).ToList();
+            }
+            break;
+        
+        case AssetImporterConsts.SortSound.ForceToMono:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.ForceToMono).ToList() 
+                    : _searchedAssetInfos.OrderBy(_ => _.ForceToMono).ToList();
+            }
+            break;
+        
+        case AssetImporterConsts.SortSound.PreloadAudioData:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.PreloadAudioData).ToList() 
+                    : _searchedAssetInfos.OrderBy(_ => _.PreloadAudioData).ToList();
+            }
+            break;
+        
+        case AssetImporterConsts.SortSound.CompressionFormat:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.CompressionFormat).ToList() 
+                    : _searchedAssetInfos.OrderBy(_ => _.CompressionFormat).ToList();
+            }
+            break;
+        
+        case AssetImporterConsts.SortSound.LoadType:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.LoadType).ToList() 
+                    : _searchedAssetInfos.OrderBy(_ => _.LoadType).ToList();
+            }
+            break;
+        
+        case AssetImporterConsts.SortSound.References:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.IsReferences).ToList() 
+                    : _searchedAssetInfos.OrderBy(_ => _.IsReferences).ToList();
+            }
+            break;
+        }
+    }
+    
     public bool CanDiff()
     {
         return _assetInfoMap.SelectMany(pair => pair.Value).Any(assetInfo => assetInfo.Changed);
+    }
+    
+    public bool TrySave()
+    {
+        var changed = false;
+        Object activeObject = null;
+
+        foreach (var pair in _assetInfoMap)
+        {
+            foreach (var assetInfo in pair.Value)
+            {
+                if (!assetInfo.Changed)
+                {
+                    continue;
+                }
+
+                activeObject = assetInfo.AudioClip;
+                assetInfo.Save();
+                changed = true;
+            }
+        }
+
+        if (changed)
+        {
+            Selection.activeObject = activeObject;
+        }
+        
+        return changed;
     }
 }

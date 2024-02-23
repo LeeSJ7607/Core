@@ -253,7 +253,7 @@ public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
     private void DrawDesc(AssetImporterImpl_Texture.AssetInfo assetInfo)
     {
         const float keyWidth = 80;
-        const float valueWidth = 170;
+        const float valueWidth = 180;
         var tex = assetInfo.Texture2D;
         
         EditorGUILayout.Space(1);

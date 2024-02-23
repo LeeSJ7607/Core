@@ -81,7 +81,7 @@ public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
         GUIUtil.Btn("모든 참조 찾기", () =>
         {
             DependencyUtil.Dependencies(_fbxImpl.SearchedAssetInfos);
-            Sort((int)AssetImporterConsts.SortTexture.References, true);
+            Sort((int)AssetImporterConsts.SortFBX.References, true);
         });
         
         DrawSort();
@@ -94,6 +94,12 @@ public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
         GUIUtil.Btn("▲", 25, () => Sort(_selectedFBXSortIdx, false));
         GUIUtil.Btn("▼", 25, () => Sort(_selectedFBXSortIdx, true));
         EditorGUILayout.EndHorizontal();
+    }
+    
+    private void Sort(int sortIdx, bool descending)
+    {
+        _fbxImpl.CurSort = ((AssetImporterConsts.SortFBX)sortIdx, descending);
+        _fbxImpl.CalcSearchedAssetInfos(_fbxDirPaths[_selectedFBXPathIdx]);
     }
 
     private void DrawAssets()
@@ -165,12 +171,6 @@ public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
         }
         
         EditorGUILayout.EndVertical();
-    }
-    
-    private void Sort(int sortIdx, bool descending)
-    {
-        _fbxImpl.CurSort = ((AssetImporterConsts.SortFBX)sortIdx, descending);
-        _fbxImpl.CalcSearchedAssetInfos(_fbxDirPaths[_selectedFBXPathIdx]);
     }
     
     public bool CanDiff() => _fbxImpl.CanDiff();

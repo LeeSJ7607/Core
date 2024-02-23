@@ -18,6 +18,8 @@ public sealed class AssetImporterImpl_FBX : IAssetImporterImpl
         public string FileSizeStr { get; }
         public IReadOnlyDictionary<Object, IReadOnlyList<Object>> References { get; set; } 
         public bool IsReferences { get; set; }
+        public IReadOnlyDictionary<int, DependencyUtil.SameAssetInfo> Compares { get; set; }
+        public bool IsCompare { get; set; }
         public bool Changed { get; set; }
         
         public AssetInfo(ModelImporter importer)
@@ -46,10 +48,28 @@ public sealed class AssetImporterImpl_FBX : IAssetImporterImpl
             Changed = false;
         }
         
+        private void Refresh()
+        {
+            Normals = ModelImporter.importNormals;
+            Tangents = ModelImporter.importTangents;
+            MeshCompression = ModelImporter.meshCompression;
+            IsReadable = ModelImporter.isReadable;
+            Changed = false;
+        }
+        
+        private void SetModelImporter()
+        {
+            ModelImporter.importNormals = Normals;
+            ModelImporter.importTangents = Tangents;
+            ModelImporter.meshCompression = MeshCompression;
+            ModelImporter.isReadable = IsReadable;
+            ModelImporter.SaveAndReimport();
+        }
+        
         public void Save()
         {
-            ModelImporter.SaveAndReimport();
-            Changed = false;
+            SetModelImporter();
+            Refresh();
         }
     }
     

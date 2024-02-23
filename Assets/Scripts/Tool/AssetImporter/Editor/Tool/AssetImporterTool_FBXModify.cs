@@ -5,7 +5,7 @@ using UnityEditor;
 
 internal sealed class AssetImporterTool_FBXModify : EditorWindow
 {
-    private const float _toolWidth = 400;
+    private const float _toolWidth = 500;
     
     private static readonly string[] _normalTypes = Enum.GetNames(typeof(ModelImporterNormals)).ToArray();
     private int _selectedNormalTypesIdx;
@@ -83,9 +83,9 @@ internal sealed class AssetImporterTool_FBXModify : EditorWindow
     private void DrawMenus()
     {
         const float width = 100;
-        const float _guiSpace = 10;
+        const float guiSpace = 10;
         
-        EditorGUILayout.Space(_guiSpace);
+        EditorGUILayout.Space(guiSpace);
         EditorGUILayout.BeginHorizontal();
         {
             GUIUtil.BtnExpand("선택", width, () => Selection.activeObject = _assetInfo.FBX);
@@ -129,9 +129,9 @@ internal sealed class AssetImporterTool_FBXModify : EditorWindow
     private bool IsChanged()
     {
         return _selectedMeshCompressionTypesIdx != _originMeshCompressionTypesIdx 
-         || _selectedNormalTypesIdx != _originNormalTypesIdx
-         || _selectedTangentTypesIdx != _originTangentTypesIdx 
-         || _selectedIsReadableIdx != _originIsReadableIdx; 
+            || _selectedNormalTypesIdx != _originNormalTypesIdx
+            || _selectedTangentTypesIdx != _originTangentTypesIdx 
+            || _selectedIsReadableIdx != _originIsReadableIdx; 
     }
     
     private bool IsOriginChanged()
@@ -143,8 +143,8 @@ internal sealed class AssetImporterTool_FBXModify : EditorWindow
         var isReadable = bool.Parse(_isReadable[_selectedIsReadableIdx]);
 
         return meshCompression == modelImporter.meshCompression
-         && normals == modelImporter.importNormals
-         && tangents == modelImporter.importTangents
-         && isReadable == modelImporter.isReadable;
+            && normals == modelImporter.importNormals
+            && tangents == modelImporter.importTangents
+            && isReadable == modelImporter.isReadable;
     }
 }

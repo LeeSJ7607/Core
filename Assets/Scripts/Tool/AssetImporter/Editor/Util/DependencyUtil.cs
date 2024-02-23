@@ -130,23 +130,6 @@ public static class DependencyUtil
         return (result, dependency.Count);
     }
     
-    public static void Dependencies(IEnumerable<AssetImporterImpl_FBX.AssetInfo> assetInfos)
-    {
-        InitDependencies();
-        
-        foreach (var assetInfo in assetInfos)
-        {
-            if (assetInfo.References != null)
-            {
-                continue;
-            }
-
-            var (references, cnt) = GetDependencies(assetInfo.FBX);
-            assetInfo.References = references;
-            assetInfo.IsReferences = cnt > 0;
-        }
-    }
-    
     public static void Dependencies(IEnumerable<AssetImporterImpl_Texture.AssetInfo> assetInfos)
     {
         InitDependencies();
@@ -179,6 +162,84 @@ public static class DependencyUtil
             if (sameAsset.ContainsKey(assetInfo.Texture2D.GetHashCode()))
             {
                 sameAsset.Remove(assetInfo.Texture2D.GetHashCode());
+            }
+            
+            assetInfo.Compares = sameAsset;
+            assetInfo.IsCompare = sameAsset.Count > 0;
+        }
+    }
+    
+    public static void Dependencies(IEnumerable<AssetImporterImpl_FBX.AssetInfo> assetInfos)
+    {
+        InitDependencies();
+        
+        foreach (var assetInfo in assetInfos)
+        {
+            if (assetInfo.References != null)
+            {
+                continue;
+            }
+
+            var (references, cnt) = GetDependencies(assetInfo.FBX);
+            assetInfo.References = references;
+            assetInfo.IsReferences = cnt > 0;
+        }
+    }
+    
+    public static void SameAssets(IEnumerable<AssetImporterImpl_FBX.AssetInfo> assetInfos)
+    {
+        InitSameAssets();
+        
+        foreach (var assetInfo in assetInfos)
+        {
+            if (assetInfo.Compares != null)
+            {
+                continue;
+            }
+
+            var sameAsset = _sameAssets[assetInfo.ModelImporter.assetPath];
+            if (sameAsset.ContainsKey(assetInfo.FBX.GetHashCode()))
+            {
+                sameAsset.Remove(assetInfo.FBX.GetHashCode());
+            }
+            
+            assetInfo.Compares = sameAsset;
+            assetInfo.IsCompare = sameAsset.Count > 0;
+        }
+    }
+    
+    public static void Dependencies(IEnumerable<AssetImporterImpl_Sound.AssetInfo> assetInfos)
+    {
+        InitDependencies();
+        
+        foreach (var assetInfo in assetInfos)
+        {
+            if (assetInfo.References != null)
+            {
+                continue;
+            }
+
+            var (references, cnt) = GetDependencies(assetInfo.AudioClip);
+            assetInfo.References = references;
+            assetInfo.IsReferences = cnt > 0;
+        }
+    }
+    
+    public static void SameAssets(IEnumerable<AssetImporterImpl_Sound.AssetInfo> assetInfos)
+    {
+        InitSameAssets();
+        
+        foreach (var assetInfo in assetInfos)
+        {
+            if (assetInfo.Compares != null)
+            {
+                continue;
+            }
+
+            var sameAsset = _sameAssets[assetInfo.AudioImporter.assetPath];
+            if (sameAsset.ContainsKey(assetInfo.AudioClip.GetHashCode()))
+            {
+                sameAsset.Remove(assetInfo.AudioClip.GetHashCode());
             }
             
             assetInfo.Compares = sameAsset;
