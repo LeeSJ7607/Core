@@ -143,8 +143,8 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
     
     private void DrawDesc(AssetImporterImpl_Sound.AssetInfo assetInfo)
     {
-        const float keyWidth = 80;
-        const float valueWidth = 230;
+        const float keyWidth = 120;
+        const float valueWidth = 210;
         
         EditorGUILayout.Space(1);
         GUILayout.BeginVertical();
