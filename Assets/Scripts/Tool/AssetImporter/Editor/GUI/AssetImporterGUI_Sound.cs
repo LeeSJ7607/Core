@@ -41,8 +41,18 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
         _texModified ??= Resources.Load<Texture2D>("AssetImporter_Modified");
     }
     
+    private bool IsValid()
+    {
+        return _btnNameSoundDirPaths is {Count: > 0};
+    }
+    
     public void Draw()
     {
+        if (!IsValid())
+        {
+            return;
+        }
+        
         DrawFolder();
         DrawMenus();
         DrawAssets();
