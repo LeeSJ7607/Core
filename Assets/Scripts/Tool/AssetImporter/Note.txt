@@ -1,10 +1,6 @@
 ﻿//TODO: 알파 채널 추가삭제 및 알파 채널 표시.
-//TODO: 환경 설정 팝업창에서 보고 싶은 정보만 켜고 끌수 있게 해주고, 텍스쳐를 불러올 경로도 지정하게 해주기.
 //TODO: 텍스쳐를 돋보기처럼 확대해서 1픽셀 다 확인했으면 좋겠음
-//TODO: 카테고리 소팅 작업.
-//TODO: 텍스쳐가 많아지니 스크롤을 할 때, 스크롤 속도가 너무 느려서 페이징 풀링 해야함
 //TODO: 아틀라스에 묶인 텍스쳐인데 압축을 한 경우 2중 압축이 되어 예외처리가 필요함.
-//TODO: FBX, Material, Animation
-//TODO: Audio는 compressionFormat 이 ADPCM 일 경우, sampleRateSetting 를 OptimizeSampleRate 로 고정
+//TODO: 텍스쳐가 많아지니 스크롤을 할 때, 스크롤 속도가 너무 느려서 페이징 풀링 해야함.
 //TODO: 에디터에서는 다른 텍스쳐 옵션을 주고 싶고, 빌드에서는 또 다른 텍스쳐 옵션을 주고 싶다.
-//TODO: 밉맵 체크 여부
+//TODO: Audio는 compressionFormat 이 ADPCM 일 경우, sampleRateSetting 를 OptimizeSampleRate 로 고정
