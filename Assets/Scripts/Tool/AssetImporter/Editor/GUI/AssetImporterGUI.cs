@@ -57,7 +57,10 @@ internal sealed class AssetImporterGUI : EditorWindow
         if (GUILayout.Button("Specify the folder path", GUILayout.Width(140)))
         {
             _selectedFolderPath = EditorUtility.OpenFolderPanel("Specify the folder path", _selectedFolderPath, "");
-            _assetImporterGuis[_selectedAssetKindIdx].Initialize(_selectedFolderPath);
+            foreach (var assetImporterGui in _assetImporterGuis)
+            {
+                assetImporterGui.Initialize(_selectedFolderPath);
+            }
             PlayerPrefs.SetString(_keySelectedFilePath, _selectedFolderPath);
         }
 

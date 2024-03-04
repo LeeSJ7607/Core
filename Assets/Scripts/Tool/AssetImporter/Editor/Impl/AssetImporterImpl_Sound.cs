@@ -19,8 +19,6 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
         public string FileSizeStr { get; }
         public IReadOnlyDictionary<Object, IReadOnlyList<Object>> References { get; set; } 
         public bool IsReferences { get; set; }
-        public IReadOnlyDictionary<int, DependencyUtil.SameAssetInfo> Compares { get; set; }
-        public bool IsCompare { get; set; }
         public bool Changed { get; set; }
         
         public AssetInfo(AudioImporter importer)

@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEditor;
 
 public static class DependencyUtil
 {
@@ -20,7 +20,7 @@ public static class DependencyUtil
     private static Dictionary<string, List<Object>> _dependencies;
     private static Dictionary<string, Dictionary<int, SameAssetInfo>> _sameAssets;
     
-    private static void InitDependencies()
+    public static void InitDependencies()
     {
         if (_dependencies != null)
         {
@@ -64,7 +64,7 @@ public static class DependencyUtil
         
         foreach (var pair in _sameAssets)
         {
-            EditorUtility.DisplayProgressBar($"동일한 텍스쳐를 검색중입니다. ({i}/{totalCnt})", "", (float)i / totalCnt);
+            EditorUtility.DisplayProgressBar($"동일한 에셋을 검색중입니다. ({i}/{totalCnt})", "", (float)i / totalCnt);
             
             var targetPath = pair.Key;
             var targetTex = AssetDatabase.LoadAssetAtPath<Texture2D>(targetPath);
@@ -120,7 +120,7 @@ public static class DependencyUtil
         EditorUtility.ClearProgressBar();
     }
     
-    private static (IReadOnlyDictionary<Object, IReadOnlyList<Object>> references, int cnt) GetDependencies(Object target)
+    public static (IReadOnlyDictionary<Object, IReadOnlyList<Object>> references, int cnt) GetDependencies(Object target)
     {
         var result = new Dictionary<Object, IReadOnlyList<Object>>();
         var targetPath = AssetDatabase.GetAssetPath(target);
@@ -147,6 +147,40 @@ public static class DependencyUtil
         }
     }
     
+    public static void Dependencies(IEnumerable<AssetImporterImpl_FBX.AssetInfo> assetInfos)
+    {
+        DependencyUtil.InitDependencies();
+        
+        foreach (var assetInfo in assetInfos)
+        {
+            if (assetInfo.References != null)
+            {
+                continue;
+            }
+
+            var (references, cnt) = DependencyUtil.GetDependencies(assetInfo.FBX);
+            assetInfo.References = references;
+            assetInfo.IsReferences = cnt > 0;
+        }
+    }
+    
+    public static void Dependencies(IEnumerable<AssetImporterImpl_Sound.AssetInfo> assetInfos)
+    {
+        DependencyUtil.InitDependencies();
+        
+        foreach (var assetInfo in assetInfos)
+        {
+            if (assetInfo.References != null)
+            {
+                continue;
+            }
+
+            var (references, cnt) = DependencyUtil.GetDependencies(assetInfo.AudioClip);
+            assetInfo.References = references;
+            assetInfo.IsReferences = cnt > 0;
+        }
+    }
+    
     public static void SameAssets(IEnumerable<AssetImporterImpl_Texture.AssetInfo> assetInfos)
     {
         InitSameAssets();
@@ -162,84 +196,6 @@ public static class DependencyUtil
             if (sameAsset.ContainsKey(assetInfo.Texture2D.GetHashCode()))
             {
                 sameAsset.Remove(assetInfo.Texture2D.GetHashCode());
-            }
-            
-            assetInfo.Compares = sameAsset;
-            assetInfo.IsCompare = sameAsset.Count > 0;
-        }
-    }
-    
-    public static void Dependencies(IEnumerable<AssetImporterImpl_FBX.AssetInfo> assetInfos)
-    {
-        InitDependencies();
-        
-        foreach (var assetInfo in assetInfos)
-        {
-            if (assetInfo.References != null)
-            {
-                continue;
-            }
-
-            var (references, cnt) = GetDependencies(assetInfo.FBX);
-            assetInfo.References = references;
-            assetInfo.IsReferences = cnt > 0;
-        }
-    }
-    
-    public static void SameAssets(IEnumerable<AssetImporterImpl_FBX.AssetInfo> assetInfos)
-    {
-        InitSameAssets();
-        
-        foreach (var assetInfo in assetInfos)
-        {
-            if (assetInfo.Compares != null)
-            {
-                continue;
-            }
-
-            var sameAsset = _sameAssets[assetInfo.ModelImporter.assetPath];
-            if (sameAsset.ContainsKey(assetInfo.FBX.GetHashCode()))
-            {
-                sameAsset.Remove(assetInfo.FBX.GetHashCode());
-            }
-            
-            assetInfo.Compares = sameAsset;
-            assetInfo.IsCompare = sameAsset.Count > 0;
-        }
-    }
-    
-    public static void Dependencies(IEnumerable<AssetImporterImpl_Sound.AssetInfo> assetInfos)
-    {
-        InitDependencies();
-        
-        foreach (var assetInfo in assetInfos)
-        {
-            if (assetInfo.References != null)
-            {
-                continue;
-            }
-
-            var (references, cnt) = GetDependencies(assetInfo.AudioClip);
-            assetInfo.References = references;
-            assetInfo.IsReferences = cnt > 0;
-        }
-    }
-    
-    public static void SameAssets(IEnumerable<AssetImporterImpl_Sound.AssetInfo> assetInfos)
-    {
-        InitSameAssets();
-        
-        foreach (var assetInfo in assetInfos)
-        {
-            if (assetInfo.Compares != null)
-            {
-                continue;
-            }
-
-            var sameAsset = _sameAssets[assetInfo.AudioImporter.assetPath];
-            if (sameAsset.ContainsKey(assetInfo.AudioClip.GetHashCode()))
-            {
-                sameAsset.Remove(assetInfo.AudioClip.GetHashCode());
             }
             
             assetInfo.Compares = sameAsset;
