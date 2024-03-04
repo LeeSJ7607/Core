@@ -32,8 +32,11 @@ public sealed class AssetImporterTool_ReferenceList : EditorWindow
 
     private void OnGUI()
     {
-        foreach (var (target, dependencies) in _referenceParam.References)
+        foreach (var pair in _referenceParam.References)
         {
+            var target = pair.Key;
+            var dependencies = pair.Value;
+            
             DrawTarget(target, dependencies.Count);
             DrawDependencies(dependencies);
         }
