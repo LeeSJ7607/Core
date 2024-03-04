@@ -11,6 +11,10 @@ public sealed class AssetImporterTool_SoundModify : EditorWindow
     private int _selectedCompressionFormatsIdx;
     private int _originCompressionFormatsIdx;
     
+    private static readonly string[] _sampleRateSettings = Enum.GetNames(typeof(AudioSampleRateSetting)).ToArray();
+    private int _selectedSampleRateSettingsIdx;
+    private int _originSampleRateSettingsIdx;
+    
     private static readonly string[] _loadTypes = Enum.GetNames(typeof(AudioClipLoadType)).ToArray();
     private int _selectedLoadTypesIdx;
     private int _originLoadTypesIdx;
@@ -36,7 +40,7 @@ public sealed class AssetImporterTool_SoundModify : EditorWindow
     public static void Open(AssetImporterImpl_Sound.AssetInfo assetInfo)
     {
         var tool = GetWindow<AssetImporterTool_SoundModify>("Modify");
-        tool.minSize = tool.maxSize = new Vector2(_toolWidth, 200);
+        tool.minSize = tool.maxSize = new Vector2(_toolWidth, 220);
         tool._assetInfo = assetInfo;
         
         SetOption(tool);
@@ -47,6 +51,7 @@ public sealed class AssetImporterTool_SoundModify : EditorWindow
         var assetInfo = tool._assetInfo;
         
         tool._originCompressionFormatsIdx = tool._selectedCompressionFormatsIdx = Array.FindIndex(_compressionFormats, _ => _.Equals(assetInfo.CompressionFormat.ToString()));
+        tool._originSampleRateSettingsIdx = tool._selectedSampleRateSettingsIdx = Array.FindIndex(_sampleRateSettings, _ => _.Equals(assetInfo.SampleRateSetting.ToString()));
         tool._originLoadTypesIdx = tool._selectedLoadTypesIdx = Array.FindIndex(_loadTypes, _ => _.Equals(assetInfo.LoadType.ToString()));
         tool._originPreloadAudioDataIdx = tool._selectedPreloadAudioDataIdx = Array.FindIndex(_preloadAudioData, _ => _.Equals(assetInfo.PreloadAudioData.ToString()));
         tool._originForceToMonoIdx = tool._selectedForceToMonoIdx = Array.FindIndex(_forceToMono, _ => _.Equals(assetInfo.ForceToMono.ToString()));
@@ -55,6 +60,7 @@ public sealed class AssetImporterTool_SoundModify : EditorWindow
     private void ReSetOption()
     {
         _selectedCompressionFormatsIdx = _originCompressionFormatsIdx;
+        _selectedSampleRateSettingsIdx = _originSampleRateSettingsIdx;
         _selectedLoadTypesIdx = _originLoadTypesIdx;
         _selectedPreloadAudioDataIdx = _originPreloadAudioDataIdx;
         _selectedForceToMonoIdx = _originForceToMonoIdx;
@@ -79,6 +85,7 @@ public sealed class AssetImporterTool_SoundModify : EditorWindow
     private void DrawOption()
     {
         GUIUtil.DrawPopup("AudioCompressionFormat", ref _selectedCompressionFormatsIdx, _compressionFormats);
+        GUIUtil.DrawPopup("AudioSampleRateSetting", ref _selectedSampleRateSettingsIdx, _sampleRateSettings);
         GUIUtil.DrawPopup("AudioClipLoadType", ref _selectedLoadTypesIdx, _loadTypes);
         GUIUtil.DrawPopup("PreloadAudioData", ref _selectedPreloadAudioDataIdx, _preloadAudioData);
         GUIUtil.DrawPopup("ForceToMono", ref _selectedForceToMonoIdx, _forceToMono);
@@ -123,6 +130,7 @@ public sealed class AssetImporterTool_SoundModify : EditorWindow
 
         _assetInfo.Changed = true;
         _assetInfo.CompressionFormat = Enum.Parse<AudioCompressionFormat>(_compressionFormats[_selectedCompressionFormatsIdx]);
+        _assetInfo.SampleRateSetting = Enum.Parse<AudioSampleRateSetting>(_sampleRateSettings[_selectedSampleRateSettingsIdx]);
         _assetInfo.LoadType = Enum.Parse<AudioClipLoadType>(_loadTypes[_selectedLoadTypesIdx]);
         _assetInfo.PreloadAudioData = bool.Parse(_preloadAudioData[_selectedPreloadAudioDataIdx]);
         _assetInfo.ForceToMono = bool.Parse(_forceToMono[_selectedForceToMonoIdx]);
@@ -133,6 +141,7 @@ public sealed class AssetImporterTool_SoundModify : EditorWindow
     private bool IsChanged()
     {
         return _selectedCompressionFormatsIdx != _originCompressionFormatsIdx 
+            || _selectedSampleRateSettingsIdx != _originSampleRateSettingsIdx
             || _selectedLoadTypesIdx != _originLoadTypesIdx
             || _selectedPreloadAudioDataIdx != _originPreloadAudioDataIdx
             || _selectedForceToMonoIdx != _originForceToMonoIdx;
@@ -142,11 +151,13 @@ public sealed class AssetImporterTool_SoundModify : EditorWindow
     {
         var audioImporter = _assetInfo.AudioImporter;
         var compressionFormat = Enum.Parse<AudioCompressionFormat>(_compressionFormats[_selectedCompressionFormatsIdx]);
+        var sampleRateSetting = Enum.Parse<AudioSampleRateSetting>(_sampleRateSettings[_selectedSampleRateSettingsIdx]);
         var loadType = Enum.Parse<AudioClipLoadType>(_loadTypes[_selectedLoadTypesIdx]);
         var preloadAudioData = bool.Parse(_preloadAudioData[_selectedPreloadAudioDataIdx]);
         var forceToMono = bool.Parse(_forceToMono[_selectedForceToMonoIdx]);
 
         return compressionFormat == _assetInfo.CompressionFormat 
+            && sampleRateSetting == _assetInfo.SampleRateSetting
             && loadType == _assetInfo.LoadType 
             && preloadAudioData == _assetInfo.PreloadAudioData 
             && forceToMono == audioImporter.forceToMono;

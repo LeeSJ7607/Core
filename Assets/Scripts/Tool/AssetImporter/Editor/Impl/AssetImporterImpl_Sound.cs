@@ -14,6 +14,7 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
         public bool ForceToMono { get; set; }
         public bool PreloadAudioData { get; set; }
         public AudioCompressionFormat CompressionFormat { get; set; }
+        public AudioSampleRateSetting SampleRateSetting { get; set; }
         public AudioClipLoadType LoadType { get; set; }
         public long FileSize { get; } 
         public string FileSizeStr { get; }
@@ -29,6 +30,7 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
             ForceToMono = importer.forceToMono;
             PreloadAudioData = AOSSettings.preloadAudioData;
             CompressionFormat = AOSSettings.compressionFormat;
+            SampleRateSetting = AOSSettings.sampleRateSetting;
             LoadType = AOSSettings.loadType;
             FileSize = new FileInfo(importer.assetPath).Length;
             FileSizeStr = $"{FileSize / 1000:#,###} KB";
@@ -44,6 +46,7 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
             ForceToMono = AudioImporter.forceToMono;
             PreloadAudioData = AOSSettings.preloadAudioData;
             CompressionFormat = AOSSettings.compressionFormat;
+            SampleRateSetting = AOSSettings.sampleRateSetting;
             LoadType = AOSSettings.loadType;
             Changed = false;
         }
@@ -54,6 +57,7 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
             var ios = AudioImporter.GetOverrideSampleSettings("iPhone");
             aos.preloadAudioData = ios.preloadAudioData = PreloadAudioData;
             aos.compressionFormat = ios.compressionFormat = CompressionFormat;
+            aos.sampleRateSetting = ios.sampleRateSetting = SampleRateSetting;
             aos.loadType = ios.loadType = LoadType;
             AudioImporter.SetOverrideSampleSettings("Android", aos);
             AudioImporter.SetOverrideSampleSettings("iPhone", ios);
@@ -168,6 +172,14 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.CompressionFormat).ToList() 
                     : _searchedAssetInfos.OrderBy(_ => _.CompressionFormat).ToList();
+            }
+            break;
+        
+        case AssetImporterConsts.SortSound.SampleRateSetting:
+            {
+                _searchedAssetInfos = CurSort.descending 
+                    ? _searchedAssetInfos.OrderByDescending(_ => _.SampleRateSetting).ToList() 
+                    : _searchedAssetInfos.OrderBy(_ => _.SampleRateSetting).ToList();
             }
             break;
         

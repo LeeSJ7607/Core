@@ -279,6 +279,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
                 GUIUtil.Desc("ForceToMono", assetInfo.ForceToMono ? "O" : "X", keyWidth, valueWidth, left.ForceToMono, right.ForceToMono);
                 GUIUtil.Desc("PreloadAudioData", assetInfo.PreloadAudioData ? "O" : "X", keyWidth, valueWidth, left.PreloadAudioData, right.PreloadAudioData);
                 GUIUtil.Desc("CompressionFormat", assetInfo.CompressionFormat.ToString(), keyWidth, valueWidth, left.CompressionFormat, right.CompressionFormat);
+                GUIUtil.Desc("SampleRateSetting", assetInfo.SampleRateSetting.ToString(), keyWidth, valueWidth, left.SampleRateSetting, right.SampleRateSetting);
                 GUIUtil.Desc("LoadType", assetInfo.LoadType.ToString(), keyWidth, valueWidth, left.LoadType, right.LoadType);
                 GUIUtil.Desc("File Size", assetInfo.FileSizeStr, keyWidth, valueWidth);
                 GUILayout.EndVertical();

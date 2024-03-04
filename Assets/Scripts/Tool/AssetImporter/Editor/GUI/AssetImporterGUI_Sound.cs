@@ -153,6 +153,7 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
         GUIUtil.Desc("ForceToMono", assetInfo.ForceToMono ? "O" : "X", keyWidth, valueWidth);
         GUIUtil.Desc("PreloadAudioData", assetInfo.PreloadAudioData ? "O" : "X", keyWidth, valueWidth);
         GUIUtil.Desc("CompressionFormat", assetInfo.CompressionFormat.ToString(), keyWidth, valueWidth);
+        GUIUtil.Desc("SampleRateSetting", assetInfo.SampleRateSetting.ToString(), keyWidth, valueWidth);
         GUIUtil.Desc("LoadType", assetInfo.LoadType.ToString(), keyWidth, valueWidth);
         GUIUtil.Desc("File Size", assetInfo.FileSizeStr, keyWidth, valueWidth);
         

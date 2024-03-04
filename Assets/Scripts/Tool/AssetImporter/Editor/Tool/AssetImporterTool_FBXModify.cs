@@ -32,7 +32,7 @@ internal sealed class AssetImporterTool_FBXModify : EditorWindow
     public static void Open(AssetImporterImpl_FBX.AssetInfo assetInfo)
     {
         var tool = GetWindow<AssetImporterTool_FBXModify>("Modify");
-        tool.minSize = tool.maxSize = new Vector2(_toolWidth, 200);
+        tool.minSize = tool.maxSize = new Vector2(_toolWidth, 195);
         tool._assetInfo = assetInfo;
         
         SetOption(tool);

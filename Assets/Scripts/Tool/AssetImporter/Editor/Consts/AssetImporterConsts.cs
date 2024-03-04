@@ -45,6 +45,7 @@
         ForceToMono,
         PreloadAudioData,
         CompressionFormat,
+        SampleRateSetting,
         LoadType,
         References,
     }

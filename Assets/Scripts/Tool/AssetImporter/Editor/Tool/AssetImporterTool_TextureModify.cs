@@ -41,7 +41,7 @@ internal sealed class AssetImporterTool_TextureModify : EditorWindow
     public static void Open(AssetImporterImpl_Texture.AssetInfo assetInfo)
     {
         var tool = GetWindow<AssetImporterTool_TextureModify>("Modify");
-        tool.minSize = tool.maxSize = new Vector2(_toolWidth, 540);
+        tool.minSize = tool.maxSize = new Vector2(_toolWidth, 530);
         tool._assetInfo = assetInfo;
 
         SetOption(tool);
