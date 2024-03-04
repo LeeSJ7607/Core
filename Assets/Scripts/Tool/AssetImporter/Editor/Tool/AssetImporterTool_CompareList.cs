@@ -1,15 +1,36 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public sealed class AssetImporterTool_CompareList : EditorWindow
 {
-    private AssetImporterImpl_Texture.AssetInfo _assetInfo;
+    public sealed class CompareParam
+    {
+        public AssetImporterConsts.AssetKind AssetKind { get; }
+        public Object Target { get; }
+        public IReadOnlyDictionary<int, DependencyUtil.SameAssetInfo> Compares { get; set; }
+        public string FileSizeStr { get; }
+        
+        public CompareParam(
+            AssetImporterConsts.AssetKind assetKind, 
+            Object target,
+            IReadOnlyDictionary<int, DependencyUtil.SameAssetInfo> compare,
+            string fileSizeStr)
+        {
+            AssetKind = assetKind;
+            Target = target;
+            Compares = compare;
+            FileSizeStr = fileSizeStr;
+        }
+    }
+
+    private CompareParam _compareParam;
     private Vector2 _scrollPos;
     
-    public static void Open(AssetImporterImpl_Texture.AssetInfo assetInfo)
+    public static void Open(CompareParam compareParam)
     {
         var tool = GetWindow<AssetImporterTool_CompareList>();
-        tool._assetInfo = assetInfo;
+        tool._compareParam = compareParam;
     }
     
     private void OnGUI()
@@ -23,11 +44,19 @@ public sealed class AssetImporterTool_CompareList : EditorWindow
         const float size = 40;
         
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+        
+        if (_compareParam.AssetKind == AssetImporterConsts.AssetKind.Texture)
         {
-            GUIUtil.Btn(_assetInfo.Texture2D, size, size, () => AssetImporterTool_Preview.Open(_assetInfo.Texture2D));
+            GUIUtil.Btn((Texture2D)_compareParam.Target, size, size, () => AssetImporterTool_Preview.Open(_compareParam.Target));
             DrawTargetDesc();
-            GUIUtil.Btn("선택", size, size, () => Selection.activeObject = _assetInfo.Texture2D);
+            GUIUtil.Btn("선택", size, size, () => Selection.activeObject = _compareParam.Target);
         }
+        else
+        {
+            DrawTargetDesc();
+            GUIUtil.Btn("선택", size, size, () => Selection.activeObject = _compareParam.Target);
+        }
+        
         EditorGUILayout.EndHorizontal();
     }
     
@@ -35,9 +64,9 @@ public sealed class AssetImporterTool_CompareList : EditorWindow
     {
         EditorGUILayout.BeginVertical();
         {
-            GUILayout.Label($"Name: {_assetInfo.Texture2D.name}");
-            GUILayout.Label($"FileSize: {_assetInfo.FileSizeStr}");
-            GUILayout.Label($"동일한 텍스쳐 수: {_assetInfo.Compares.Count.ToString()}");
+            GUILayout.Label($"Name: {_compareParam.Target.name}");
+            GUILayout.Label($"FileSize: {_compareParam.FileSizeStr}");
+            GUILayout.Label($"동일한 텍스쳐 수: {_compareParam.Compares.Count.ToString()}");
         }
         EditorGUILayout.EndVertical();
     }
@@ -47,11 +76,11 @@ public sealed class AssetImporterTool_CompareList : EditorWindow
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
         
-        foreach (var (_, sameAsset) in _assetInfo.Compares)
+        foreach (var (_, sameAsset) in _compareParam.Compares)
         {
             EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
             {
-                EditorGUILayout.ObjectField(sameAsset.Tex, typeof(Object), true);
+                EditorGUILayout.ObjectField(sameAsset.Obj, typeof(Object), true);
                 DrawSameAssetBtn(sameAsset);
             }
             EditorGUILayout.EndHorizontal();
@@ -63,8 +92,8 @@ public sealed class AssetImporterTool_CompareList : EditorWindow
     
     private void DrawSameAssetBtn(DependencyUtil.SameAssetInfo sameAsset)
     {
-        GUIUtil.Btn("비교", () => AssetImporterTool_Compare.Open(_assetInfo.Texture2D, sameAsset.Tex));
-        GUIUtil.Btn("텍스쳐 선택", () => Selection.activeObject = sameAsset.Tex);
+        GUIUtil.Btn("비교", () => AssetImporterTool_Compare.Open((Texture2D)_compareParam.Target, (Texture2D)sameAsset.Obj));
+        GUIUtil.Btn("텍스쳐 선택", () => Selection.activeObject = sameAsset.Obj);
 
         if (sameAsset.Mat)
         {

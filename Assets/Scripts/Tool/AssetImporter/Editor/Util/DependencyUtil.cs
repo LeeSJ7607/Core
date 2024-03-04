@@ -7,12 +7,12 @@ public static class DependencyUtil
 {
     public sealed class SameAssetInfo
     {
-        public Texture Tex { get; }
+        public Object Obj { get; }
         public Material Mat { get; }
         
-        public SameAssetInfo(Texture tex, Material mat = null)
+        public SameAssetInfo(Object obj, Material mat = null)
         {
-            Tex = tex;
+            Obj = obj;
             Mat = mat;
         }
     }

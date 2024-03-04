@@ -41,8 +41,18 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
         _texModified ??= Resources.Load<Texture2D>("AssetImporter_Modified");
     }
     
+    private bool IsValid()
+    {
+        return _btnNameSoundDirPaths is {Count: > 0};
+    }
+    
     public void Draw()
     {
+        if (!IsValid())
+        {
+            return;
+        }
+        
         DrawFolder();
         DrawMenus();
         DrawAssets();
@@ -77,11 +87,20 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
     
     private void DrawMenus()
     {
-        GUIUtil.Btn("모든 참조 찾기", () =>
+        EditorGUILayout.BeginHorizontal();
         {
-            DependencyUtil.Dependencies(_soundImpl.SearchedAssetInfos);
-            Sort((int)AssetImporterConsts.SortSound.References, true);
-        });
+            GUIUtil.Btn("모든 참조 찾기", () =>
+            {
+                DependencyUtil.Dependencies(_soundImpl.SearchedAssetInfos);
+                Sort((int)AssetImporterConsts.SortSound.References, true);
+            });
+            GUIUtil.Btn("동일한 텍스쳐 모두 찾기", () =>
+            {
+                DependencyUtil.SameAssets(_soundImpl.SearchedAssetInfos);
+                Sort((int)AssetImporterConsts.SortTexture.Compare, true);
+            });
+        }
+        EditorGUILayout.EndHorizontal();
         
         DrawSort();
     }
@@ -166,6 +185,14 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
             {
                 AssetImporterTool_ReferenceList.Open(new AssetImporterTool_ReferenceList.ReferenceParam(
                     AssetImporterConsts.AssetKind.Sound, assetInfo.References, assetInfo.FileSizeStr));
+            });
+        }
+        if (assetInfo.IsCompare)
+        {
+            GUIUtil.Btn("비교", width, () =>
+            {
+                AssetImporterTool_CompareList.Open(new AssetImporterTool_CompareList.CompareParam(
+                    AssetImporterConsts.AssetKind.Sound, assetInfo.AudioClip, assetInfo.Compares, assetInfo.FileSizeStr));
             });
         }
         

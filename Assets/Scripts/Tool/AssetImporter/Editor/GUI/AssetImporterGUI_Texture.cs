@@ -292,7 +292,11 @@ public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
         }
         if (assetInfo.IsCompare)
         {
-            GUIUtil.Btn("비교", width, () => AssetImporterTool_CompareList.Open(assetInfo));
+            GUIUtil.Btn("비교", width, () =>
+            {
+                AssetImporterTool_CompareList.Open(new AssetImporterTool_CompareList.CompareParam(
+                    AssetImporterConsts.AssetKind.Texture, assetInfo.Texture2D, assetInfo.Compares, assetInfo.FileSizeStr));
+            });
         }
 
         EditorGUILayout.EndVertical();
