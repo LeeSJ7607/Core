@@ -143,7 +143,16 @@ internal sealed class AssetImporterGUI : EditorWindow
     
     private void Save()
     {
-        var changed = _assetImporterGuis[_selectedAssetKindIdx].TrySave();
+        var changed = false;
+        
+        foreach (var assetImporterGUI in _assetImporterGuis)
+        {
+            if (assetImporterGUI.TrySave())
+            {
+                changed = true;
+            }
+        }
+        
         var msg = changed ? "변경된 에셋을 적용했습니다." : "변경된 에셋이 없습니다.";
         EditorUtility.DisplayDialog("알림", msg, "확인");
     }

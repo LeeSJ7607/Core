@@ -182,6 +182,6 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
         EditorGUILayout.EndVertical();
     }
     
-    public bool CanDiff() => false;
-    public bool TrySave() => true;
+    public bool CanDiff() => _soundImpl.CanDiff();
+    public bool TrySave() => _soundImpl.TrySave();
 }

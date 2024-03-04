@@ -29,24 +29,24 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         }
     }
 
-    private IAssetImporterGUI[] _importerGuis;
+    private IAssetImporterGUI[] _assetImporterGuis;
     private AssetInfo _before, _after;
     private AssetType _curAssetType;
     private Vector2 _scrollPos;
 
-    public static void Open(IAssetImporterGUI[] importerGuis) 
+    public static void Open(IAssetImporterGUI[] assetImporterGuis) 
     {
         var tool = GetWindow<AssetImporterTool_Diff>("Diff");
-        tool.minSize = tool.maxSize = new Vector2(660, 800);
-        tool._importerGuis = importerGuis;
+        tool.minSize = tool.maxSize = new Vector2(700, 800);
+        tool._assetImporterGuis = assetImporterGuis;
         tool._before = new AssetInfo(
-            (AssetImporterImpl_Texture)importerGuis[(int)AssetImporterConsts.AssetKind.Texture].OriginAssetImporterImpl, 
-            (AssetImporterImpl_FBX)importerGuis[(int)AssetImporterConsts.AssetKind.FBX].OriginAssetImporterImpl,
-            (AssetImporterImpl_Sound)importerGuis[(int)AssetImporterConsts.AssetKind.Sound].OriginAssetImporterImpl);
+            (AssetImporterImpl_Texture)assetImporterGuis[(int)AssetImporterConsts.AssetKind.Texture].OriginAssetImporterImpl, 
+            (AssetImporterImpl_FBX)assetImporterGuis[(int)AssetImporterConsts.AssetKind.FBX].OriginAssetImporterImpl,
+            (AssetImporterImpl_Sound)assetImporterGuis[(int)AssetImporterConsts.AssetKind.Sound].OriginAssetImporterImpl);
         tool._after = new AssetInfo(
-            (AssetImporterImpl_Texture)importerGuis[(int)AssetImporterConsts.AssetKind.Texture].AssetImporterImpl, 
-            (AssetImporterImpl_FBX)importerGuis[(int)AssetImporterConsts.AssetKind.FBX].AssetImporterImpl,
-            (AssetImporterImpl_Sound)importerGuis[(int)AssetImporterConsts.AssetKind.Sound].AssetImporterImpl);
+            (AssetImporterImpl_Texture)assetImporterGuis[(int)AssetImporterConsts.AssetKind.Texture].AssetImporterImpl, 
+            (AssetImporterImpl_FBX)assetImporterGuis[(int)AssetImporterConsts.AssetKind.FBX].AssetImporterImpl,
+            (AssetImporterImpl_Sound)assetImporterGuis[(int)AssetImporterConsts.AssetKind.Sound].AssetImporterImpl);
         
         Sync(tool);
     }
@@ -73,15 +73,15 @@ public sealed class AssetImporterTool_Diff : EditorWindow
             }
         }
         
-        // var beforeSoundAssetInfoMap = diff._before.SoundImpl.AssetInfoMap;
-        // var afterSoundAssetInfoMap = diff._after.SoundImpl.AssetInfoMap;
-        // foreach (var (path, beforeTextures) in beforeFBXAssetInfoMap)
-        // {
-        //     for (var i = 0; i < beforeTextures.Count; i++)
-        //     {
-        //         beforeTextures[i].Changed = afterFBXAssetInfoMap[path][i].Changed;
-        //     }
-        // }
+        var beforeSoundAssetInfoMap = diff._before.SoundImpl.AssetInfoMap;
+        var afterSoundAssetInfoMap = diff._after.SoundImpl.AssetInfoMap;
+        foreach (var (path, beforeTextures) in beforeSoundAssetInfoMap)
+        {
+            for (var i = 0; i < beforeTextures.Count; i++)
+            {
+                beforeTextures[i].Changed = afterSoundAssetInfoMap[path][i].Changed;
+            }
+        }
     }
     
     private void OnDisable()
@@ -199,7 +199,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         AssetImporterImpl_Texture.AssetInfo right)
     {
         const float keyWidth = 80;
-        const float valueWidth = 175;
+        const float valueWidth = 195;
         var tex = assetInfo.Texture2D;
         
         EditorGUILayout.Space(1);
@@ -221,8 +221,8 @@ public sealed class AssetImporterTool_Diff : EditorWindow
             return;
         }
         
-        const float keyWidth = 80;
-        const float valueWidth = 230;
+        const float keyWidth = 110;
+        const float valueWidth = 220;
 
         foreach (var (path, assetInfos) in fbxImpl.AssetInfoMap)
         {
@@ -237,14 +237,15 @@ public sealed class AssetImporterTool_Diff : EditorWindow
                 var left = _before.FBXImpl.AssetInfoMap[path][i]; 
                 var right = _after.FBXImpl.AssetInfoMap[path][i];
                 
-                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                EditorGUILayout.Space(1);
+                GUILayout.BeginVertical(EditorStyles.helpBox);
                 GUIUtil.Desc("Name", assetInfo.FBX.name, keyWidth, valueWidth);
                 GUIUtil.Desc("Normals", assetInfo.Normals.ToString(), keyWidth, valueWidth, left.Normals, right.Normals);
                 GUIUtil.Desc("Tangents", assetInfo.Tangents.ToString(), keyWidth, valueWidth, left.Tangents, right.Tangents);
                 GUIUtil.Desc("MeshCompression", assetInfo.MeshCompression.ToString(), keyWidth, valueWidth, left.MeshCompression, right.MeshCompression);
                 GUIUtil.Desc("Read/Write", assetInfo.IsReadable ? "O" : "X", keyWidth, valueWidth, left.IsReadable, right.IsReadable);
                 GUIUtil.Desc("File Size", assetInfo.FileSizeStr, keyWidth, valueWidth);
-                EditorGUILayout.EndHorizontal();
+                GUILayout.EndVertical();
             }
         }
     }
@@ -254,6 +255,34 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         if (soundImpl == null)
         {
             return;
+        }
+        
+        const float keyWidth = 120;
+        const float valueWidth = 210;
+
+        foreach (var (path, assetInfos) in soundImpl.AssetInfoMap)
+        {
+            for (var i = 0; i < assetInfos.Count; i++)
+            {
+                var assetInfo = assetInfos[i];
+                if (!assetInfo.Changed)
+                {
+                    continue;
+                }
+
+                var left = _before.SoundImpl.AssetInfoMap[path][i];
+                var right = _after.SoundImpl.AssetInfoMap[path][i];
+                
+                EditorGUILayout.Space(1);
+                GUILayout.BeginVertical(EditorStyles.helpBox);
+                GUIUtil.Desc("Name", assetInfo.AudioClip.name, keyWidth, valueWidth);
+                GUIUtil.Desc("ForceToMono", assetInfo.ForceToMono ? "O" : "X", keyWidth, valueWidth, left.ForceToMono, right.ForceToMono);
+                GUIUtil.Desc("PreloadAudioData", assetInfo.PreloadAudioData ? "O" : "X", keyWidth, valueWidth, left.PreloadAudioData, right.PreloadAudioData);
+                GUIUtil.Desc("CompressionFormat", assetInfo.CompressionFormat.ToString(), keyWidth, valueWidth, left.CompressionFormat, right.CompressionFormat);
+                GUIUtil.Desc("LoadType", assetInfo.LoadType.ToString(), keyWidth, valueWidth, left.LoadType, right.LoadType);
+                GUIUtil.Desc("File Size", assetInfo.FileSizeStr, keyWidth, valueWidth);
+                GUILayout.EndVertical();
+            }
         }
     }
     
@@ -265,9 +294,9 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         }
 
         EditorUtility.DisplayDialog("알림", "변경된 에셋을 적용했습니다.", "확인");
-        foreach (var importerGui in _importerGuis)
+        foreach (var assetImporterGUI in _assetImporterGuis)
         {
-            importerGui.TrySave();
+            assetImporterGUI.TrySave();
         }
         
         Close();

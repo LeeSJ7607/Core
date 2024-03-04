@@ -50,6 +50,15 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
 
         public void Save()
         {
+            var aos = AudioImporter.GetOverrideSampleSettings("Android");
+            var ios = AudioImporter.GetOverrideSampleSettings("iPhone");
+            aos.preloadAudioData = ios.preloadAudioData = PreloadAudioData;
+            aos.compressionFormat = ios.compressionFormat = CompressionFormat;
+            aos.loadType = ios.loadType = LoadType;
+            AudioImporter.SetOverrideSampleSettings("Android", aos);
+            AudioImporter.SetOverrideSampleSettings("iPhone", ios);
+            
+            AudioImporter.forceToMono = ForceToMono;
             AudioImporter.SaveAndReimport();
             Changed = false;
         }
