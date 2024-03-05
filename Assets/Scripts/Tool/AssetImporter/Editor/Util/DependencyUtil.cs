@@ -20,7 +20,7 @@ public static class DependencyUtil
     private static Dictionary<string, List<Object>> _dependencies;
     private static Dictionary<string, Dictionary<int, SameAssetInfo>> _sameAssets;
     
-    public static void InitDependencies()
+    private static void InitDependencies()
     {
         if (_dependencies != null)
         {
@@ -119,8 +119,8 @@ public static class DependencyUtil
         
         EditorUtility.ClearProgressBar();
     }
-    
-    public static (IReadOnlyDictionary<Object, IReadOnlyList<Object>> references, int cnt) GetDependencies(Object target)
+
+    private static (IReadOnlyDictionary<Object, IReadOnlyList<Object>> references, int cnt) GetDependencies(Object target)
     {
         var result = new Dictionary<Object, IReadOnlyList<Object>>();
         var targetPath = AssetDatabase.GetAssetPath(target);
@@ -166,7 +166,7 @@ public static class DependencyUtil
     
     public static void Dependencies(IEnumerable<AssetImporterImpl_Sound.AssetInfo> assetInfos)
     {
-        DependencyUtil.InitDependencies();
+        InitDependencies();
         
         foreach (var assetInfo in assetInfos)
         {
