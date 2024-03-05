@@ -3,28 +3,28 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-internal sealed class AssetImporterGUI : EditorWindow
+internal sealed class AssetManagementGUI_Main : EditorWindow
 {
     private const float _drawMenuBtn = 30;
     private const string _keySelectedFilePath = "_keySelectedFilePath";
-    private readonly IAssetImporterGUI[] _assetImporterGuis;
+    private readonly IAssetManagementGUI[] _assetManagementGuis;
     private string _selectedFolderPath;
     private int _selectedAssetKindIdx;
     
-    public AssetImporterGUI()
+    public AssetManagementGUI_Main()
     {
-        _assetImporterGuis = typeof(IAssetImporterGUI).Assembly.GetExportedTypes()
-                                                      .Where(_ => _.IsInterface == false && _.IsAbstract == false)
-                                                      .Where(_ => typeof(IAssetImporterGUI).IsAssignableFrom(_))
-                                                      .Select(_ => (IAssetImporterGUI)Activator.CreateInstance(_))
-                                                      .OrderBy(_ => _.Order)
-                                                      .ToArray();
+        _assetManagementGuis = typeof(IAssetManagementGUI).Assembly.GetExportedTypes()
+                                                          .Where(_ => _.IsInterface == false && _.IsAbstract == false)
+                                                          .Where(_ => typeof(IAssetManagementGUI).IsAssignableFrom(_))
+                                                          .Select(_ => (IAssetManagementGUI)Activator.CreateInstance(_))
+                                                          .OrderBy(_ => _.Order)
+                                                          .ToArray();
     }
     
-    [MenuItem("Tool/AssetImporterTool &Q")]
+    [MenuItem("Tool/AssetManagementTool &Q")]
     public static void Open()
     {
-        var tool = GetWindow<AssetImporterGUI>();
+        var tool = GetWindow<AssetManagementGUI_Main>();
         var selectedFilePath = tool._selectedFolderPath = PlayerPrefs.GetString(_keySelectedFilePath);
 
         if (selectedFilePath.IsNullOrEmpty())
@@ -32,7 +32,7 @@ internal sealed class AssetImporterGUI : EditorWindow
             return;
         }
 
-        foreach (var importerGui in tool._assetImporterGuis)
+        foreach (var importerGui in tool._assetManagementGuis)
         {
             importerGui.Initialize(selectedFilePath);
         }
@@ -57,9 +57,9 @@ internal sealed class AssetImporterGUI : EditorWindow
         if (GUILayout.Button("Specify the folder path", GUILayout.Width(140)))
         {
             _selectedFolderPath = EditorUtility.OpenFolderPanel("Specify the folder path", _selectedFolderPath, "");
-            foreach (var assetImporterGui in _assetImporterGuis)
+            foreach (var assetManagementGUI in _assetManagementGuis)
             {
-                assetImporterGui.Initialize(_selectedFolderPath);
+                assetManagementGUI.Initialize(_selectedFolderPath);
             }
             PlayerPrefs.SetString(_keySelectedFilePath, _selectedFolderPath);
         }
@@ -71,17 +71,17 @@ internal sealed class AssetImporterGUI : EditorWindow
     private void DrawAssetKind()
     {
         EditorGUILayout.BeginHorizontal();
-        for (var type = AssetImporterConsts.AssetKind.Texture; type < AssetImporterConsts.AssetKind.End; type++)
+        for (var type = AssetManagementConsts.AssetKind.Texture; type < AssetManagementConsts.AssetKind.End; type++)
         {
             EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
             var typeIdx = (int)type;
-            var toggleName = $"{type.ToString()} ({_assetImporterGuis[typeIdx].TotalCnt})";
+            var toggleName = $"{type.ToString()} ({_assetManagementGuis[typeIdx].TotalCnt})";
             
             if (GUILayout.Toggle(_selectedAssetKindIdx == typeIdx, toggleName))
             {
                 if (_selectedAssetKindIdx != typeIdx)
                 {
-                    _assetImporterGuis[_selectedAssetKindIdx].ScrollPos = Vector2.zero;
+                    _assetManagementGuis[_selectedAssetKindIdx].ScrollPos = Vector2.zero;
                 }
 
                 _selectedAssetKindIdx = typeIdx;
@@ -94,7 +94,7 @@ internal sealed class AssetImporterGUI : EditorWindow
     private void DrawAssets()
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        _assetImporterGuis[_selectedAssetKindIdx].Draw();
+        _assetManagementGuis[_selectedAssetKindIdx].Draw();
         EditorGUILayout.EndVertical();
     }
 
@@ -114,7 +114,7 @@ internal sealed class AssetImporterGUI : EditorWindow
         }
         
         var isOpen = false;
-        foreach (var importerGui in _assetImporterGuis)
+        foreach (var importerGui in _assetManagementGuis)
         {
             if (importerGui.CanDiff())
             {
@@ -130,7 +130,7 @@ internal sealed class AssetImporterGUI : EditorWindow
             return;
         }
         
-        AssetImporterTool_Diff.Open(_assetImporterGuis);
+        AssetManagementTool_Diff.Open(_assetManagementGuis);
     }
     
     private void DrawConfirmBtn()
@@ -145,9 +145,9 @@ internal sealed class AssetImporterGUI : EditorWindow
     {
         var changed = false;
         
-        foreach (var assetImporterGUI in _assetImporterGuis)
+        foreach (var assetManagementGUI in _assetManagementGuis)
         {
-            if (assetImporterGUI.TrySave())
+            if (assetManagementGUI.TrySave())
             {
                 changed = true;
             }

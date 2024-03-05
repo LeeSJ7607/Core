@@ -4,16 +4,16 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEditor;
 
-public sealed class AssetImporterTool_ChangeName : EditorWindow
+public sealed class AssetManagementTool_ChangeName : EditorWindow
 {
     private const int _textFieldWidth = 200;
     
-    private IEnumerable<AssetImporterImpl_Texture.AssetInfo> _assetInfos;
+    private IEnumerable<AssetManagementImpl_Texture.AssetInfo> _assetInfos;
     private string _originName, _changeName, _addName, _lowerAndUpperName;
 
-    public static void Open(IEnumerable<AssetImporterImpl_Texture.AssetInfo> assetInfos)
+    public static void Open(IEnumerable<AssetManagementImpl_Texture.AssetInfo> assetInfos)
     {
-        var tool = GetWindow<AssetImporterTool_ChangeName>();
+        var tool = GetWindow<AssetManagementTool_ChangeName>();
         tool._assetInfos = assetInfos;
     }
 

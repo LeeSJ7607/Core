@@ -1,14 +1,14 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-public sealed class AssetImporterTool_CompareList : EditorWindow
+public sealed class AssetManagementTool_CompareList : EditorWindow
 {
-    private AssetImporterImpl_Texture.AssetInfo _assetInfo;
+    private AssetManagementImpl_Texture.AssetInfo _assetInfo;
     private Vector2 _scrollPos;
     
-    public static void Open(AssetImporterImpl_Texture.AssetInfo assetInfo)
+    public static void Open(AssetManagementImpl_Texture.AssetInfo assetInfo)
     {
-        var tool = GetWindow<AssetImporterTool_CompareList>();
+        var tool = GetWindow<AssetManagementTool_CompareList>();
         tool._assetInfo = assetInfo;
     }
     
@@ -24,7 +24,7 @@ public sealed class AssetImporterTool_CompareList : EditorWindow
         
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
         {
-            GUIUtil.Btn(_assetInfo.Texture2D, size, size, () => AssetImporterTool_Preview.Open(_assetInfo.Texture2D));
+            GUIUtil.Btn(_assetInfo.Texture2D, size, size, () => AssetManagementTool_Preview.Open(_assetInfo.Texture2D));
             DrawTargetDesc();
             GUIUtil.Btn("선택", size, size, () => Selection.activeObject = _assetInfo.Texture2D);
         }
@@ -63,7 +63,7 @@ public sealed class AssetImporterTool_CompareList : EditorWindow
     
     private void DrawSameAssetBtn(DependencyUtil.SameAssetInfo sameAsset)
     {
-        GUIUtil.Btn("비교", () => AssetImporterTool_Compare.Open(_assetInfo.Texture2D, sameAsset.Tex));
+        GUIUtil.Btn("비교", () => AssetManagementTool_Compare.Open(_assetInfo.Texture2D, sameAsset.Tex));
         GUIUtil.Btn("텍스쳐 선택", () => Selection.activeObject = sameAsset.Tex);
 
         if (sameAsset.Mat)

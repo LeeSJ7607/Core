@@ -2,16 +2,16 @@
 using UnityEditor;
 using UnityEngine;
 
-public sealed class AssetImporterTool_ReferenceList : EditorWindow
+public sealed class AssetManagementTool_ReferenceList : EditorWindow
 {
     public sealed class ReferenceParam
     {
-        public AssetImporterConsts.AssetKind AssetKind { get; }
+        public AssetManagementConsts.AssetKind AssetKind { get; }
         public IReadOnlyDictionary<Object, IReadOnlyList<Object>> References { get; }
         public string FileSizeStr { get; }
         
         public ReferenceParam(
-            AssetImporterConsts.AssetKind assetKind, 
+            AssetManagementConsts.AssetKind assetKind, 
             IReadOnlyDictionary<Object, IReadOnlyList<Object>> references, 
             string fileSizeStr)
         {
@@ -26,7 +26,7 @@ public sealed class AssetImporterTool_ReferenceList : EditorWindow
     
     public static void Open(ReferenceParam referenceParam)
     {
-        var tool = GetWindow<AssetImporterTool_ReferenceList>("References");
+        var tool = GetWindow<AssetManagementTool_ReferenceList>("References");
         tool._referenceParam = referenceParam;
     }
 
@@ -47,9 +47,9 @@ public sealed class AssetImporterTool_ReferenceList : EditorWindow
         const float size = 40;
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
 
-        if (_referenceParam.AssetKind == AssetImporterConsts.AssetKind.Texture)
+        if (_referenceParam.AssetKind == AssetManagementConsts.AssetKind.Texture)
         {
-            GUIUtil.Btn((Texture2D)target, size, size, () => AssetImporterTool_Preview.Open((Texture2D)target));
+            GUIUtil.Btn((Texture2D)target, size, size, () => AssetManagementTool_Preview.Open((Texture2D)target));
             EditorGUILayout.BeginVertical();
             {
                 GUILayout.Label($"{target.name} ({_referenceParam.FileSizeStr})");

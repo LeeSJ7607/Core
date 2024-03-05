@@ -130,7 +130,7 @@ public static class DependencyUtil
         return (result, dependency.Count);
     }
     
-    public static void Dependencies(IEnumerable<AssetImporterImpl_Texture.AssetInfo> assetInfos)
+    public static void Dependencies(IEnumerable<AssetManagementImpl_Texture.AssetInfo> assetInfos)
     {
         InitDependencies();
         
@@ -147,7 +147,7 @@ public static class DependencyUtil
         }
     }
     
-    public static void Dependencies(IEnumerable<AssetImporterImpl_FBX.AssetInfo> assetInfos)
+    public static void Dependencies(IEnumerable<AssetManagementImpl_FBX.AssetInfo> assetInfos)
     {
         DependencyUtil.InitDependencies();
         
@@ -164,7 +164,7 @@ public static class DependencyUtil
         }
     }
     
-    public static void Dependencies(IEnumerable<AssetImporterImpl_Sound.AssetInfo> assetInfos)
+    public static void Dependencies(IEnumerable<AssetManagementImpl_Sound.AssetInfo> assetInfos)
     {
         InitDependencies();
         
@@ -181,7 +181,7 @@ public static class DependencyUtil
         }
     }
     
-    public static void SameAssets(IEnumerable<AssetImporterImpl_Texture.AssetInfo> assetInfos)
+    public static void SameAssets(IEnumerable<AssetManagementImpl_Texture.AssetInfo> assetInfos)
     {
         InitSameAssets();
         

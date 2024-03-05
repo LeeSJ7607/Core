@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-public sealed class AssetImporterTool_Compare : EditorWindow
+public sealed class AssetManagementTool_Compare : EditorWindow
 {
     private sealed class TextureInfo
     {
@@ -13,7 +13,7 @@ public sealed class AssetImporterTool_Compare : EditorWindow
         public TextureInfo(Texture tex)
         {
             Tex = tex;
-            Importer = (TextureImporter)UnityEditor.AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(tex));
+            Importer = (TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(tex));
             Settings = Importer.GetPlatformTextureSettings("Android");
             FileSize = EditorTextureUtil.TextureSize(Tex);
         }
@@ -26,7 +26,7 @@ public sealed class AssetImporterTool_Compare : EditorWindow
     
     public static void Open(Texture left, Texture right)
     {
-        var tool = GetWindow<AssetImporterTool_Compare>("Compare");
+        var tool = GetWindow<AssetManagementTool_Compare>("Compare");
         tool.minSize = tool.maxSize = new Vector2(_textureSize * 3, _textureSize * 2);
         tool._left = new TextureInfo(left);
         tool._right = new TextureInfo(right);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-internal sealed class AssetImporterTool_Format : EditorWindow
+internal sealed class AssetManagementTool_Format : EditorWindow
 {
     private const float _size = 200;
     
@@ -25,17 +25,17 @@ internal sealed class AssetImporterTool_Format : EditorWindow
     
     private readonly List<TextureInfo> _textureInfos = new();
 
-    public static void Open(AssetImporterImpl_Texture.AssetInfo assetInfo)
+    public static void Open(AssetManagementImpl_Texture.AssetInfo assetInfo)
     {
-        var tool = GetWindow<AssetImporterTool_Format>("Format");
-        tool.minSize = tool.maxSize = new Vector2(_size * AssetImporterImpl_Texture.TextureFormats.Length + 40, _size + 40);
+        var tool = GetWindow<AssetManagementTool_Format>("Format");
+        tool.minSize = tool.maxSize = new Vector2(_size * AssetManagementImpl_Texture.TextureFormats.Length + 40, _size + 40);
         
         CreateTexture(tool, assetInfo);
     }
     
     private void OnDisable()
     {
-        GetWindow<AssetImporterTool_Preview>().Close();
+        GetWindow<AssetManagementTool_Preview>().Close();
         
         foreach (var textureInfo in _textureInfos)
         {
@@ -43,19 +43,19 @@ internal sealed class AssetImporterTool_Format : EditorWindow
         }
     }
 
-    private static void CreateTexture(AssetImporterTool_Format tool, AssetImporterImpl_Texture.AssetInfo assetInfo)
+    private static void CreateTexture(AssetManagementTool_Format tool, AssetManagementImpl_Texture.AssetInfo assetInfo)
     {
         var path = AssetDatabase.GetAssetPath(assetInfo.Texture2D);
         
-        for (var i = 0; i < AssetImporterImpl_Texture.TextureFormats.Length; i++)
+        for (var i = 0; i < AssetManagementImpl_Texture.TextureFormats.Length; i++)
         {
             var newPath = $"{path}{i.ToString()}.png";
             AssetDatabase.CopyAsset(path, newPath);
         
-            var importer = (TextureImporter)UnityEditor.AssetImporter.GetAtPath(newPath);
+            var importer = (TextureImporter)AssetImporter.GetAtPath(newPath);
             var settings = importer.GetPlatformTextureSettings("Android");
             settings.overridden = true;
-            settings.format = Enum.Parse<TextureImporterFormat>(AssetImporterImpl_Texture.TextureFormats[i]);
+            settings.format = Enum.Parse<TextureImporterFormat>(AssetManagementImpl_Texture.TextureFormats[i]);
             importer.SetPlatformTextureSettings(settings);
             importer.SaveAndReimport();
             
@@ -83,7 +83,7 @@ internal sealed class AssetImporterTool_Format : EditorWindow
     private void DrawTexture(TextureInfo textureInfo)
     {
         var tex = textureInfo.Tex;
-        GUIUtil.Btn(tex, _size, _size, () => AssetImporterTool_Preview.Open(tex));
+        GUIUtil.Btn(tex, _size, _size, () => AssetManagementTool_Preview.Open(tex));
     }
 
     private void DrawDesc(TextureInfo textureInfo)

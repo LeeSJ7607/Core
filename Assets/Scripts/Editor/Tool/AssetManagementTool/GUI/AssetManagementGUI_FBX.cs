@@ -4,20 +4,20 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
+public sealed class AssetManagementGUI_FBX : IAssetManagementGUI
 {
     private const int _drawMaxRow = 5;
     
     public int Order => 1;
     public int TotalCnt => _fbxImpl.TotalCnt;
     public Vector2 ScrollPos { get; set; }
-    public IAssetImporterImpl OriginAssetImporterImpl => _originFBXImpl;
-    public IAssetImporterImpl AssetImporterImpl => _fbxImpl;
-    private readonly AssetImporterImpl_FBX _originFBXImpl = new();
-    private readonly AssetImporterImpl_FBX _fbxImpl = new();
+    public IAssetManagementImpl OriginAssetManagementImpl => _originFBXImpl;
+    public IAssetManagementImpl AssetManagementImpl => _fbxImpl;
+    private readonly AssetManagementImpl_FBX _originFBXImpl = new();
+    private readonly AssetManagementImpl_FBX _fbxImpl = new();
     private int _selectedFBXPathIdx;
     private int _selectedFBXSortIdx;
-    private readonly string[] _sortFBX = Enum.GetNames(typeof(AssetImporterConsts.SortFBX)).ToArray();
+    private readonly string[] _sortFBX = Enum.GetNames(typeof(AssetManagementConsts.SortFBX)).ToArray();
     private List<string> _fbxDirPaths;
     private List<string> _btnNameFbxDirPaths;
     private Texture2D _texModified;
@@ -31,7 +31,7 @@ public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
     public void Initialize(string selectedFilePath)
     {
         Clear();
-        AssetImporterGUI_Texture.SetDirPath(selectedFilePath, "t:Model", ref _fbxDirPaths, ref _btnNameFbxDirPaths);
+        AssetManagementGUI_Texture.SetDirPath(selectedFilePath, "t:Model", ref _fbxDirPaths, ref _btnNameFbxDirPaths);
         
         if (_fbxDirPaths != null)
         {
@@ -39,7 +39,7 @@ public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
             _fbxImpl.Initialize(_fbxDirPaths);
         }
         
-        _texModified ??= Resources.Load<Texture2D>("AssetImporter_Modified");
+        _texModified ??= Resources.Load<Texture2D>("AssetManagementTool_Modified");
     }
     
     private bool IsValid()
@@ -91,7 +91,7 @@ public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
         GUIUtil.Btn("모든 참조 찾기", () =>
         {
             DependencyUtil.Dependencies(_fbxImpl.SearchedAssetInfos);
-            Sort((int)AssetImporterConsts.SortFBX.References, true);
+            Sort((int)AssetManagementConsts.SortFBX.References, true);
         });
         
         DrawSort();
@@ -108,7 +108,7 @@ public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
     
     private void Sort(int sortIdx, bool descending)
     {
-        _fbxImpl.CurSort = ((AssetImporterConsts.SortFBX)sortIdx, descending);
+        _fbxImpl.CurSort = ((AssetManagementConsts.SortFBX)sortIdx, descending);
         _fbxImpl.CalcSearchedAssetInfos(_fbxDirPaths[_selectedFBXPathIdx]);
     }
 
@@ -142,7 +142,7 @@ public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
         EditorGUILayout.EndScrollView();
     }
 
-    private void DrawDesc(AssetImporterImpl_FBX.AssetInfo assetInfo)
+    private void DrawDesc(AssetManagementImpl_FBX.AssetInfo assetInfo)
     {
         const float keyWidth = 110;
         const float valueWidth = 220;
@@ -160,7 +160,7 @@ public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
         GUILayout.EndVertical();
     }
 
-    private void DrawOption(AssetImporterImpl_FBX.AssetInfo assetInfo)
+    private void DrawOption(AssetManagementImpl_FBX.AssetInfo assetInfo)
     {
         const float width = 50;
         
@@ -168,15 +168,15 @@ public sealed class AssetImporterGUI_FBX : IAssetImporterGUI
         
         GUIUtil.Btn("선택", width, () => Selection.activeObject = assetInfo.FBX);
         GUIUtil.Btn("열기", width, () => EditorUtility.RevealInFinder(assetInfo.ModelImporter.assetPath));
-        GUIUtil.Btn("수정", width, () => AssetImporterTool_FBXModify.Open(assetInfo));
+        GUIUtil.Btn("수정", width, () => AssetManagementTool_FBXModify.Open(assetInfo));
         GUIUtil.Btn("리셋", width, assetInfo.Reset);
         
         if (assetInfo.IsReferences)
         {
             GUIUtil.Btn("참조", () =>
             {
-                AssetImporterTool_ReferenceList.Open(new AssetImporterTool_ReferenceList.ReferenceParam(
-                    AssetImporterConsts.AssetKind.FBX, assetInfo.References, assetInfo.FileSizeStr));
+                AssetManagementTool_ReferenceList.Open(new AssetManagementTool_ReferenceList.ReferenceParam(
+                    AssetManagementConsts.AssetKind.FBX, assetInfo.References, assetInfo.FileSizeStr));
             });
         }
         

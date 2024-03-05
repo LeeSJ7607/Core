@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
+public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
 {
     private const string _noneLabel = "None";
     
@@ -162,8 +162,8 @@ public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
 
     public int TotalCnt => _assetInfoMap.Sum(_ => _.Value.Count);
     public int SearchedCnt(string path) => _assetInfoMap[path].Count;
-    public (AssetImporterConsts.SortTexture sortType, bool descending) CurSort { private get; set; }
-    public AssetImporterConsts.FilterTexture CurFilterType { private get; set; }
+    public (AssetManagementConsts.SortTexture sortType, bool descending) CurSort { private get; set; }
+    public AssetManagementConsts.FilterTexture CurFilterType { private get; set; }
     public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;
     private List<AssetInfo> _searchedAssetInfos = new();
     public IReadOnlyDictionary<string, IReadOnlyList<AssetInfo>> AssetInfoMap => _assetInfoMap;
@@ -315,7 +315,7 @@ public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
     {
         switch (CurSort.sortType)
         {
-        case AssetImporterConsts.SortTexture.Name:
+        case AssetManagementConsts.SortTexture.Name:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.Texture2D.name).ToList()
@@ -323,7 +323,7 @@ public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
             }
             break;
 
-        case AssetImporterConsts.SortTexture.FileSize:
+        case AssetManagementConsts.SortTexture.FileSize:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.FileSize).ToList()
@@ -331,7 +331,7 @@ public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortTexture.TextureSize:
+        case AssetManagementConsts.SortTexture.TextureSize:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.Texture2D.width).ToList()
@@ -339,7 +339,7 @@ public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortTexture.MipMap:
+        case AssetManagementConsts.SortTexture.MipMap:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.TextureImporter.mipmapEnabled).ToList()
@@ -347,7 +347,7 @@ public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortTexture.Format:
+        case AssetManagementConsts.SortTexture.Format:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.AOSSettings.format).ToList()
@@ -355,7 +355,7 @@ public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortTexture.WrapMode:
+        case AssetManagementConsts.SortTexture.WrapMode:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.WrapMode).ToList()
@@ -363,7 +363,7 @@ public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortTexture.FilterMode:
+        case AssetManagementConsts.SortTexture.FilterMode:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.FilterMode).ToList()
@@ -371,7 +371,7 @@ public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortTexture.TextureType:
+        case AssetManagementConsts.SortTexture.TextureType:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.TextureType).ToList()
@@ -379,7 +379,7 @@ public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortTexture.References:
+        case AssetManagementConsts.SortTexture.References:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.IsReferences).ToList()
@@ -387,7 +387,7 @@ public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortTexture.Compare:
+        case AssetManagementConsts.SortTexture.Compare:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.IsCompare).ToList()
@@ -401,19 +401,19 @@ public sealed class AssetImporterImpl_Texture : IAssetImporterImpl
     {
         switch (CurFilterType)
         {
-        case AssetImporterConsts.FilterTexture.MipMap:
+        case AssetManagementConsts.FilterTexture.MipMap:
             {
                 _searchedAssetInfos = _searchedAssetInfos.Where(_ => _.TextureImporter.mipmapEnabled).ToList();
             }
             break;
 
-        case AssetImporterConsts.FilterTexture.References:
+        case AssetManagementConsts.FilterTexture.References:
             {
                 _searchedAssetInfos = _searchedAssetInfos.Where(_ => _.IsReferences).ToList();
             }
             break;
 
-        case AssetImporterConsts.FilterTexture.Compare:
+        case AssetManagementConsts.FilterTexture.Compare:
             {
                 _searchedAssetInfos = _searchedAssetInfos.Where(_ => _.IsCompare).ToList();
             }

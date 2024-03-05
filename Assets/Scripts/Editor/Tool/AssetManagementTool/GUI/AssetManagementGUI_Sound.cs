@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
+public sealed class AssetManagementGUI_Sound : IAssetManagementGUI
 {
     private const int _drawMaxRow = 5;
     
     public int Order => 2;
     public int TotalCnt => _soundImpl.TotalCnt;
     public Vector2 ScrollPos { get; set; }
-    public IAssetImporterImpl OriginAssetImporterImpl => _originSoundImpl;
-    public IAssetImporterImpl AssetImporterImpl => _soundImpl;
-    private readonly AssetImporterImpl_Sound _originSoundImpl = new();
-    private readonly AssetImporterImpl_Sound _soundImpl = new();
+    public IAssetManagementImpl OriginAssetManagementImpl => _originSoundImpl;
+    public IAssetManagementImpl AssetManagementImpl => _soundImpl;
+    private readonly AssetManagementImpl_Sound _originSoundImpl = new();
+    private readonly AssetManagementImpl_Sound _soundImpl = new();
     private int _selectedSoundPathIdx;
     private int _selectedSoundSortIdx;
-    private readonly string[] _sortSound = Enum.GetNames(typeof(AssetImporterConsts.SortSound));
+    private readonly string[] _sortSound = Enum.GetNames(typeof(AssetManagementConsts.SortSound));
     private List<string> _soundDirPaths;
     private List<string> _btnNameSoundDirPaths;
     private Texture2D _texModified;
@@ -30,7 +30,7 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
     public void Initialize(string selectedFilePath)
     {
         Clear();
-        AssetImporterGUI_Texture.SetDirPath(selectedFilePath, "t:AudioClip", ref _soundDirPaths, ref _btnNameSoundDirPaths);
+        AssetManagementGUI_Texture.SetDirPath(selectedFilePath, "t:AudioClip", ref _soundDirPaths, ref _btnNameSoundDirPaths);
         
         if (_soundDirPaths != null)
         {
@@ -38,7 +38,7 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
             _soundImpl.Initialize(_soundDirPaths);
         }
         
-        _texModified ??= Resources.Load<Texture2D>("AssetImporter_Modified");
+        _texModified ??= Resources.Load<Texture2D>("AssetManagementTool_Modified");
     }
     
     private bool IsValid()
@@ -90,7 +90,7 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
         GUIUtil.Btn("모든 참조 찾기", () =>
         {
             DependencyUtil.Dependencies(_soundImpl.SearchedAssetInfos);
-            Sort((int)AssetImporterConsts.SortSound.References, true);
+            Sort((int)AssetManagementConsts.SortSound.References, true);
         });
         
         DrawSort();
@@ -107,7 +107,7 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
     
     private void Sort(int sortIdx, bool descending)
     {
-        _soundImpl.CurSort = ((AssetImporterConsts.SortSound)sortIdx, descending);
+        _soundImpl.CurSort = ((AssetManagementConsts.SortSound)sortIdx, descending);
         _soundImpl.CalcSearchedAssetInfos(_soundDirPaths[_selectedSoundPathIdx]);
     }
     
@@ -141,7 +141,7 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
         EditorGUILayout.EndScrollView();
     }
     
-    private void DrawDesc(AssetImporterImpl_Sound.AssetInfo assetInfo)
+    private void DrawDesc(AssetManagementImpl_Sound.AssetInfo assetInfo)
     {
         const float keyWidth = 120;
         const float valueWidth = 210;
@@ -160,7 +160,7 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
         GUILayout.EndVertical();
     }
     
-    private void DrawOption(AssetImporterImpl_Sound.AssetInfo assetInfo)
+    private void DrawOption(AssetManagementImpl_Sound.AssetInfo assetInfo)
     {
         const float width = 50;
         
@@ -168,15 +168,15 @@ public sealed class AssetImporterGUI_Sound : IAssetImporterGUI
         
         GUIUtil.Btn("선택", width, () => Selection.activeObject = assetInfo.AudioClip);
         GUIUtil.Btn("열기", width, () => EditorUtility.RevealInFinder(assetInfo.AudioImporter.assetPath));
-        GUIUtil.Btn("수정", width, () => AssetImporterTool_SoundModify.Open(assetInfo));
+        GUIUtil.Btn("수정", width, () => AssetManagementTool_SoundModify.Open(assetInfo));
         GUIUtil.Btn("리셋", width, assetInfo.Reset);
         
         if (assetInfo.IsReferences)
         {
             GUIUtil.Btn("참조", () =>
             {
-                AssetImporterTool_ReferenceList.Open(new AssetImporterTool_ReferenceList.ReferenceParam(
-                    AssetImporterConsts.AssetKind.Sound, assetInfo.References, assetInfo.FileSizeStr));
+                AssetManagementTool_ReferenceList.Open(new AssetManagementTool_ReferenceList.ReferenceParam(
+                    AssetManagementConsts.AssetKind.Sound, assetInfo.References, assetInfo.FileSizeStr));
             });
         }
         

@@ -1,4 +1,4 @@
-﻿public sealed class AssetImporterConsts
+﻿public sealed class AssetManagementConsts
 {
     public enum AssetKind
     {

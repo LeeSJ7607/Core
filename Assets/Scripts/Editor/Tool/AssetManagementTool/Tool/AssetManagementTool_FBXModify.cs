@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEditor;
 
-internal sealed class AssetImporterTool_FBXModify : EditorWindow
+internal sealed class AssetManagementTool_FBXModify : EditorWindow
 {
     private const float _toolWidth = 500;
     
@@ -27,18 +27,18 @@ internal sealed class AssetImporterTool_FBXModify : EditorWindow
     private int _selectedIsReadableIdx;
     private int _originIsReadableIdx;
     
-    private AssetImporterImpl_FBX.AssetInfo _assetInfo;
+    private AssetManagementImpl_FBX.AssetInfo _assetInfo;
     
-    public static void Open(AssetImporterImpl_FBX.AssetInfo assetInfo)
+    public static void Open(AssetManagementImpl_FBX.AssetInfo assetInfo)
     {
-        var tool = GetWindow<AssetImporterTool_FBXModify>("Modify");
+        var tool = GetWindow<AssetManagementTool_FBXModify>("Modify");
         tool.minSize = tool.maxSize = new Vector2(_toolWidth, 195);
         tool._assetInfo = assetInfo;
         
         SetOption(tool);
     }
     
-    private static void SetOption(AssetImporterTool_FBXModify tool)
+    private static void SetOption(AssetManagementTool_FBXModify tool)
     {
         var assetInfo = tool._assetInfo;
         

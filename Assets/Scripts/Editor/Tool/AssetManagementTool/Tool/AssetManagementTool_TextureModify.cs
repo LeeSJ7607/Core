@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-internal sealed class AssetImporterTool_TextureModify : EditorWindow
+internal sealed class AssetManagementTool_TextureModify : EditorWindow
 {
     private const float _toolWidth = 400;
     private const float _guiSpace = 10;
@@ -36,26 +36,26 @@ internal sealed class AssetImporterTool_TextureModify : EditorWindow
     private int _selectedTextureFormatIdx;
     private int _originTextureFormatIdx;
     
-    private AssetImporterImpl_Texture.AssetInfo _assetInfo;
+    private AssetManagementImpl_Texture.AssetInfo _assetInfo;
     
-    public static void Open(AssetImporterImpl_Texture.AssetInfo assetInfo)
+    public static void Open(AssetManagementImpl_Texture.AssetInfo assetInfo)
     {
-        var tool = GetWindow<AssetImporterTool_TextureModify>("Modify");
+        var tool = GetWindow<AssetManagementTool_TextureModify>("Modify");
         tool.minSize = tool.maxSize = new Vector2(_toolWidth, 530);
         tool._assetInfo = assetInfo;
 
         SetOption(tool);
     }
 
-    private static void SetOption(AssetImporterTool_TextureModify tool)
+    private static void SetOption(AssetManagementTool_TextureModify tool)
     {
         var assetInfo = tool._assetInfo;
         
         tool._originTextureTypesIdx = tool._selectedTextureTypesIdx = Array.FindIndex(_textureTypes, _ => _.Equals(assetInfo.TextureType.ToString()));
         tool._originWrapModeIdx = tool._selectedWrapModeIdx = Array.FindIndex(_wrapModes, _ => _.Equals(assetInfo.WrapMode.ToString()));
         tool._originFilterModeIdx = tool._selectedFilterModeIdx = Array.FindIndex(_filterModes, _ => _.Equals(assetInfo.FilterMode.ToString()));
-        tool._originMaxTextureSizeIdx = tool._selectedMaxTextureSizeIdx = Array.FindIndex(AssetImporterImpl_Texture.TextureSizes, _ => _.Equals(assetInfo.MaxTextureSize.ToString()));
-        tool._originTextureFormatIdx = tool._selectedTextureFormatIdx = Array.FindIndex(AssetImporterImpl_Texture.TextureFormats, _ => _.Equals(assetInfo.AOSSettings.format.ToString()));
+        tool._originMaxTextureSizeIdx = tool._selectedMaxTextureSizeIdx = Array.FindIndex(AssetManagementImpl_Texture.TextureSizes, _ => _.Equals(assetInfo.MaxTextureSize.ToString()));
+        tool._originTextureFormatIdx = tool._selectedTextureFormatIdx = Array.FindIndex(AssetManagementImpl_Texture.TextureFormats, _ => _.Equals(assetInfo.AOSSettings.format.ToString()));
     }
 
     private void ReSetOption()
@@ -109,7 +109,7 @@ internal sealed class AssetImporterTool_TextureModify : EditorWindow
         GUIUtil.DrawPopup("Wrap Mode", ref _selectedWrapModeIdx, _wrapModes);
         GUIUtil.DrawPopup("Filter Mode", ref _selectedFilterModeIdx, _filterModes);
         GUIUtil.DrawPopup("Max Size", ref _selectedMaxTextureSizeIdx, _textureSize, () => _assetInfo.AOSSettings.overridden = true);
-        GUIUtil.DrawPopup("Format", ref _selectedTextureFormatIdx, AssetImporterImpl_Texture.TextureFormats, () => _assetInfo.AOSSettings.overridden = true); 
+        GUIUtil.DrawPopup("Format", ref _selectedTextureFormatIdx, AssetManagementImpl_Texture.TextureFormats, () => _assetInfo.AOSSettings.overridden = true); 
     }
     
     private void DrawMenus()
@@ -131,7 +131,7 @@ internal sealed class AssetImporterTool_TextureModify : EditorWindow
         }
         EditorGUILayout.EndHorizontal();
         
-        GUIUtil.BtnExpand("압축 포맷 별로 보기", width, () => AssetImporterTool_Format.Open(_assetInfo));
+        GUIUtil.BtnExpand("압축 포맷 별로 보기", width, () => AssetManagementTool_Format.Open(_assetInfo));
     }
     
     private void Save()
@@ -154,7 +154,7 @@ internal sealed class AssetImporterTool_TextureModify : EditorWindow
         _assetInfo.TextureType = Enum.Parse<TextureImporterType>(_textureTypes[_selectedTextureTypesIdx]);
         _assetInfo.WrapMode = Enum.Parse<TextureWrapMode>(_wrapModes[_selectedWrapModeIdx]);
         _assetInfo.FilterMode = Enum.Parse<FilterMode>(_filterModes[_selectedFilterModeIdx]);
-        _assetInfo.MaxTextureSize = int.Parse(AssetImporterImpl_Texture.TextureSizes[_selectedMaxTextureSizeIdx]);
+        _assetInfo.MaxTextureSize = int.Parse(AssetManagementImpl_Texture.TextureSizes[_selectedMaxTextureSizeIdx]);
         _assetInfo.ForceSetTextureImporterFormat(_selectedTextureFormatIdx);
         
         Close();
@@ -175,7 +175,7 @@ internal sealed class AssetImporterTool_TextureModify : EditorWindow
         var textureType = Enum.Parse<TextureImporterType>(_textureTypes[_selectedTextureTypesIdx]);
         var wrapMode = Enum.Parse<TextureWrapMode>(_wrapModes[_selectedWrapModeIdx]);
         var filterMode = Enum.Parse<FilterMode>(_filterModes[_selectedFilterModeIdx]);
-        var maxTextureSize = int.Parse(AssetImporterImpl_Texture.TextureSizes[_selectedMaxTextureSizeIdx]);
+        var maxTextureSize = int.Parse(AssetManagementImpl_Texture.TextureSizes[_selectedMaxTextureSizeIdx]);
 
         if (_selectedTextureFormatIdx < 0)
         {
@@ -185,7 +185,7 @@ internal sealed class AssetImporterTool_TextureModify : EditorWindow
                 && maxTextureSize == textureImporter.maxTextureSize;
         }
         
-        var formatStr = AssetImporterImpl_Texture.TextureFormats[_selectedTextureFormatIdx];
+        var formatStr = AssetManagementImpl_Texture.TextureFormats[_selectedTextureFormatIdx];
         var format = Enum.Parse<TextureImporterFormat>(formatStr);
         
         return textureType == textureImporter.textureType

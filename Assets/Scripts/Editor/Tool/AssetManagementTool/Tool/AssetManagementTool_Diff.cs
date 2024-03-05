@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-public sealed class AssetImporterTool_Diff : EditorWindow
+public sealed class AssetManagementTool_Diff : EditorWindow
 {
     private enum AssetType
     {
@@ -14,14 +14,14 @@ public sealed class AssetImporterTool_Diff : EditorWindow
 
     private sealed class AssetInfo
     {
-        public AssetImporterImpl_Texture TextureImpl { get; }
-        public AssetImporterImpl_FBX FBXImpl { get; }
-        public AssetImporterImpl_Sound SoundImpl { get; }
+        public AssetManagementImpl_Texture TextureImpl { get; }
+        public AssetManagementImpl_FBX FBXImpl { get; }
+        public AssetManagementImpl_Sound SoundImpl { get; }
 
         public AssetInfo(
-            AssetImporterImpl_Texture textureImpl = null,
-            AssetImporterImpl_FBX fbxImpl = null,
-            AssetImporterImpl_Sound soundImpl = null)
+            AssetManagementImpl_Texture textureImpl = null,
+            AssetManagementImpl_FBX fbxImpl = null,
+            AssetManagementImpl_Sound soundImpl = null)
         {
             TextureImpl = textureImpl;
             FBXImpl = fbxImpl;
@@ -29,29 +29,29 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         }
     }
 
-    private IAssetImporterGUI[] _assetImporterGuis;
+    private IAssetManagementGUI[] _assetManagementGuis;
     private AssetInfo _before, _after;
     private AssetType _curAssetType;
     private Vector2 _scrollPos;
 
-    public static void Open(IAssetImporterGUI[] assetImporterGuis) 
+    public static void Open(IAssetManagementGUI[] assetManagementGuis) 
     {
-        var tool = GetWindow<AssetImporterTool_Diff>("Diff");
+        var tool = GetWindow<AssetManagementTool_Diff>("Diff");
         tool.minSize = tool.maxSize = new Vector2(700, 800);
-        tool._assetImporterGuis = assetImporterGuis;
+        tool._assetManagementGuis = assetManagementGuis;
         tool._before = new AssetInfo(
-            (AssetImporterImpl_Texture)assetImporterGuis[(int)AssetImporterConsts.AssetKind.Texture].OriginAssetImporterImpl, 
-            (AssetImporterImpl_FBX)assetImporterGuis[(int)AssetImporterConsts.AssetKind.FBX].OriginAssetImporterImpl,
-            (AssetImporterImpl_Sound)assetImporterGuis[(int)AssetImporterConsts.AssetKind.Sound].OriginAssetImporterImpl);
+            (AssetManagementImpl_Texture)assetManagementGuis[(int)AssetManagementConsts.AssetKind.Texture].OriginAssetManagementImpl, 
+            (AssetManagementImpl_FBX)assetManagementGuis[(int)AssetManagementConsts.AssetKind.FBX].OriginAssetManagementImpl,
+            (AssetManagementImpl_Sound)assetManagementGuis[(int)AssetManagementConsts.AssetKind.Sound].OriginAssetManagementImpl);
         tool._after = new AssetInfo(
-            (AssetImporterImpl_Texture)assetImporterGuis[(int)AssetImporterConsts.AssetKind.Texture].AssetImporterImpl, 
-            (AssetImporterImpl_FBX)assetImporterGuis[(int)AssetImporterConsts.AssetKind.FBX].AssetImporterImpl,
-            (AssetImporterImpl_Sound)assetImporterGuis[(int)AssetImporterConsts.AssetKind.Sound].AssetImporterImpl);
+            (AssetManagementImpl_Texture)assetManagementGuis[(int)AssetManagementConsts.AssetKind.Texture].AssetManagementImpl, 
+            (AssetManagementImpl_FBX)assetManagementGuis[(int)AssetManagementConsts.AssetKind.FBX].AssetManagementImpl,
+            (AssetManagementImpl_Sound)assetManagementGuis[(int)AssetManagementConsts.AssetKind.Sound].AssetManagementImpl);
         
         Sync(tool);
     }
 
-    private static void Sync(AssetImporterTool_Diff diff)
+    private static void Sync(AssetManagementTool_Diff diff)
     {
         var beforeTextureAssetInfoMap = diff._before.TextureImpl.AssetInfoMap;
         var afterTextureAssetInfoMap = diff._after.TextureImpl.AssetInfoMap;
@@ -168,7 +168,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         EditorGUILayout.EndVertical();
     }
 
-    private void DrawTextureImpl(AssetImporterImpl_Texture textureImpl)
+    private void DrawTextureImpl(AssetManagementImpl_Texture textureImpl)
     {
         if (textureImpl == null)
         {
@@ -186,7 +186,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
                 }
 
                 EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-                GUIUtil.Btn(assetInfo.Texture2D, 50, 50, () => AssetImporterTool_Preview.Open(assetInfo.Texture2D));
+                GUIUtil.Btn(assetInfo.Texture2D, 50, 50, () => AssetManagementTool_Preview.Open(assetInfo.Texture2D));
                 DrawTextureImplDesc(assetInfo, _before.TextureImpl.AssetInfoMap[path][i], _after.TextureImpl.AssetInfoMap[path][i]);
                 EditorGUILayout.EndHorizontal();
             }
@@ -194,9 +194,9 @@ public sealed class AssetImporterTool_Diff : EditorWindow
     }
     
     private void DrawTextureImplDesc(
-        AssetImporterImpl_Texture.AssetInfo assetInfo, 
-        AssetImporterImpl_Texture.AssetInfo left, 
-        AssetImporterImpl_Texture.AssetInfo right)
+        AssetManagementImpl_Texture.AssetInfo assetInfo, 
+        AssetManagementImpl_Texture.AssetInfo left, 
+        AssetManagementImpl_Texture.AssetInfo right)
     {
         const float keyWidth = 80;
         const float valueWidth = 195;
@@ -214,7 +214,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         GUILayout.EndVertical();
     }
     
-    private void DrawFBXImpl(AssetImporterImpl_FBX fbxImpl)
+    private void DrawFBXImpl(AssetManagementImpl_FBX fbxImpl)
     {
         if (fbxImpl == null)
         {
@@ -250,7 +250,7 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         }
     }
     
-    private void DrawSoundImpl(AssetImporterImpl_Sound soundImpl)
+    private void DrawSoundImpl(AssetManagementImpl_Sound soundImpl)
     {
         if (soundImpl == null)
         {
@@ -295,9 +295,9 @@ public sealed class AssetImporterTool_Diff : EditorWindow
         }
 
         EditorUtility.DisplayDialog("알림", "변경된 에셋을 적용했습니다.", "확인");
-        foreach (var assetImporterGUI in _assetImporterGuis)
+        foreach (var assetManagementGUI in _assetManagementGuis)
         {
-            assetImporterGUI.TrySave();
+            assetManagementGUI.TrySave();
         }
         
         Close();

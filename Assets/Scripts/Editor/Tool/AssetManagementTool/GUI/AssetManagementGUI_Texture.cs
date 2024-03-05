@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
+public sealed class AssetManagementGUI_Texture : IAssetManagementGUI
 {
     private const int _filterWidth = 952;
     private const int _drawMaxRow = 5;
@@ -13,17 +13,17 @@ public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
     public int Order => 0;
     public int TotalCnt => _textureImpl.TotalCnt;
     public Vector2 ScrollPos { get; set; }
-    public IAssetImporterImpl OriginAssetImporterImpl => _originTextureImpl;
-    public IAssetImporterImpl AssetImporterImpl => _textureImpl;
-    private readonly AssetImporterImpl_Texture _originTextureImpl = new();
-    private readonly AssetImporterImpl_Texture _textureImpl = new();
-    private int _selectedTextureFormatIdx = Array.FindIndex(AssetImporterImpl_Texture.TextureFormats, _ => _.Equals(TextureImporterFormat.ASTC_6x6.ToString()));
+    public IAssetManagementImpl OriginAssetManagementImpl => _originTextureImpl;
+    public IAssetManagementImpl AssetManagementImpl => _textureImpl;
+    private readonly AssetManagementImpl_Texture _originTextureImpl = new();
+    private readonly AssetManagementImpl_Texture _textureImpl = new();
+    private int _selectedTextureFormatIdx = Array.FindIndex(AssetManagementImpl_Texture.TextureFormats, _ => _.Equals(TextureImporterFormat.ASTC_6x6.ToString()));
     private int _selectedTextureFilterIdx;
-    private readonly string[] _filterTextures = Enum.GetNames(typeof(AssetImporterConsts.FilterTexture)).ToArray();
+    private readonly string[] _filterTextures = Enum.GetNames(typeof(AssetManagementConsts.FilterTexture)).ToArray();
     private int _selectedTextureSortIdx;
-    private readonly string[] _sortTextures = Enum.GetNames(typeof(AssetImporterConsts.SortTexture)).ToArray();
+    private readonly string[] _sortTextures = Enum.GetNames(typeof(AssetManagementConsts.SortTexture)).ToArray();
     private int _selectedTextureMaxSizeIdx;
-    private int _selectedTextureMinSizeIdx = AssetImporterImpl_Texture.TextureSizes.Length - 1;
+    private int _selectedTextureMinSizeIdx = AssetManagementImpl_Texture.TextureSizes.Length - 1;
     private int _selectedLabelIdx;
     private string _searchedTextureName;
     private int _selectedTexturePathIdx;
@@ -51,7 +51,7 @@ public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
             _textureImpl.Initialize(_textureDirPaths);
         }
         
-        _texModified ??= Resources.Load<Texture2D>("AssetImporter_Modified");
+        _texModified ??= Resources.Load<Texture2D>("AssetManagementTool_Modified");
     }
 
     public static void SetDirPath(
@@ -132,12 +132,12 @@ public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
             GUIUtil.Btn("모든 참조 찾기", () =>
             {
                 DependencyUtil.Dependencies(_textureImpl.SearchedAssetInfos);
-                Sort((int)AssetImporterConsts.SortTexture.References, true);
+                Sort((int)AssetManagementConsts.SortTexture.References, true);
             });
             GUIUtil.Btn("동일한 텍스쳐 모두 찾기", () =>
             {
                 DependencyUtil.SameAssets(_textureImpl.SearchedAssetInfos);
-                Sort((int)AssetImporterConsts.SortTexture.Compare, true);
+                Sort((int)AssetManagementConsts.SortTexture.Compare, true);
             });
         }
         EditorGUILayout.EndHorizontal();
@@ -147,8 +147,8 @@ public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
         
         EditorGUILayout.BeginHorizontal();
         {
-            GUIUtil.DrawPopup("텍스쳐 최대 사이즈", ref _selectedTextureMaxSizeIdx, AssetImporterImpl_Texture.TextureSizes, CalcSearchedAssetInfos);
-            GUIUtil.DrawPopup("텍스쳐 최소 사이즈", ref _selectedTextureMinSizeIdx, AssetImporterImpl_Texture.TextureSizes, CalcSearchedAssetInfos);
+            GUIUtil.DrawPopup("텍스쳐 최대 사이즈", ref _selectedTextureMaxSizeIdx, AssetManagementImpl_Texture.TextureSizes, CalcSearchedAssetInfos);
+            GUIUtil.DrawPopup("텍스쳐 최소 사이즈", ref _selectedTextureMinSizeIdx, AssetManagementImpl_Texture.TextureSizes, CalcSearchedAssetInfos);
         }
         EditorGUILayout.EndHorizontal();
         
@@ -156,7 +156,7 @@ public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
         {
             GUILayout.Label("텍스쳐 이름 검색", GUILayout.Width(150));
             _searchedTextureName = GUILayout.TextField(_searchedTextureName, GUIUtil.TextFieldStyle(), GUILayout.Width(690));
-            GUIUtil.Btn("파일 이름 변경", 100, () => AssetImporterTool_ChangeName.Open(_textureImpl.SearchedAssetInfos));
+            GUIUtil.Btn("파일 이름 변경", 100, () => AssetManagementTool_ChangeName.Open(_textureImpl.SearchedAssetInfos));
             GUIUtil.DrawPopup("레이블 검색", ref _selectedLabelIdx, _textureImpl.Labels, CalcSearchedAssetInfos);
         }
         EditorGUILayout.EndHorizontal();
@@ -170,7 +170,7 @@ public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
     private void DrawTextureFormat()
     {
         EditorGUILayout.BeginHorizontal();
-        GUIUtil.DrawPopup("텍스쳐 압축 포맷", ref _selectedTextureFormatIdx, AssetImporterImpl_Texture.TextureFormats, _filterWidth);
+        GUIUtil.DrawPopup("텍스쳐 압축 포맷", ref _selectedTextureFormatIdx, AssetManagementImpl_Texture.TextureFormats, _filterWidth);
         GUIUtil.Btn("전체 텍스쳐 압축 포맷 지정", () => Set(true));
         GUIUtil.Btn("전체 텍스쳐 압축 포맷 취소", () => Set(false));
         EditorGUILayout.EndHorizontal();
@@ -203,13 +203,13 @@ public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
     
     private void Sort(int sortIdx, bool descending)
     {
-        _textureImpl.CurSort = ((AssetImporterConsts.SortTexture)sortIdx, descending);
+        _textureImpl.CurSort = ((AssetManagementConsts.SortTexture)sortIdx, descending);
         CalcSearchedAssetInfos();
     }
     
     private void Filter(int idx)
     {
-        _textureImpl.CurFilterType = (AssetImporterConsts.FilterTexture)idx;
+        _textureImpl.CurFilterType = (AssetManagementConsts.FilterTexture)idx;
         CalcSearchedAssetInfos();
     }
     
@@ -244,13 +244,13 @@ public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
         EditorGUILayout.EndScrollView();
     }
     
-    private void DrawTexture(AssetImporterImpl_Texture.AssetInfo assetInfo)
+    private void DrawTexture(AssetManagementImpl_Texture.AssetInfo assetInfo)
     {
         var tex = assetInfo.Texture2D;
-        GUIUtil.Btn(tex, 50, 50, () => AssetImporterTool_Preview.Open(tex));
+        GUIUtil.Btn(tex, 50, 50, () => AssetManagementTool_Preview.Open(tex));
     }
     
-    private void DrawDesc(AssetImporterImpl_Texture.AssetInfo assetInfo)
+    private void DrawDesc(AssetManagementImpl_Texture.AssetInfo assetInfo)
     {
         const float keyWidth = 80;
         const float valueWidth = 180;
@@ -270,7 +270,7 @@ public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
         GUILayout.EndVertical();
     }
     
-    private void DrawOption(AssetImporterImpl_Texture.AssetInfo assetInfo)
+    private void DrawOption(AssetManagementImpl_Texture.AssetInfo assetInfo)
     {
         const float width = 50;
 
@@ -279,20 +279,20 @@ public sealed class AssetImporterGUI_Texture : IAssetImporterGUI
         GUIUtil.Btn("선택", width, () => Selection.activeObject = assetInfo.Texture2D);
         GUIUtil.Btn("열기", width, () => EditorUtility.RevealInFinder(assetInfo.TextureImporter.assetPath));
         GUIUtil.Btn("포맷", width, () => assetInfo.SetTextureImporterFormat(_selectedTextureFormatIdx, true));
-        GUIUtil.Btn("수정", width, () => AssetImporterTool_TextureModify.Open(assetInfo));
+        GUIUtil.Btn("수정", width, () => AssetManagementTool_TextureModify.Open(assetInfo));
         GUIUtil.Btn("리셋", width, assetInfo.Reset);
 
         if (assetInfo.IsReferences)
         {
             GUIUtil.Btn("참조", width, () =>
             {
-                AssetImporterTool_ReferenceList.Open(new AssetImporterTool_ReferenceList.ReferenceParam(
-                    AssetImporterConsts.AssetKind.Texture, assetInfo.References, assetInfo.FileSizeStr));
+                AssetManagementTool_ReferenceList.Open(new AssetManagementTool_ReferenceList.ReferenceParam(
+                    AssetManagementConsts.AssetKind.Texture, assetInfo.References, assetInfo.FileSizeStr));
             });
         }
         if (assetInfo.IsCompare)
         {
-            GUIUtil.Btn("비교", width, () => AssetImporterTool_CompareList.Open(assetInfo));
+            GUIUtil.Btn("비교", width, () => AssetManagementTool_CompareList.Open(assetInfo));
         }
 
         EditorGUILayout.EndVertical();

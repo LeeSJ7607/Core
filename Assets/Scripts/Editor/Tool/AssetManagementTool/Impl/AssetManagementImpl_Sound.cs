@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
+public sealed class AssetManagementImpl_Sound : IAssetManagementImpl
 {
     public sealed class AssetInfo
     {
@@ -70,7 +70,7 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
     
     public int TotalCnt => AssetInfoMap.Sum(_ => _.Value.Count);
     public int SearchedCnt(string path) => _assetInfoMap[path].Count;
-    public (AssetImporterConsts.SortSound sortType, bool descending) CurSort { private get; set; }
+    public (AssetManagementConsts.SortSound sortType, bool descending) CurSort { private get; set; }
     public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;
     private List<AssetInfo> _searchedAssetInfos = new();
     public IReadOnlyDictionary<string, List<AssetInfo>> AssetInfoMap => _assetInfoMap;
@@ -135,7 +135,7 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
     {
         switch (CurSort.sortType)
         {
-        case AssetImporterConsts.SortSound.Name:
+        case AssetManagementConsts.SortSound.Name:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.AudioClip.name).ToList() 
@@ -143,7 +143,7 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortSound.FileSize:
+        case AssetManagementConsts.SortSound.FileSize:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.FileSize).ToList() 
@@ -151,7 +151,7 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortSound.ForceToMono:
+        case AssetManagementConsts.SortSound.ForceToMono:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.ForceToMono).ToList() 
@@ -159,7 +159,7 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortSound.PreloadAudioData:
+        case AssetManagementConsts.SortSound.PreloadAudioData:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.PreloadAudioData).ToList() 
@@ -167,7 +167,7 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortSound.CompressionFormat:
+        case AssetManagementConsts.SortSound.CompressionFormat:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.CompressionFormat).ToList() 
@@ -175,7 +175,7 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortSound.SampleRateSetting:
+        case AssetManagementConsts.SortSound.SampleRateSetting:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.SampleRateSetting).ToList() 
@@ -183,7 +183,7 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortSound.LoadType:
+        case AssetManagementConsts.SortSound.LoadType:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.LoadType).ToList() 
@@ -191,7 +191,7 @@ public sealed class AssetImporterImpl_Sound : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortSound.References:
+        case AssetManagementConsts.SortSound.References:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.IsReferences).ToList() 

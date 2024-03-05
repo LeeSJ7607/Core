@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-public sealed class AssetImporterTool_SoundModify : EditorWindow
+public sealed class AssetManagementTool_SoundModify : EditorWindow
 {
     private const float _toolWidth = 500;
     
@@ -35,18 +35,18 @@ public sealed class AssetImporterTool_SoundModify : EditorWindow
     private int _selectedForceToMonoIdx;
     private int _originForceToMonoIdx;
     
-    private AssetImporterImpl_Sound.AssetInfo _assetInfo;
+    private AssetManagementImpl_Sound.AssetInfo _assetInfo;
     
-    public static void Open(AssetImporterImpl_Sound.AssetInfo assetInfo)
+    public static void Open(AssetManagementImpl_Sound.AssetInfo assetInfo)
     {
-        var tool = GetWindow<AssetImporterTool_SoundModify>("Modify");
+        var tool = GetWindow<AssetManagementTool_SoundModify>("Modify");
         tool.minSize = tool.maxSize = new Vector2(_toolWidth, 220);
         tool._assetInfo = assetInfo;
         
         SetOption(tool);
     }
     
-    private static void SetOption(AssetImporterTool_SoundModify tool)
+    private static void SetOption(AssetManagementTool_SoundModify tool)
     {
         var assetInfo = tool._assetInfo;
         

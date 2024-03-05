@@ -4,7 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-public sealed class AssetImporterImpl_FBX : IAssetImporterImpl
+public sealed class AssetManagementImpl_FBX : IAssetManagementImpl
 {
     public sealed class AssetInfo
     {
@@ -73,7 +73,7 @@ public sealed class AssetImporterImpl_FBX : IAssetImporterImpl
     
     public int TotalCnt => AssetInfoMap.Sum(_ => _.Value.Count);
     public int SearchedCnt(string path) => _assetInfoMap[path].Count;
-    public (AssetImporterConsts.SortFBX sortType, bool descending) CurSort { private get; set; }
+    public (AssetManagementConsts.SortFBX sortType, bool descending) CurSort { private get; set; }
     public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;
     private List<AssetInfo> _searchedAssetInfos = new();
     public IReadOnlyDictionary<string, List<AssetInfo>> AssetInfoMap => _assetInfoMap;
@@ -138,7 +138,7 @@ public sealed class AssetImporterImpl_FBX : IAssetImporterImpl
     {
         switch (CurSort.sortType)
         {
-        case AssetImporterConsts.SortFBX.Name:
+        case AssetManagementConsts.SortFBX.Name:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.FBX.name).ToList() 
@@ -146,7 +146,7 @@ public sealed class AssetImporterImpl_FBX : IAssetImporterImpl
             }
             break;
 
-        case AssetImporterConsts.SortFBX.FileSize:
+        case AssetManagementConsts.SortFBX.FileSize:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.FileSize).ToList() 
@@ -154,7 +154,7 @@ public sealed class AssetImporterImpl_FBX : IAssetImporterImpl
             }
             break;
 
-        case AssetImporterConsts.SortFBX.ReadWrite:
+        case AssetManagementConsts.SortFBX.ReadWrite:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.ModelImporter.isReadable).ToList() 
@@ -162,7 +162,7 @@ public sealed class AssetImporterImpl_FBX : IAssetImporterImpl
             }
             break;
         
-        case AssetImporterConsts.SortFBX.References:
+        case AssetManagementConsts.SortFBX.References:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.IsReferences).ToList() 
