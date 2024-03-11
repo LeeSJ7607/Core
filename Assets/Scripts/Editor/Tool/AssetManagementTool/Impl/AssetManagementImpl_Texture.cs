@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.U2D;
 using Object = UnityEngine.Object;
 
 public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
@@ -168,14 +169,29 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
     private List<AssetInfo> _searchedAssetInfos = new();
     public IReadOnlyDictionary<string, IReadOnlyList<AssetInfo>> AssetInfoMap => _assetInfoMap;
     private readonly Dictionary<string, IReadOnlyList<AssetInfo>> _assetInfoMap = new();
+    private readonly List<SpriteAtlas> _atlasMap = new();
 
     public void Initialize(IEnumerable<string> paths)
     {
         EditorUtility.DisplayProgressBar("텍스쳐를 불러오는 중입니다.", "", 1);
+        CreateAtlas();
         CreateLabelsAndAssets(paths);
         EditorUtility.ClearProgressBar();
     }
 
+    private void CreateAtlas()
+    {
+        _atlasMap.Clear();
+        var guids = AssetDatabase.FindAssets("t:SpriteAtlas", new[] { "Assets" });
+
+        foreach (var guid in guids)
+        {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            var atlas = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(path);
+            _atlasMap.Add(atlas);
+        }
+    }
+    
     private void CreateLabelsAndAssets(IEnumerable<string> paths)
     {
         _assetInfoMap.Clear();
@@ -219,11 +235,31 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
             {
                 continue;
             }
+
+            if (IsTextureInAtlas(tex))
+            {
+                DecompressTexture(textureImporter);
+            }
             
             result.Add(new AssetInfo(path, tex, textureImporter));
         }
 
         return result;
+    }
+    
+    private bool IsTextureInAtlas(Texture2D tex)
+    {
+        return _atlasMap.Any(atlas => atlas.GetSprite(tex.name) != null);
+    }
+
+    private void DecompressTexture(TextureImporter textureImporter)
+    {
+        var aos = textureImporter.GetPlatformTextureSettings("Android");
+        var ios = textureImporter.GetPlatformTextureSettings("iPhone");
+        aos.overridden = ios.overridden = false;
+        textureImporter.SetPlatformTextureSettings(aos);
+        textureImporter.SetPlatformTextureSettings(ios);
+        textureImporter.SaveAndReimport();
     }
     
     public void CalcSearchedAssetInfos(
