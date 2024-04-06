@@ -65,9 +65,11 @@ public sealed class AssetManagementGUI_Texture : IAssetManagementGUI
         {
             return;
         }
-        
-        var directoryPaths = Directory.GetDirectories($"Assets{path[1]}");
-        calcDirPaths = new List<string>(directoryPaths.Length);
+
+        var fullPath = $"Assets{path[1]}";
+        var directoryPaths = Directory.GetDirectories(fullPath).ToList();
+        directoryPaths.Add(fullPath);
+        calcDirPaths = new List<string>(directoryPaths.Count);
 
         foreach (var dirPath in directoryPaths)
         {
