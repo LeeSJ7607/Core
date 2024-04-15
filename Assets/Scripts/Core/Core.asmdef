@@ -1,6 +1,6 @@
 {
-    "name": "Extensions",
-    "rootNamespace": "Extensions",
+    "name": "NewAssembly",
+    "rootNamespace": "",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
