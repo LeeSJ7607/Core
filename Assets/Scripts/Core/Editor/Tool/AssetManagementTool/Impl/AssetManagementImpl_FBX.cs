@@ -93,7 +93,7 @@ public sealed class AssetManagementImpl_FBX : IAssetManagementImpl
         foreach (var path in paths)
         {
             var guids = AssetDatabase.FindAssets("t:Model", new [] { path });
-            if (guids.Empty())
+            if (guids.IsNullOrEmpty())
             {
                 continue;
             }
@@ -104,7 +104,7 @@ public sealed class AssetManagementImpl_FBX : IAssetManagementImpl
             }
 
             var assets = _assetInfoMap[path];
-            var canAddSearchedAssetInfos = _searchedAssetInfos.Empty();
+            var canAddSearchedAssetInfos = _searchedAssetInfos.IsNullOrEmpty();
 
             foreach (var guid in guids)
             {

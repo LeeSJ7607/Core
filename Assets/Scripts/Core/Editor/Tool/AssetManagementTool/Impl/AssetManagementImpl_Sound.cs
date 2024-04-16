@@ -90,7 +90,7 @@ public sealed class AssetManagementImpl_Sound : IAssetManagementImpl
         foreach (var path in paths)
         {
             var guids = AssetDatabase.FindAssets("t:AudioClip", new [] { path });
-            if (guids.Empty())
+            if (guids.IsNullOrEmpty())
             {
                 continue;
             }
@@ -101,7 +101,7 @@ public sealed class AssetManagementImpl_Sound : IAssetManagementImpl
             }
 
             var assets = _assetInfoMap[path];
-            var canAddSearchedAssetInfos = _searchedAssetInfos.Empty();
+            var canAddSearchedAssetInfos = _searchedAssetInfos.IsNullOrEmpty();
 
             foreach (var guid in guids)
             {

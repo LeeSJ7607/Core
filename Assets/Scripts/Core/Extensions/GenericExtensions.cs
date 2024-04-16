@@ -1,9 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 public static class GenericExtensions
 {
-    public static bool Empty<T>(this IList<T> list)
+    public static bool IsNullOrEmpty<T>(this T[] param)
     {
-        return list == null || list.Count == 0;
+        return param == null || param.Length == 0;
+    }
+
+    public static bool IsNullOrEmpty<T>(this IEnumerable<T> param)
+    {
+        return param == null || !param.Any();
     }
 }
