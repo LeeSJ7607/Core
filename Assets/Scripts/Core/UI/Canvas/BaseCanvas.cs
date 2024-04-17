@@ -45,7 +45,7 @@ internal abstract class BaseCanvas : MonoBehaviour
     {
         if (_popups.IsNullOrEmpty())
         {
-            ShowPopup<UIPopup_System>();
+            //ShowPopup<UIPopup_System>();
             return;
         }
 
