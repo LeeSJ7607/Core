@@ -1,36 +1,15 @@
 ﻿using System.Collections.Generic;
-using UnityEngine.UI;
 using UnityEngine;
 
-internal abstract class BaseCanvas : MonoBehaviour
+internal abstract class BaseCanvas
 {
     private readonly UIContainer _uiContainer = new();
     private readonly Stack<UIPopup> _popups = new();
+    private readonly Transform _root;
     
-    protected virtual void Awake()
+    protected BaseCanvas(Transform root)
     {
-        CreateCanvas();
-        CreateCanvasScale();
-        gameObject.AddComponent<GraphicRaycaster>();
-    }
-    
-    private void CreateCanvas()
-    {
-        var canvas = gameObject.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceCamera;
-        canvas.worldCamera = Camera.main;
-        canvas.additionalShaderChannels = AdditionalCanvasShaderChannels.TexCoord1 
-          | AdditionalCanvasShaderChannels.Normal 
-          | AdditionalCanvasShaderChannels.Tangent;
-    }
-    
-    private void CreateCanvasScale()
-    {
-        var canvasScale = gameObject.AddComponent<CanvasScaler>();
-        canvasScale.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        canvasScale.referenceResolution = new Vector2(1920, 1080); //TODO: Const Table. (스크립터블 오브젝트)
-        canvasScale.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-        canvasScale.matchWidthOrHeight = 1f;
+        _root = root;
     }
     
     public void OnTick()
@@ -55,7 +34,7 @@ internal abstract class BaseCanvas : MonoBehaviour
     
     public T ShowPopup<T>() where T : UIPopup
     {
-        var popup = _uiContainer.GetOrCreate<T>(transform);
+        var popup = _uiContainer.GetOrCreate<T>(_root);
         popup.Show();
         
         _popups.Push(popup);

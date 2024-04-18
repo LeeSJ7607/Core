@@ -1,4 +1,9 @@
-﻿internal sealed class InGameCanvas : BaseCanvas
+﻿using UnityEngine;
+
+internal sealed class InGameCanvas : BaseCanvas
 {
-    
+    public InGameCanvas(Transform root) : base(root)
+    {
+        
+    }
 }

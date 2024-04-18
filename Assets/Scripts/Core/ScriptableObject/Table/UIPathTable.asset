@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bd08b3c451f4e9e8a5b452ab5b58090, type: 3}
+  m_Name: UIPathTable
+  m_EditorClassIdentifier: 
+  _table:
+    keys: 3cf0ffff
+    values:
+    - UIBase: {fileID: -7154486673174132896, guid: 2a737a1590a149a4ba71fb0f0a077050, type: 3}
+      Path: Assets/Bundle/UI/Prefab/Image.prefab
