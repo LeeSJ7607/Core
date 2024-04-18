@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "UIPathTable", menuName = "ScriptableObject/UIPathTable", order = 1)]
-internal sealed class UIPathTable : ScriptableObject
+public sealed class UIPathTable : ScriptableObject
 {
     [Serializable]
-    public sealed class TableDictionary : SerializableDictionary<int, string>
+    public sealed class TableDictionary : SerializableDictionary<string, string>
     {
         
     }
@@ -25,8 +25,8 @@ internal sealed class UIPathTable : ScriptableObject
         _table.Clear();
     }
     
-    public void Add(int hashCode, string path)
+    public void Add(string key, string path)
     {
-        _table.TryAdd(hashCode, path);
+        _table.TryAdd(key, path);
     }
 }

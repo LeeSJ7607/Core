@@ -3,5 +3,8 @@
     protected override void Awake()
     {
         base.Awake();
+        
+        _baseCanvas = new LoadingCanvas(transform);
+        _baseCanvas.Initialize();
     }
 }

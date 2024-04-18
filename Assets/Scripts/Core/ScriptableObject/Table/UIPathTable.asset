@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: UIPathTable
   m_EditorClassIdentifier: 
   _table:
-    keys: 3cf0ffff
-    values:
-    - UIBase: {fileID: -7154486673174132896, guid: 2a737a1590a149a4ba71fb0f0a077050, type: 3}
-      Path: Assets/Bundle/UI/Prefab/Image.prefab
+    keys: []
+    values: []

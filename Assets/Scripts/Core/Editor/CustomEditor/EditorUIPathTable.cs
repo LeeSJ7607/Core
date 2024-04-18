@@ -73,7 +73,7 @@ internal sealed class EditorUIPathTable : Editor
                 continue;
             }
             
-            pathTable.Add(uiBase.GetHashCode(), path);
+            pathTable.Add(uiBase.GetType().Name, path);
         }
         
         EditorUtility.SetDirty(target);

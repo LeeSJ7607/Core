@@ -12,6 +12,11 @@ internal abstract class BaseCanvas
         _root = root;
     }
     
+    public virtual void Initialize()
+    {
+        
+    }
+    
     public void OnTick()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -32,7 +37,7 @@ internal abstract class BaseCanvas
         popup.Hide();
     }
     
-    public T ShowPopup<T>() where T : UIPopup
+    protected T ShowPopup<T>() where T : UIPopup
     {
         var popup = _uiContainer.GetOrCreate<T>(_root);
         popup.Show();
