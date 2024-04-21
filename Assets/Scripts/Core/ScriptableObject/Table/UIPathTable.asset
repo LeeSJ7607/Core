@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: UIPathTable
   m_EditorClassIdentifier: 
   _table:
-    keys: []
-    values: []
+    keys:
+    - UIPopup_System
+    values:
+    - UIPopup_System

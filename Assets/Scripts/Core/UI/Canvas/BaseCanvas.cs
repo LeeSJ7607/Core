@@ -12,6 +12,11 @@ internal abstract class BaseCanvas
         _root = root;
     }
     
+    public void Release()
+    {
+        _uiContainer.Release();
+    }
+    
     public virtual void Initialize()
     {
         
