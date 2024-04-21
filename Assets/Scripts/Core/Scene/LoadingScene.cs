@@ -1,16 +1,20 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 internal sealed class LoadingScene : BaseScene
 {
-    protected override void Awake()
-    {
-        base.Awake();
-        _baseCanvas = new LoadingCanvas(transform);
-    }
-
     protected override async UniTask Start()
     {
         await base.Start(); 
-        _baseCanvas.Initialize();
+        await ReleaseAll();
+        SceneLoader.Instance.LoadNextScene();
+    }
+
+    private async UniTask ReleaseAll()
+    {
+        GC.Collect();
+        await Resources.UnloadUnusedAssets();
+        AddressableManager.Instance.Release();
     }
 }
