@@ -6,7 +6,7 @@ using UnityEngine;
 public sealed class UIPathTable : ScriptableObject
 {
     [Serializable]
-    public sealed class TableDictionary : SerializableDictionary<string, string>
+    public sealed class TableDictionary : SerializableDictionary<string, Table>
     {
         
     }
@@ -15,6 +15,7 @@ public sealed class UIPathTable : ScriptableObject
     public sealed class Table
     {
         public string Path;
+        public string Address;
     }
     
     [SerializeField]
@@ -25,8 +26,8 @@ public sealed class UIPathTable : ScriptableObject
         _table.Clear();
     }
     
-    public void Add(string key, string path)
+    public void Add(string key, Table table)
     {
-        _table.TryAdd(key, path);
+        _table.TryAdd(key, table);
     }
 }

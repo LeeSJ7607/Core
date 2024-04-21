@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using UnityEditor.AddressableAssets;
+using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(UIPathTable))]
@@ -72,11 +73,23 @@ internal sealed class EditorUIPathTable : Editor
             {
                 continue;
             }
-            
-            pathTable.Add(uiBase.GetType().Name, path);
+
+            pathTable.Add(uiBase.GetType().Name, new UIPathTable.Table()
+            {
+                Path = path, 
+                Address = GetAddress(guid)
+            });
         }
         
         EditorUtility.SetDirty(target);
         return true;
+    }
+    
+    private string GetAddress(string guid)
+    {
+        var settings = AddressableAssetSettingsDefaultObject.Settings;
+        var entry = settings.FindAssetEntry(guid);
+
+        return entry.address;
     }
 }
