@@ -6,11 +6,4 @@ internal sealed class LoginCanvas : BaseCanvas
     {
         
     }
-    
-    public override void Initialize()
-    {
-        base.Initialize();
-
-        ShowPopup<UIPopup_System>();
-    }
 }
