@@ -5,7 +5,7 @@ using UnityEditor;
 [CustomEditor(typeof(UIPathTable))]
 internal sealed class EditorUIPathTable : Editor
 {
-    private const string _keySelectedFilePath = "_keySelectedFilePath";
+    private const string KEY_SELECTED_FILE_PATH = "EditorUIPathTable_SELECTED_FILE_PATH";
     private string _selectedFolderPath;
 
     public override void OnInspectorGUI()
@@ -21,13 +21,13 @@ internal sealed class EditorUIPathTable : Editor
         GUILayout.BeginVertical();
         GUILayout.BeginHorizontal(EditorStyles.helpBox);
         {
-            _selectedFolderPath = PlayerPrefs.GetString(_keySelectedFilePath);
+            _selectedFolderPath = PlayerPrefs.GetString(KEY_SELECTED_FILE_PATH);
 
             if (GUILayout.Button("UI 프리팹 경로 지정"))
             {
                 var folderPath = EditorUtility.OpenFolderPanel("UI 프리팹 경로 지정", _selectedFolderPath, "");
                 _selectedFolderPath = $"Assets{folderPath.Split(Application.dataPath)[1]}";
-                PlayerPrefs.SetString(_keySelectedFilePath, _selectedFolderPath);
+                PlayerPrefs.SetString(KEY_SELECTED_FILE_PATH, _selectedFolderPath);
             }
             
             GUILayout.Label(_selectedFolderPath);

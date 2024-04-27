@@ -42,9 +42,9 @@ internal abstract class BaseCanvas
         popup.Hide();
     }
     
-    protected T ShowPopup<T>() where T : UIPopup
+    protected TPopup ShowPopup<TPopup>() where TPopup : UIPopup
     {
-        var popup = _uiContainer.GetOrCreate<T>(_root);
+        var popup = _uiContainer.GetOrCreate<TPopup>(_root);
         popup.Show();
         
         _popups.Push(popup);

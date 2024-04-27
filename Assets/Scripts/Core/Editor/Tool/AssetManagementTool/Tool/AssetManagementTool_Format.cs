@@ -5,7 +5,7 @@ using UnityEngine;
 
 internal sealed class AssetManagementTool_Format : EditorWindow
 {
-    private const float _size = 200;
+    private const float TOOL_WIDTH = 200;
     
     private sealed class TextureInfo
     {
@@ -28,7 +28,7 @@ internal sealed class AssetManagementTool_Format : EditorWindow
     public static void Open(AssetManagementImpl_Texture.AssetInfo assetInfo)
     {
         var tool = GetWindow<AssetManagementTool_Format>("Format");
-        tool.minSize = tool.maxSize = new Vector2(_size * AssetManagementImpl_Texture.TextureFormats.Length + 40, _size + 40);
+        tool.minSize = tool.maxSize = new Vector2(TOOL_WIDTH * AssetManagementImpl_Texture.TextureFormats.Length + 40, TOOL_WIDTH + 40);
         
         CreateTexture(tool, assetInfo);
     }
@@ -83,12 +83,12 @@ internal sealed class AssetManagementTool_Format : EditorWindow
     private void DrawTexture(TextureInfo textureInfo)
     {
         var tex = textureInfo.Tex;
-        GUIUtil.Btn(tex, _size, _size, () => AssetManagementTool_Preview.Open(tex));
+        GUIUtil.Btn(tex, TOOL_WIDTH, TOOL_WIDTH, () => AssetManagementTool_Preview.Open(tex));
     }
 
     private void DrawDesc(TextureInfo textureInfo)
     {
         var desc = $"{textureInfo.Format}\n{textureInfo.Size}";
-        GUILayout.Label(desc, GUIUtil.LabelStyle(), GUILayout.Width(_size));
+        GUILayout.Label(desc, GUIUtil.LabelStyle(), GUILayout.Width(TOOL_WIDTH));
     }
 }

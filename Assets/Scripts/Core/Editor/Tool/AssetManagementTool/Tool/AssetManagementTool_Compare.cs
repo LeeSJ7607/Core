@@ -19,15 +19,15 @@ public sealed class AssetManagementTool_Compare : EditorWindow
         }
     }
     
-    private const float _keyWidth = 80;
-    private const float _valueWidth = 170;
-    private const float _textureSize = 200;
+    private const float KEY_WIDTH = 80;
+    private const float VALUE_WIDTH = 170;
+    private const float TEXTURE_SIZE = 200;
     private TextureInfo _left, _right;
     
     public static void Open(Texture left, Texture right)
     {
         var tool = GetWindow<AssetManagementTool_Compare>("Compare");
-        tool.minSize = tool.maxSize = new Vector2(_textureSize * 3, _textureSize * 2);
+        tool.minSize = tool.maxSize = new Vector2(TEXTURE_SIZE * 3, TEXTURE_SIZE * 2);
         tool._left = new TextureInfo(left);
         tool._right = new TextureInfo(right);
     }
@@ -48,7 +48,7 @@ public sealed class AssetManagementTool_Compare : EditorWindow
         var setting = textureInfo.Settings;
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        GUIUtil.Btn(tex, _textureSize + 60, _textureSize, () => Selection.activeObject = tex);
+        GUIUtil.Btn(tex, TEXTURE_SIZE + 60, TEXTURE_SIZE, () => Selection.activeObject = tex);
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         GUIUtil.Desc($"{importer.assetPath}");
@@ -56,13 +56,13 @@ public sealed class AssetManagementTool_Compare : EditorWindow
         EditorGUILayout.EndVertical();
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        GUIUtil.Desc("Texture Type", importer.textureType.ToString(), _keyWidth, _valueWidth, _left.Importer.textureType, _right.Importer.textureType);
-        GUIUtil.Desc("Wrap Mode", tex.wrapMode.ToString(), _keyWidth, _valueWidth, _left.Tex.wrapMode, _right.Tex.wrapMode);
-        GUIUtil.Desc("Filter Mode", tex.filterMode.ToString(), _keyWidth, _valueWidth, _left.Tex.filterMode, _right.Tex.filterMode);
-        GUIUtil.Desc("Max Size", importer.maxTextureSize.ToString(), _keyWidth, _valueWidth, _left.Importer.maxTextureSize, _right.Importer.maxTextureSize);
-        GUIUtil.Desc("Format", setting.format.ToString(), _keyWidth, _valueWidth, _left.Settings.format, _right.Settings.format);
-        GUIUtil.Desc("Texture Size", $"{tex.width.ToString()}x{tex.height.ToString()}", _keyWidth, _valueWidth);
-        GUIUtil.Desc("File Size", textureInfo.FileSize, _keyWidth, _valueWidth);
+        GUIUtil.Desc("Texture Type", importer.textureType.ToString(), KEY_WIDTH, VALUE_WIDTH, _left.Importer.textureType, _right.Importer.textureType);
+        GUIUtil.Desc("Wrap Mode", tex.wrapMode.ToString(), KEY_WIDTH, VALUE_WIDTH, _left.Tex.wrapMode, _right.Tex.wrapMode);
+        GUIUtil.Desc("Filter Mode", tex.filterMode.ToString(), KEY_WIDTH, VALUE_WIDTH, _left.Tex.filterMode, _right.Tex.filterMode);
+        GUIUtil.Desc("Max Size", importer.maxTextureSize.ToString(), KEY_WIDTH, VALUE_WIDTH, _left.Importer.maxTextureSize, _right.Importer.maxTextureSize);
+        GUIUtil.Desc("Format", setting.format.ToString(), KEY_WIDTH, VALUE_WIDTH, _left.Settings.format, _right.Settings.format);
+        GUIUtil.Desc("Texture Size", $"{tex.width.ToString()}x{tex.height.ToString()}", KEY_WIDTH, VALUE_WIDTH);
+        GUIUtil.Desc("File Size", textureInfo.FileSize, KEY_WIDTH, VALUE_WIDTH);
         EditorGUILayout.EndVertical();
         
         EditorGUILayout.BeginHorizontal();

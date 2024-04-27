@@ -5,7 +5,7 @@ using UnityEngine;
 
 public sealed class AssetManagementGUI_Sound : IAssetManagementGUI
 {
-    private const int _drawMaxRow = 5;
+    private const int DRAW_MAX_ROW = 5;
     
     public int Order => 2;
     public int TotalCnt => _soundImpl.TotalCnt;
@@ -16,7 +16,7 @@ public sealed class AssetManagementGUI_Sound : IAssetManagementGUI
     private readonly AssetManagementImpl_Sound _soundImpl = new();
     private int _selectedSoundPathIdx;
     private int _selectedSoundSortIdx;
-    private readonly string[] _sortSound = Enum.GetNames(typeof(AssetManagementConsts.SortSound));
+    private readonly string[] _sortSound = Enum.GetNames(typeof(AssetManagementConsts.ESortSound));
     private List<string> _soundDirPaths;
     private List<string> _btnNameSoundDirPaths;
     private Texture2D _texModified;
@@ -90,7 +90,7 @@ public sealed class AssetManagementGUI_Sound : IAssetManagementGUI
         GUIUtil.Btn("모든 참조 찾기", () =>
         {
             DependencyUtil.Dependencies(_soundImpl.SearchedAssetInfos);
-            Sort((int)AssetManagementConsts.SortSound.References, true);
+            Sort((int)AssetManagementConsts.ESortSound.References, true);
         });
         
         DrawSort();
@@ -107,7 +107,7 @@ public sealed class AssetManagementGUI_Sound : IAssetManagementGUI
     
     private void Sort(int sortIdx, bool descending)
     {
-        _soundImpl.CurSort = ((AssetManagementConsts.SortSound)sortIdx, descending);
+        _soundImpl.CurSort = ((AssetManagementConsts.ESortSound)sortIdx, descending);
         _soundImpl.CalcSearchedAssetInfos(_soundDirPaths[_selectedSoundPathIdx]);
     }
     
@@ -119,7 +119,7 @@ public sealed class AssetManagementGUI_Sound : IAssetManagementGUI
         for (var i = 0; i < totalCnt; i++)
         {
             EditorGUILayout.BeginHorizontal();
-            for (var j = 0; j < _drawMaxRow; j++)
+            for (var j = 0; j < DRAW_MAX_ROW; j++)
             {
                 var idx = i + j;
                 if (idx >= totalCnt)
@@ -134,7 +134,7 @@ public sealed class AssetManagementGUI_Sound : IAssetManagementGUI
                 EditorGUILayout.EndHorizontal();
             }
             
-            i += (_drawMaxRow - 1);
+            i += (DRAW_MAX_ROW - 1);
             EditorGUILayout.EndHorizontal();
         }
         
@@ -176,7 +176,7 @@ public sealed class AssetManagementGUI_Sound : IAssetManagementGUI
             GUIUtil.Btn("참조", () =>
             {
                 AssetManagementTool_ReferenceList.Open(new AssetManagementTool_ReferenceList.ReferenceParam(
-                    AssetManagementConsts.AssetKind.Sound, assetInfo.References, assetInfo.FileSizeStr));
+                    AssetManagementConsts.EAssetKind.Sound, assetInfo.References, assetInfo.FileSizeStr));
             });
         }
         

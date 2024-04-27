@@ -5,7 +5,7 @@ using UnityEngine;
 
 public sealed class AssetManagementTool_SoundModify : EditorWindow
 {
-    private const float _toolWidth = 500;
+    private const float TOOL_WIDTH = 500;
     
     private static readonly string[] _compressionFormats = Enum.GetNames(typeof(AudioCompressionFormat)).ToArray();
     private int _selectedCompressionFormatsIdx;
@@ -40,7 +40,7 @@ public sealed class AssetManagementTool_SoundModify : EditorWindow
     public static void Open(AssetManagementImpl_Sound.AssetInfo assetInfo)
     {
         var tool = GetWindow<AssetManagementTool_SoundModify>("Modify");
-        tool.minSize = tool.maxSize = new Vector2(_toolWidth, 220);
+        tool.minSize = tool.maxSize = new Vector2(TOOL_WIDTH, 220);
         tool._assetInfo = assetInfo;
         
         SetOption(tool);

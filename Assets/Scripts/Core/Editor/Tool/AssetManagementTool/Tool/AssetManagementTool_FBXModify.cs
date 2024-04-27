@@ -5,7 +5,7 @@ using UnityEditor;
 
 internal sealed class AssetManagementTool_FBXModify : EditorWindow
 {
-    private const float _toolWidth = 500;
+    private const float TOOL_WIDTH = 500;
     
     private static readonly string[] _normalTypes = Enum.GetNames(typeof(ModelImporterNormals)).ToArray();
     private int _selectedNormalTypesIdx;
@@ -32,7 +32,7 @@ internal sealed class AssetManagementTool_FBXModify : EditorWindow
     public static void Open(AssetManagementImpl_FBX.AssetInfo assetInfo)
     {
         var tool = GetWindow<AssetManagementTool_FBXModify>("Modify");
-        tool.minSize = tool.maxSize = new Vector2(_toolWidth, 195);
+        tool.minSize = tool.maxSize = new Vector2(TOOL_WIDTH, 195);
         tool._assetInfo = assetInfo;
         
         SetOption(tool);

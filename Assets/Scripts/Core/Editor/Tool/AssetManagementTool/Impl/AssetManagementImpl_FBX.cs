@@ -73,7 +73,7 @@ public sealed class AssetManagementImpl_FBX : IAssetManagementImpl
     
     public int TotalCnt => AssetInfoMap.Sum(_ => _.Value.Count);
     public int SearchedCnt(string path) => _assetInfoMap[path].Count;
-    public (AssetManagementConsts.SortFBX sortType, bool descending) CurSort { private get; set; }
+    public (AssetManagementConsts.ESortFBX sortType, bool descending) CurSort { private get; set; }
     public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;
     private List<AssetInfo> _searchedAssetInfos = new();
     public IReadOnlyDictionary<string, List<AssetInfo>> AssetInfoMap => _assetInfoMap;
@@ -138,7 +138,7 @@ public sealed class AssetManagementImpl_FBX : IAssetManagementImpl
     {
         switch (CurSort.sortType)
         {
-        case AssetManagementConsts.SortFBX.Name:
+        case AssetManagementConsts.ESortFBX.Name:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.FBX.name).ToList() 
@@ -146,7 +146,7 @@ public sealed class AssetManagementImpl_FBX : IAssetManagementImpl
             }
             break;
 
-        case AssetManagementConsts.SortFBX.FileSize:
+        case AssetManagementConsts.ESortFBX.FileSize:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.FileSize).ToList() 
@@ -154,7 +154,7 @@ public sealed class AssetManagementImpl_FBX : IAssetManagementImpl
             }
             break;
 
-        case AssetManagementConsts.SortFBX.ReadWrite:
+        case AssetManagementConsts.ESortFBX.ReadWrite:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.ModelImporter.isReadable).ToList() 
@@ -162,7 +162,7 @@ public sealed class AssetManagementImpl_FBX : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortFBX.References:
+        case AssetManagementConsts.ESortFBX.References:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.IsReferences).ToList() 

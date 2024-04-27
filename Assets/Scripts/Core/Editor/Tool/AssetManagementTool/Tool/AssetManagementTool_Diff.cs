@@ -3,7 +3,7 @@ using UnityEngine;
 
 public sealed class AssetManagementTool_Diff : EditorWindow
 {
-    private enum AssetType
+    private enum EAssetType
     {
         All,
         Texture,
@@ -31,7 +31,7 @@ public sealed class AssetManagementTool_Diff : EditorWindow
 
     private IAssetManagementGUI[] _assetManagementGuis;
     private AssetInfo _before, _after;
-    private AssetType _curAssetType;
+    private EAssetType _curAssetType;
     private Vector2 _scrollPos;
 
     public static void Open(IAssetManagementGUI[] assetManagementGuis) 
@@ -40,13 +40,13 @@ public sealed class AssetManagementTool_Diff : EditorWindow
         tool.minSize = tool.maxSize = new Vector2(700, 800);
         tool._assetManagementGuis = assetManagementGuis;
         tool._before = new AssetInfo(
-            (AssetManagementImpl_Texture)assetManagementGuis[(int)AssetManagementConsts.AssetKind.Texture].OriginAssetManagementImpl, 
-            (AssetManagementImpl_FBX)assetManagementGuis[(int)AssetManagementConsts.AssetKind.FBX].OriginAssetManagementImpl,
-            (AssetManagementImpl_Sound)assetManagementGuis[(int)AssetManagementConsts.AssetKind.Sound].OriginAssetManagementImpl);
+            (AssetManagementImpl_Texture)assetManagementGuis[(int)AssetManagementConsts.EAssetKind.Texture].OriginAssetManagementImpl, 
+            (AssetManagementImpl_FBX)assetManagementGuis[(int)AssetManagementConsts.EAssetKind.FBX].OriginAssetManagementImpl,
+            (AssetManagementImpl_Sound)assetManagementGuis[(int)AssetManagementConsts.EAssetKind.Sound].OriginAssetManagementImpl);
         tool._after = new AssetInfo(
-            (AssetManagementImpl_Texture)assetManagementGuis[(int)AssetManagementConsts.AssetKind.Texture].AssetManagementImpl, 
-            (AssetManagementImpl_FBX)assetManagementGuis[(int)AssetManagementConsts.AssetKind.FBX].AssetManagementImpl,
-            (AssetManagementImpl_Sound)assetManagementGuis[(int)AssetManagementConsts.AssetKind.Sound].AssetManagementImpl);
+            (AssetManagementImpl_Texture)assetManagementGuis[(int)AssetManagementConsts.EAssetKind.Texture].AssetManagementImpl, 
+            (AssetManagementImpl_FBX)assetManagementGuis[(int)AssetManagementConsts.EAssetKind.FBX].AssetManagementImpl,
+            (AssetManagementImpl_Sound)assetManagementGuis[(int)AssetManagementConsts.EAssetKind.Sound].AssetManagementImpl);
         
         Sync(tool);
     }
@@ -86,7 +86,7 @@ public sealed class AssetManagementTool_Diff : EditorWindow
     
     private void OnDisable()
     {
-        _curAssetType = AssetType.All;
+        _curAssetType = EAssetType.All;
     }
 
     private void OnGUI()
@@ -99,7 +99,7 @@ public sealed class AssetManagementTool_Diff : EditorWindow
     private void DrawCategory()
     {
         EditorGUILayout.BeginHorizontal();
-        for (var type = AssetType.All; type < AssetType.End; type++)
+        for (var type = EAssetType.All; type < EAssetType.End; type++)
         {
             if (CanDrawCategory(type))
             {
@@ -109,13 +109,13 @@ public sealed class AssetManagementTool_Diff : EditorWindow
         EditorGUILayout.EndHorizontal();
     }
 
-    private bool CanDrawCategory(AssetType type)
+    private bool CanDrawCategory(EAssetType type)
     {
         return type switch
         {
-            AssetType.Texture => _after.TextureImpl?.CanDiff() ?? false,
-            AssetType.FBX => _after.FBXImpl?.CanDiff() ?? false,
-            AssetType.Sound => _after.SoundImpl?.CanDiff() ?? false,
+            EAssetType.Texture => _after.TextureImpl?.CanDiff() ?? false,
+            EAssetType.FBX => _after.FBXImpl?.CanDiff() ?? false,
+            EAssetType.Sound => _after.SoundImpl?.CanDiff() ?? false,
             _ => true
         };
     }
@@ -138,7 +138,7 @@ public sealed class AssetManagementTool_Diff : EditorWindow
         
         switch (_curAssetType)
         {
-        case AssetType.All:
+        case EAssetType.All:
             {
                 DrawTextureImpl(assetInfo.TextureImpl);
                 DrawFBXImpl(assetInfo.FBXImpl);
@@ -146,19 +146,19 @@ public sealed class AssetManagementTool_Diff : EditorWindow
             }
             break;
 
-        case AssetType.Texture:
+        case EAssetType.Texture:
             {
                 DrawTextureImpl(assetInfo.TextureImpl);
             }
             break;
 
-        case AssetType.FBX:
+        case EAssetType.FBX:
             {
                 DrawFBXImpl(assetInfo.FBXImpl);
             }
             break;
 
-        case AssetType.Sound:
+        case EAssetType.Sound:
             {
                 DrawSoundImpl(assetInfo.SoundImpl);
             }

@@ -1,6 +1,6 @@
 ﻿public sealed class AssetManagementConsts
 {
-    public enum AssetKind
+    public enum EAssetKind
     {
         Texture,
         FBX,
@@ -8,7 +8,7 @@
         End,
     }
     
-    public enum FilterTexture
+    public enum EFilterTexture
     {
         None,
         MipMap,
@@ -16,7 +16,7 @@
         Compare,
     }
     
-    public enum SortTexture
+    public enum ESortTexture
     {
         Name,
         FileSize,
@@ -30,7 +30,7 @@
         Compare,
     }
     
-    public enum SortFBX
+    public enum ESortFBX
     {
         Name,
         FileSize,
@@ -38,7 +38,7 @@
         References,
     }
     
-    public enum SortSound
+    public enum ESortSound
     {
         Name,
         FileSize,

@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
 {
-    private const string _noneLabel = "None";
+    private const string NONE_LABEL = "None";
     
     public static readonly string[] TextureFormats = 
     {
@@ -163,8 +163,8 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
 
     public int TotalCnt => _assetInfoMap.Sum(_ => _.Value.Count);
     public int SearchedCnt(string path) => _assetInfoMap[path].Count;
-    public (AssetManagementConsts.SortTexture sortType, bool descending) CurSort { private get; set; }
-    public AssetManagementConsts.FilterTexture CurFilterType { private get; set; }
+    public (AssetManagementConsts.ESortTexture sortType, bool descending) CurSort { private get; set; }
+    public AssetManagementConsts.EFilterTexture CurFilterType { private get; set; }
     public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;
     private List<AssetInfo> _searchedAssetInfos = new();
     public IReadOnlyDictionary<string, IReadOnlyList<AssetInfo>> AssetInfoMap => _assetInfoMap;
@@ -207,7 +207,7 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
 
     private void CreateLabels(IEnumerable<string> guids)
     {
-        var str = new List<string> { _noneLabel };
+        var str = new List<string> { NONE_LABEL };
 
         foreach (var guid in guids)
         {
@@ -310,7 +310,7 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
         var existLabel = ExistLabel(tex, label);
         var checkSizeTexture = CheckSizeTexture(tex, textureMaxSize, textureMinSize);
         
-        if (!label.Equals(_noneLabel) && textureMaxSize > 0)
+        if (!label.Equals(NONE_LABEL) && textureMaxSize > 0)
         {
             return existLabel && checkSizeTexture;
         }
@@ -351,7 +351,7 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
     {
         switch (CurSort.sortType)
         {
-        case AssetManagementConsts.SortTexture.Name:
+        case AssetManagementConsts.ESortTexture.Name:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.Texture2D.name).ToList()
@@ -359,7 +359,7 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
             }
             break;
 
-        case AssetManagementConsts.SortTexture.FileSize:
+        case AssetManagementConsts.ESortTexture.FileSize:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.FileSize).ToList()
@@ -367,7 +367,7 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortTexture.TextureSize:
+        case AssetManagementConsts.ESortTexture.TextureSize:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.Texture2D.width).ToList()
@@ -375,7 +375,7 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortTexture.MipMap:
+        case AssetManagementConsts.ESortTexture.MipMap:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.TextureImporter.mipmapEnabled).ToList()
@@ -383,7 +383,7 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortTexture.Format:
+        case AssetManagementConsts.ESortTexture.Format:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.AOSSettings.format).ToList()
@@ -391,7 +391,7 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortTexture.WrapMode:
+        case AssetManagementConsts.ESortTexture.WrapMode:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.WrapMode).ToList()
@@ -399,7 +399,7 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortTexture.FilterMode:
+        case AssetManagementConsts.ESortTexture.FilterMode:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.FilterMode).ToList()
@@ -407,7 +407,7 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortTexture.TextureType:
+        case AssetManagementConsts.ESortTexture.TextureType:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.TextureType).ToList()
@@ -415,7 +415,7 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortTexture.References:
+        case AssetManagementConsts.ESortTexture.References:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.IsReferences).ToList()
@@ -423,7 +423,7 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortTexture.Compare:
+        case AssetManagementConsts.ESortTexture.Compare:
             {
                 _searchedAssetInfos = CurSort.descending
                     ? _searchedAssetInfos.OrderByDescending(_ => _.IsCompare).ToList()
@@ -437,19 +437,19 @@ public sealed class AssetManagementImpl_Texture : IAssetManagementImpl
     {
         switch (CurFilterType)
         {
-        case AssetManagementConsts.FilterTexture.MipMap:
+        case AssetManagementConsts.EFilterTexture.MipMap:
             {
                 _searchedAssetInfos = _searchedAssetInfos.Where(_ => _.TextureImporter.mipmapEnabled).ToList();
             }
             break;
 
-        case AssetManagementConsts.FilterTexture.References:
+        case AssetManagementConsts.EFilterTexture.References:
             {
                 _searchedAssetInfos = _searchedAssetInfos.Where(_ => _.IsReferences).ToList();
             }
             break;
 
-        case AssetManagementConsts.FilterTexture.Compare:
+        case AssetManagementConsts.EFilterTexture.Compare:
             {
                 _searchedAssetInfos = _searchedAssetInfos.Where(_ => _.IsCompare).ToList();
             }

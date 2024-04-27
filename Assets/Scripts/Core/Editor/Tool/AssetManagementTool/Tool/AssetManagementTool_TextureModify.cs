@@ -5,8 +5,8 @@ using UnityEngine;
 
 internal sealed class AssetManagementTool_TextureModify : EditorWindow
 {
-    private const float _toolWidth = 400;
-    private const float _guiSpace = 10;
+    private const float TOOL_WIDTH = 400;
+    private const float GUI_SPACE = 10;
     
     private static readonly string[] _textureTypes = Enum.GetNames(typeof(TextureImporterType)).ToArray();
     private int _selectedTextureTypesIdx;
@@ -41,7 +41,7 @@ internal sealed class AssetManagementTool_TextureModify : EditorWindow
     public static void Open(AssetManagementImpl_Texture.AssetInfo assetInfo)
     {
         var tool = GetWindow<AssetManagementTool_TextureModify>("Modify");
-        tool.minSize = tool.maxSize = new Vector2(_toolWidth, 530);
+        tool.minSize = tool.maxSize = new Vector2(TOOL_WIDTH, 530);
         tool._assetInfo = assetInfo;
 
         SetOption(tool);
@@ -89,11 +89,11 @@ internal sealed class AssetManagementTool_TextureModify : EditorWindow
         var importer = _assetInfo.TextureImporter;
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.Space(_guiSpace);
+        EditorGUILayout.Space(GUI_SPACE);
         {
-            GUILayout.Label(tex, GUIUtil.LabelStyle(), GUILayout.Width(_toolWidth), GUILayout.Height(256));
+            GUILayout.Label(tex, GUIUtil.LabelStyle(), GUILayout.Width(TOOL_WIDTH), GUILayout.Height(256));
         }
-        EditorGUILayout.Space(_guiSpace);
+        EditorGUILayout.Space(GUI_SPACE);
         EditorGUILayout.EndVertical();
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
@@ -116,7 +116,7 @@ internal sealed class AssetManagementTool_TextureModify : EditorWindow
     {
         const float width = 100;
         
-        EditorGUILayout.Space(_guiSpace);
+        EditorGUILayout.Space(GUI_SPACE);
         EditorGUILayout.BeginHorizontal();
         {
             GUIUtil.BtnExpand("선택", width, () => Selection.activeObject = _assetInfo.Texture2D);

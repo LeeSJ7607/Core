@@ -6,7 +6,7 @@ using UnityEditor;
 
 public sealed class AssetManagementTool_ChangeName : EditorWindow
 {
-    private const int _textFieldWidth = 200;
+    private const int TEXT_FIELD_WIDTH = 200;
     
     private IEnumerable<AssetManagementImpl_Texture.AssetInfo> _assetInfos;
     private string _originName, _changeName, _addName, _lowerAndUpperName;
@@ -33,14 +33,14 @@ public sealed class AssetManagementTool_ChangeName : EditorWindow
             GUILayout.BeginVertical(EditorStyles.helpBox);
             {
                 GUILayout.Label("원래 문자열");
-                _originName = GUILayout.TextField(_originName, GUIUtil.TextFieldStyle(), GUILayout.Width(_textFieldWidth));
+                _originName = GUILayout.TextField(_originName, GUIUtil.TextFieldStyle(), GUILayout.Width(TEXT_FIELD_WIDTH));
             }
             GUILayout.EndVertical();
 
             GUILayout.BeginVertical(EditorStyles.helpBox);
             {
                 GUILayout.Label("변경할 문자열");
-                _changeName = GUILayout.TextField(_changeName, GUIUtil.TextFieldStyle(), GUILayout.Width(_textFieldWidth));
+                _changeName = GUILayout.TextField(_changeName, GUIUtil.TextFieldStyle(), GUILayout.Width(TEXT_FIELD_WIDTH));
             }
             GUILayout.EndVertical();
         }
@@ -67,7 +67,7 @@ public sealed class AssetManagementTool_ChangeName : EditorWindow
         GUILayout.BeginVertical(EditorStyles.helpBox);
         {
             GUILayout.Label("추가할 문자열");
-            _addName = GUILayout.TextField(_addName, GUIUtil.TextFieldStyle(), GUILayout.Width(_textFieldWidth * 2));
+            _addName = GUILayout.TextField(_addName, GUIUtil.TextFieldStyle(), GUILayout.Width(TEXT_FIELD_WIDTH * 2));
         }
         GUILayout.EndVertical();
         
@@ -99,7 +99,7 @@ public sealed class AssetManagementTool_ChangeName : EditorWindow
         GUILayout.BeginVertical(EditorStyles.helpBox);
         {
             GUILayout.Label("치환할 문자열");
-            _lowerAndUpperName = GUILayout.TextField(_lowerAndUpperName, GUIUtil.TextFieldStyle(), GUILayout.Width(_textFieldWidth * 2));
+            _lowerAndUpperName = GUILayout.TextField(_lowerAndUpperName, GUIUtil.TextFieldStyle(), GUILayout.Width(TEXT_FIELD_WIDTH * 2));
         }
         GUILayout.EndVertical();
         

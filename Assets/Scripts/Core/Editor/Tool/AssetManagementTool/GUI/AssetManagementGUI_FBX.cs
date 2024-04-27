@@ -6,7 +6,7 @@ using UnityEngine;
 
 public sealed class AssetManagementGUI_FBX : IAssetManagementGUI
 {
-    private const int _drawMaxRow = 5;
+    private const int DRAW_MAX_ROW = 5;
     
     public int Order => 1;
     public int TotalCnt => _fbxImpl.TotalCnt;
@@ -17,7 +17,7 @@ public sealed class AssetManagementGUI_FBX : IAssetManagementGUI
     private readonly AssetManagementImpl_FBX _fbxImpl = new();
     private int _selectedFBXPathIdx;
     private int _selectedFBXSortIdx;
-    private readonly string[] _sortFBX = Enum.GetNames(typeof(AssetManagementConsts.SortFBX)).ToArray();
+    private readonly string[] _sortFBX = Enum.GetNames(typeof(AssetManagementConsts.ESortFBX)).ToArray();
     private List<string> _fbxDirPaths;
     private List<string> _btnNameFbxDirPaths;
     private Texture2D _texModified;
@@ -91,7 +91,7 @@ public sealed class AssetManagementGUI_FBX : IAssetManagementGUI
         GUIUtil.Btn("모든 참조 찾기", () =>
         {
             DependencyUtil.Dependencies(_fbxImpl.SearchedAssetInfos);
-            Sort((int)AssetManagementConsts.SortFBX.References, true);
+            Sort((int)AssetManagementConsts.ESortFBX.References, true);
         });
         
         DrawSort();
@@ -108,7 +108,7 @@ public sealed class AssetManagementGUI_FBX : IAssetManagementGUI
     
     private void Sort(int sortIdx, bool descending)
     {
-        _fbxImpl.CurSort = ((AssetManagementConsts.SortFBX)sortIdx, descending);
+        _fbxImpl.CurSort = ((AssetManagementConsts.ESortFBX)sortIdx, descending);
         _fbxImpl.CalcSearchedAssetInfos(_fbxDirPaths[_selectedFBXPathIdx]);
     }
 
@@ -120,7 +120,7 @@ public sealed class AssetManagementGUI_FBX : IAssetManagementGUI
         for (var i = 0; i < totalCnt; i++)
         {
             EditorGUILayout.BeginHorizontal();
-            for (var j = 0; j < _drawMaxRow; j++)
+            for (var j = 0; j < DRAW_MAX_ROW; j++)
             {
                 var idx = i + j;
                 if (idx >= totalCnt)
@@ -135,7 +135,7 @@ public sealed class AssetManagementGUI_FBX : IAssetManagementGUI
                 EditorGUILayout.EndHorizontal();
             }
             
-            i += (_drawMaxRow - 1);
+            i += (DRAW_MAX_ROW - 1);
             EditorGUILayout.EndHorizontal();
         }
         
@@ -176,7 +176,7 @@ public sealed class AssetManagementGUI_FBX : IAssetManagementGUI
             GUIUtil.Btn("참조", () =>
             {
                 AssetManagementTool_ReferenceList.Open(new AssetManagementTool_ReferenceList.ReferenceParam(
-                    AssetManagementConsts.AssetKind.FBX, assetInfo.References, assetInfo.FileSizeStr));
+                    AssetManagementConsts.EAssetKind.FBX, assetInfo.References, assetInfo.FileSizeStr));
             });
         }
         

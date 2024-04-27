@@ -70,7 +70,7 @@ public sealed class AssetManagementImpl_Sound : IAssetManagementImpl
     
     public int TotalCnt => AssetInfoMap.Sum(_ => _.Value.Count);
     public int SearchedCnt(string path) => _assetInfoMap[path].Count;
-    public (AssetManagementConsts.SortSound sortType, bool descending) CurSort { private get; set; }
+    public (AssetManagementConsts.ESortSound sortType, bool descending) CurSort { private get; set; }
     public IReadOnlyList<AssetInfo> SearchedAssetInfos => _searchedAssetInfos;
     private List<AssetInfo> _searchedAssetInfos = new();
     public IReadOnlyDictionary<string, List<AssetInfo>> AssetInfoMap => _assetInfoMap;
@@ -135,7 +135,7 @@ public sealed class AssetManagementImpl_Sound : IAssetManagementImpl
     {
         switch (CurSort.sortType)
         {
-        case AssetManagementConsts.SortSound.Name:
+        case AssetManagementConsts.ESortSound.Name:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.AudioClip.name).ToList() 
@@ -143,7 +143,7 @@ public sealed class AssetManagementImpl_Sound : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortSound.FileSize:
+        case AssetManagementConsts.ESortSound.FileSize:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.FileSize).ToList() 
@@ -151,7 +151,7 @@ public sealed class AssetManagementImpl_Sound : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortSound.ForceToMono:
+        case AssetManagementConsts.ESortSound.ForceToMono:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.ForceToMono).ToList() 
@@ -159,7 +159,7 @@ public sealed class AssetManagementImpl_Sound : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortSound.PreloadAudioData:
+        case AssetManagementConsts.ESortSound.PreloadAudioData:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.PreloadAudioData).ToList() 
@@ -167,7 +167,7 @@ public sealed class AssetManagementImpl_Sound : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortSound.CompressionFormat:
+        case AssetManagementConsts.ESortSound.CompressionFormat:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.CompressionFormat).ToList() 
@@ -175,7 +175,7 @@ public sealed class AssetManagementImpl_Sound : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortSound.SampleRateSetting:
+        case AssetManagementConsts.ESortSound.SampleRateSetting:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.SampleRateSetting).ToList() 
@@ -183,7 +183,7 @@ public sealed class AssetManagementImpl_Sound : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortSound.LoadType:
+        case AssetManagementConsts.ESortSound.LoadType:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.LoadType).ToList() 
@@ -191,7 +191,7 @@ public sealed class AssetManagementImpl_Sound : IAssetManagementImpl
             }
             break;
         
-        case AssetManagementConsts.SortSound.References:
+        case AssetManagementConsts.ESortSound.References:
             {
                 _searchedAssetInfos = CurSort.descending 
                     ? _searchedAssetInfos.OrderByDescending(_ => _.IsReferences).ToList() 

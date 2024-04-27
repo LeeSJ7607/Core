@@ -5,8 +5,8 @@ using UnityEngine;
 
 internal sealed class AssetManagementGUI_Main : EditorWindow
 {
-    private const float _drawMenuBtn = 30;
-    private const string _keySelectedFilePath = "_keySelectedFilePath";
+    private const float DRAW_MENU_BTN = 30;
+    private const string KEY_SELECTED_FILE_PATH = "AssetManagementGUI_Main_SELECTED_FILE_PATH";
     private readonly IAssetManagementGUI[] _assetManagementGuis;
     private string _selectedFolderPath;
     private int _selectedAssetKindIdx;
@@ -25,7 +25,7 @@ internal sealed class AssetManagementGUI_Main : EditorWindow
     public static void Open()
     {
         var tool = GetWindow<AssetManagementGUI_Main>();
-        var selectedFilePath = tool._selectedFolderPath = PlayerPrefs.GetString(_keySelectedFilePath);
+        var selectedFilePath = tool._selectedFolderPath = PlayerPrefs.GetString(KEY_SELECTED_FILE_PATH);
 
         if (selectedFilePath.IsNullOrEmpty())
         {
@@ -61,7 +61,7 @@ internal sealed class AssetManagementGUI_Main : EditorWindow
             {
                 assetManagementGUI.Initialize(_selectedFolderPath);
             }
-            PlayerPrefs.SetString(_keySelectedFilePath, _selectedFolderPath);
+            PlayerPrefs.SetString(KEY_SELECTED_FILE_PATH, _selectedFolderPath);
         }
 
         GUILayout.Label(_selectedFolderPath);
@@ -71,7 +71,7 @@ internal sealed class AssetManagementGUI_Main : EditorWindow
     private void DrawAssetKind()
     {
         EditorGUILayout.BeginHorizontal();
-        for (var type = AssetManagementConsts.AssetKind.Texture; type < AssetManagementConsts.AssetKind.End; type++)
+        for (var type = AssetManagementConsts.EAssetKind.Texture; type < AssetManagementConsts.EAssetKind.End; type++)
         {
             EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
             var typeIdx = (int)type;
@@ -108,7 +108,7 @@ internal sealed class AssetManagementGUI_Main : EditorWindow
 
     private void DrawDiffBtn()
     {
-        if (!GUILayout.Button("변경된 에셋 보기", GUIUtil.ButtonStyle(), GUILayout.Height(_drawMenuBtn)))
+        if (!GUILayout.Button("변경된 에셋 보기", GUIUtil.ButtonStyle(), GUILayout.Height(DRAW_MENU_BTN)))
         {
             return;
         }
@@ -135,7 +135,7 @@ internal sealed class AssetManagementGUI_Main : EditorWindow
     
     private void DrawConfirmBtn()
     {
-        if (GUILayout.Button("변경된 에셋 적용", GUIUtil.ButtonStyle(), GUILayout.Height(_drawMenuBtn)))
+        if (GUILayout.Button("변경된 에셋 적용", GUIUtil.ButtonStyle(), GUILayout.Height(DRAW_MENU_BTN)))
         {
             Save();
         }

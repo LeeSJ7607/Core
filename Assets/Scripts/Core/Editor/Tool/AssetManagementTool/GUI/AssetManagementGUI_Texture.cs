@@ -7,8 +7,8 @@ using UnityEngine;
 
 public sealed class AssetManagementGUI_Texture : IAssetManagementGUI
 {
-    private const int _filterWidth = 952;
-    private const int _drawMaxRow = 5;
+    private const int FILTER_WIDTH = 952;
+    private const int DRAW_MAX_ROW = 5;
     
     public int Order => 0;
     public int TotalCnt => _textureImpl.TotalCnt;
@@ -19,9 +19,9 @@ public sealed class AssetManagementGUI_Texture : IAssetManagementGUI
     private readonly AssetManagementImpl_Texture _textureImpl = new();
     private int _selectedTextureFormatIdx = Array.FindIndex(AssetManagementImpl_Texture.TextureFormats, _ => _.Equals(TextureImporterFormat.ASTC_6x6.ToString()));
     private int _selectedTextureFilterIdx;
-    private readonly string[] _filterTextures = Enum.GetNames(typeof(AssetManagementConsts.FilterTexture)).ToArray();
+    private readonly string[] _filterTextures = Enum.GetNames(typeof(AssetManagementConsts.EFilterTexture)).ToArray();
     private int _selectedTextureSortIdx;
-    private readonly string[] _sortTextures = Enum.GetNames(typeof(AssetManagementConsts.SortTexture)).ToArray();
+    private readonly string[] _sortTextures = Enum.GetNames(typeof(AssetManagementConsts.ESortTexture)).ToArray();
     private int _selectedTextureMaxSizeIdx;
     private int _selectedTextureMinSizeIdx = AssetManagementImpl_Texture.TextureSizes.Length - 1;
     private int _selectedLabelIdx;
@@ -134,12 +134,12 @@ public sealed class AssetManagementGUI_Texture : IAssetManagementGUI
             GUIUtil.Btn("모든 참조 찾기", () =>
             {
                 DependencyUtil.Dependencies(_textureImpl.SearchedAssetInfos);
-                Sort((int)AssetManagementConsts.SortTexture.References, true);
+                Sort((int)AssetManagementConsts.ESortTexture.References, true);
             });
             GUIUtil.Btn("동일한 텍스쳐 모두 찾기", () =>
             {
                 DependencyUtil.SameAssets(_textureImpl.SearchedAssetInfos);
-                Sort((int)AssetManagementConsts.SortTexture.Compare, true);
+                Sort((int)AssetManagementConsts.ESortTexture.Compare, true);
             });
         }
         EditorGUILayout.EndHorizontal();
@@ -172,7 +172,7 @@ public sealed class AssetManagementGUI_Texture : IAssetManagementGUI
     private void DrawTextureFormat()
     {
         EditorGUILayout.BeginHorizontal();
-        GUIUtil.DrawPopup("텍스쳐 압축 포맷", ref _selectedTextureFormatIdx, AssetManagementImpl_Texture.TextureFormats, _filterWidth);
+        GUIUtil.DrawPopup("텍스쳐 압축 포맷", ref _selectedTextureFormatIdx, AssetManagementImpl_Texture.TextureFormats, FILTER_WIDTH);
         GUIUtil.Btn("전체 텍스쳐 압축 포맷 지정", () => Set(true));
         GUIUtil.Btn("전체 텍스쳐 압축 포맷 취소", () => Set(false));
         EditorGUILayout.EndHorizontal();
@@ -196,7 +196,7 @@ public sealed class AssetManagementGUI_Texture : IAssetManagementGUI
     private void DrawSortAndFilter()
     {
         EditorGUILayout.BeginHorizontal();
-        GUIUtil.DrawPopup("필터", ref _selectedTextureFilterIdx, _filterTextures, _filterWidth, () => Filter(_selectedTextureFilterIdx));
+        GUIUtil.DrawPopup("필터", ref _selectedTextureFilterIdx, _filterTextures, FILTER_WIDTH, () => Filter(_selectedTextureFilterIdx));
         GUIUtil.DrawPopup("정렬", ref _selectedTextureSortIdx, _sortTextures, () => Sort(_selectedTextureSortIdx, false));
         GUIUtil.Btn("▲", 25, () => Sort(_selectedTextureSortIdx, false));
         GUIUtil.Btn("▼", 25, () => Sort(_selectedTextureSortIdx, true));
@@ -205,13 +205,13 @@ public sealed class AssetManagementGUI_Texture : IAssetManagementGUI
     
     private void Sort(int sortIdx, bool descending)
     {
-        _textureImpl.CurSort = ((AssetManagementConsts.SortTexture)sortIdx, descending);
+        _textureImpl.CurSort = ((AssetManagementConsts.ESortTexture)sortIdx, descending);
         CalcSearchedAssetInfos();
     }
     
     private void Filter(int idx)
     {
-        _textureImpl.CurFilterType = (AssetManagementConsts.FilterTexture)idx;
+        _textureImpl.CurFilterType = (AssetManagementConsts.EFilterTexture)idx;
         CalcSearchedAssetInfos();
     }
     
@@ -223,7 +223,7 @@ public sealed class AssetManagementGUI_Texture : IAssetManagementGUI
         for (var i = 0; i < totalCnt; i++)
         {
             EditorGUILayout.BeginHorizontal();
-            for (var j = 0; j < _drawMaxRow; j++)
+            for (var j = 0; j < DRAW_MAX_ROW; j++)
             {
                 var idx = i + j;
                 if (idx >= totalCnt)
@@ -239,7 +239,7 @@ public sealed class AssetManagementGUI_Texture : IAssetManagementGUI
                 EditorGUILayout.EndHorizontal();
             }
 
-            i += (_drawMaxRow - 1);
+            i += (DRAW_MAX_ROW - 1);
             EditorGUILayout.EndHorizontal();
         }
         
@@ -289,7 +289,7 @@ public sealed class AssetManagementGUI_Texture : IAssetManagementGUI
             GUIUtil.Btn("참조", width, () =>
             {
                 AssetManagementTool_ReferenceList.Open(new AssetManagementTool_ReferenceList.ReferenceParam(
-                    AssetManagementConsts.AssetKind.Texture, assetInfo.References, assetInfo.FileSizeStr));
+                    AssetManagementConsts.EAssetKind.Texture, assetInfo.References, assetInfo.FileSizeStr));
             });
         }
         if (assetInfo.IsCompare)

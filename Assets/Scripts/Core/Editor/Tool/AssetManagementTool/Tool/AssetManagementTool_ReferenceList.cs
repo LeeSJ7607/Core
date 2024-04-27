@@ -6,12 +6,12 @@ public sealed class AssetManagementTool_ReferenceList : EditorWindow
 {
     public sealed class ReferenceParam
     {
-        public AssetManagementConsts.AssetKind AssetKind { get; }
+        public AssetManagementConsts.EAssetKind AssetKind { get; }
         public IReadOnlyDictionary<Object, IReadOnlyList<Object>> References { get; }
         public string FileSizeStr { get; }
         
         public ReferenceParam(
-            AssetManagementConsts.AssetKind assetKind, 
+            AssetManagementConsts.EAssetKind assetKind, 
             IReadOnlyDictionary<Object, IReadOnlyList<Object>> references, 
             string fileSizeStr)
         {
@@ -47,7 +47,7 @@ public sealed class AssetManagementTool_ReferenceList : EditorWindow
         const float size = 40;
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
 
-        if (_referenceParam.AssetKind == AssetManagementConsts.AssetKind.Texture)
+        if (_referenceParam.AssetKind == AssetManagementConsts.EAssetKind.Texture)
         {
             GUIUtil.Btn((Texture2D)target, size, size, () => AssetManagementTool_Preview.Open((Texture2D)target));
             EditorGUILayout.BeginVertical();
