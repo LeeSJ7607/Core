@@ -30,7 +30,7 @@ internal sealed class Sender
     {
         var request = _requests.Dequeue();
         var responseResult = await SendWebRequest(request.WebRequest);
-        _session.Receiver.ReceiveProcess(request, responseResult);
+        _session.Receiver.ReceiveProcess(responseResult, request);
     }
 
     public void Push<TResponse>(IRequest request) where TResponse : IResponse

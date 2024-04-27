@@ -7,7 +7,7 @@
         _session = session;
     }
 
-    public void ReceiveProcess(Sender.Request request, EResponseResult responseResult)
+    public void ReceiveProcess(EResponseResult responseResult, Sender.Request request)
     {
         switch (responseResult)
         {
