@@ -10,24 +10,24 @@ internal sealed class UIContainer
         _uiBaseMap.Clear();
     }
 
-    public T GetOrCreate<T>(Transform root) where T : UIBase
+    public TBase GetOrCreate<TBase>(Transform root) where TBase : UIBase
     {
-        if (_uiBaseMap.TryGetValue(typeof(T).GetHashCode(), out var uiBase))
+        if (_uiBaseMap.TryGetValue(typeof(TBase).GetHashCode(), out var uiBase))
         {
-            return uiBase as T;
+            return uiBase as TBase;
         }
 
-        return Create<T>(root);
+        return Create<TBase>(root);
     }
 
-    private T Create<T>(Transform root) where T : UIBase
+    private TBase Create<TBase>(Transform root) where TBase : UIBase
     {
-        var fileName = GetFileName<T>();
+        var fileName = GetFileName<TBase>();
         var res = AddressableManager.Instance.Get<GameObject>(fileName);
 
-        if (UnityEngine.Object.Instantiate(res, root).TryGetComponent<T>(out var uiBase))
+        if (UnityEngine.Object.Instantiate(res, root).TryGetComponent<TBase>(out var uiBase))
         {
-            _uiBaseMap.Add(typeof(T).GetHashCode(), uiBase);
+            _uiBaseMap.Add(typeof(TBase).GetHashCode(), uiBase);
             return uiBase;
         }
         
@@ -35,9 +35,9 @@ internal sealed class UIContainer
         return null;
     }
     
-    private string GetFileName<T>() where T : UIBase
+    private string GetFileName<TBase>() where TBase : UIBase
     {
         var uiPathTable = AddressableManager.Instance.Get<UIPathTable>(nameof(UIPathTable));
-        return uiPathTable.GetFileName(typeof(T).Name);
+        return uiPathTable.GetFileName(typeof(TBase).Name);
     }
 }

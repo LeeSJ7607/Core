@@ -13,11 +13,11 @@ internal sealed class AddressableManager : Singleton<AddressableManager>
         _resMap.Clear();
     }
 
-    public T Get<T>(string name) where T : UnityEngine.Object
+    public TObject Get<TObject>(string name) where TObject : UnityEngine.Object
     {
         if (_resMap.TryGetValue(name, out var obj))
         {
-            return obj as T;
+            return obj as TObject;
         }
         
         Debug.LogError($"{name} is Not Found Resource");
