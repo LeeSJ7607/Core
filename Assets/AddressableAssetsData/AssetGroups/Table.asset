@@ -21,7 +21,7 @@ MonoBehaviour:
     m_Address: UIPathTable
     m_ReadOnly: 0
     m_SerializedLabels:
-    - LoginScene
+    - Login
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 96b84e53fb9f4b64cbb7066ff126aea1, type: 2}
