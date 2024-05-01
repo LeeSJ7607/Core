@@ -28,9 +28,19 @@ internal sealed class Sender
 
     private async UniTaskVoid OnTick()
     {
-        var request = _requests.Dequeue();
-        var responseResult = await SendWebRequest(request.WebRequest);
-        _session.Receiver.ReceiveProcess(responseResult, request);
+        while (_session.IsValid())
+        {
+            await UniTask.NextFrame();
+            
+            if (_requests.Count == 0)
+            {
+                continue;
+            }
+            
+            var request = _requests.Dequeue();
+            var responseResult = await SendWebRequest(request.WebRequest);
+            _session.Receiver.ReceiveProcess(responseResult, request);
+        }
     }
 
     public void Push<TResponse>(IRequest request) where TResponse : IResponse

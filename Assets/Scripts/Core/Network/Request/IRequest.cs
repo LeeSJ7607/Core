@@ -6,7 +6,7 @@ public interface IRequest
 }
 
 [MemoryPackable]
-public sealed class LoginReq : IRequest
+public partial class LoginReq : IRequest
 {
     [MemoryPackIgnore]
     string IRequest.Url => "Login";

@@ -15,4 +15,9 @@
     {
         _sender.Push<TResponse>(request);
     }
+
+    public bool IsValid()
+    {
+        return true;
+    }
 }

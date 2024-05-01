@@ -18,7 +18,7 @@ internal abstract class BaseScene : MonoBehaviour
     
     protected virtual async UniTask Start()
     {
-        await AddressableManager.Instance.LoadAssetsAsync(nameof(LoginScene));
+        await AddressableManager.Instance.LoadAssetsAsync(SceneLoader.Instance.CurSceneType.ToString());
         _baseCanvas.Initialize();
     }
     
@@ -30,5 +30,10 @@ internal abstract class BaseScene : MonoBehaviour
     private void Update()
     {
         _baseCanvas.OnTick();
+    }
+
+    private void OnApplicationQuit()
+    {
+        ModelManager.Instance.Release();
     }
 }
