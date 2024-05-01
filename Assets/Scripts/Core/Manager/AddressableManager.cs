@@ -41,5 +41,7 @@ internal sealed class AddressableManager : Singleton<AddressableManager>
         {
             _resMap.TryAdd(obj.name, obj);
         }
+        
+        Addressables.Release(handle);
     }
 }

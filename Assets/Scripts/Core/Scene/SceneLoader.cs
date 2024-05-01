@@ -15,11 +15,14 @@ internal sealed class SceneLoader : Singleton<SceneLoader>
     public void LoadScene(EScene sceneType)
     {
         CurSceneType = sceneType;
-        Addressables.LoadSceneAsync(EScene.Loading.ToString());
+        
+        var handle = Addressables.LoadSceneAsync(EScene.Loading.ToString());
+        Addressables.Release(handle);
     }
     
     public void LoadNextScene()
     {
-        Addressables.LoadSceneAsync(CurSceneType);
+        var handle = Addressables.LoadSceneAsync(CurSceneType);
+        Addressables.Release(handle);
     }
 }
