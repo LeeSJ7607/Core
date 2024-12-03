@@ -34,7 +34,7 @@ internal abstract class BaseCanvas
     {
         if (_popups.IsNullOrEmpty())
         {
-            ShowPopup<UIPopup_System>();
+            //ShowPopup<UIPopup_System>();
             return;
         }
 
