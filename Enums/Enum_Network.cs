@@ -1,4 +1,4 @@
-﻿public enum EResponseResult
+public enum EResponseResult
 {
     Success,
     Retry,
