@@ -7,8 +7,8 @@ public abstract class Unit : MonoBehaviour
     protected virtual void Awake()
     {
         _btRoot = new BTSelector();
-        _btRoot.AddTask(new BTAction_Attack())
-               .AddTask(new BTAction_Chase());
+        _btRoot.AddNode(new BTAction_Attack())
+               .AddNode(new BTAction_Chase());
     }
     
     private void Update()
@@ -18,6 +18,6 @@ public abstract class Unit : MonoBehaviour
 
     protected virtual void OnUpdate()
     {
-        _btRoot.UpdateTask();
+        _btRoot.UpdateNode();
     }
 }

@@ -2,21 +2,21 @@ using System.Collections.Generic;
 
 internal interface IBTComposite
 {
-    IBTComposite AddTask(BTNode node);
-    void UpdateTask();
+    IBTComposite AddNode(BTNode node);
+    void UpdateNode();
 }
 
 internal abstract class BTComposite : BTNode, IBTComposite
 {
     protected readonly List<BTNode> _nodes = new();
     
-    IBTComposite IBTComposite.AddTask(BTNode node)
+    IBTComposite IBTComposite.AddNode(BTNode node)
     {
         _nodes.Add(node);
         return this;
     }
 
-    void IBTComposite.UpdateTask()
+    void IBTComposite.UpdateNode()
     {
         if (_nodes.NullOrEmpty())
         {
