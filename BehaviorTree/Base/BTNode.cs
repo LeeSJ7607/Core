@@ -1,4 +1,4 @@
-internal abstract class BTNode
+public abstract class BTNode
 {
     public enum Status
     {
