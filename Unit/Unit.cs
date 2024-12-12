@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Unit : MonoBehaviour
@@ -7,14 +6,9 @@ public abstract class Unit : MonoBehaviour
     
     protected virtual void Awake()
     {
-        _btRoot = new BTSequence();
-        _btRoot.AddTask(new List<BaseBT>()
-        {
-            new BTAction_Attack(),
-            new BTAction_Chase(),
-        });
-        
-        //TODO: 셀렉터도 넣어보기. 빌더 패턴??
+        _btRoot = new BTSelector();
+        _btRoot.AddTask(new BTAction_Attack())
+               .AddTask(new BTAction_Chase());
     }
     
     private void Update()

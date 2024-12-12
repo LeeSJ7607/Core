@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 internal interface IBTComposite
 {
-    void AddTask(IReadOnlyList<BaseBT> tasks);
+    IBTComposite AddTask(BaseBT tasks);
     void UpdateTask();
 }
 
@@ -10,9 +10,10 @@ internal abstract class BTComposite : BaseBT, IBTComposite
 {
     protected readonly List<BaseBT> _tasks = new();
     
-    void IBTComposite.AddTask(IReadOnlyList<BaseBT> tasks)
+    IBTComposite IBTComposite.AddTask(BaseBT task)
     {
-        _tasks.AddRange(tasks);
+        _tasks.Add(task);
+        return this;
     }
 
     void IBTComposite.UpdateTask()
