@@ -12,30 +12,30 @@ internal class BTSelector : BTComposite
         ++_curTaskIdx;
     }
     
-    public override EBTStatus Update()
+    public override Status Update()
     {
         if (_curTaskIdx == _nodes.Count)
         {
             ResetTaskIdx();
-            return EBTStatus.Success;
+            return Status.Success;
         }
 
         var curTask = _nodes[_curTaskIdx];
         var status = curTask.Update();
         
-        if (status == EBTStatus.Running)
+        if (status == Status.Running)
         {
-            return EBTStatus.Running;
+            return Status.Running;
         }
         
-        if (status == EBTStatus.Success)
+        if (status == Status.Success)
         {
             ResetTaskIdx();
-            return EBTStatus.Success;
+            return Status.Success;
         }
         
         curTask.End();
         MoveToNextTask();
-        return EBTStatus.Running;
+        return Status.Running;
     }
 }

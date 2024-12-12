@@ -7,30 +7,30 @@ internal sealed class BTSequence : BTComposite
         _curTaskIdx = 0;
     }
     
-    public override EBTStatus Update()
+    public override Status Update()
     {
         if (_curTaskIdx == _nodes.Count)
         {
             ResetTaskIdx();
-            return EBTStatus.Success;
+            return Status.Success;
         }
 
         var curTask = _nodes[_curTaskIdx];
         var status = curTask.Update();
         
-        if (status == EBTStatus.Running)
+        if (status == Status.Running)
         {
-            return EBTStatus.Running;
+            return Status.Running;
         }
 
-        if (status == EBTStatus.Failure)
+        if (status == Status.Failure)
         {
             ResetTaskIdx();
-            return EBTStatus.Failure;
+            return Status.Failure;
         }
 
         curTask.End();
         ++_curTaskIdx;
-        return EBTStatus.Running;
+        return Status.Running;
     }
 }

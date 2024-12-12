@@ -1,5 +1,12 @@
 internal abstract class BTNode
 {
-    public abstract EBTStatus Update();
+    public enum Status
+    {
+        Success,
+        Failure,
+        Running
+    }
+    
+    public abstract Status Update();
     public virtual void End() { }
 }

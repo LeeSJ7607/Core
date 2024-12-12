@@ -1,7 +1,7 @@
 internal sealed class BTAction_Attack : BTNode
 {
-    public override EBTStatus Update()
+    public override Status Update()
     {
-        return EBTStatus.Running;
+        return Status.Running;
     }
 }
