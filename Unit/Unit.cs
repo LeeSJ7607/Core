@@ -13,6 +13,8 @@ public abstract class Unit : MonoBehaviour
             new BTAction_Attack(),
             new BTAction_Chase(),
         });
+        
+        //TODO: 셀렉터도 넣어보기. 빌더 패턴??
     }
     
     private void Update()
