@@ -14,28 +14,28 @@ internal class BTSelector : BTComposite
     
     public override Status Update()
     {
-        if (_curTaskIdx == _nodes.Count)
+        ResetTaskIdx();
+
+        while (_curTaskIdx < _nodes.Count)
         {
-            ResetTaskIdx();
-            return Status.Success;
+            var curTask = _nodes[_curTaskIdx];
+            var status = curTask.Update();
+
+            if (status == Status.Running)
+            {
+                continue;
+            }
+
+            if (status == Status.Success)
+            {
+                ResetTaskIdx();
+                return Status.Success;
+            }
+
+            curTask.End();
+            MoveToNextTask();
         }
 
-        var curTask = _nodes[_curTaskIdx];
-        var status = curTask.Update();
-        
-        if (status == Status.Running)
-        {
-            return Status.Running;
-        }
-        
-        if (status == Status.Success)
-        {
-            ResetTaskIdx();
-            return Status.Success;
-        }
-        
-        curTask.End();
-        MoveToNextTask();
-        return Status.Running;
+        return Status.Failure;
     }
 }

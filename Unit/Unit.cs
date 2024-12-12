@@ -9,15 +9,7 @@ public abstract class Unit : MonoBehaviour
         _btRoot = new BTSelector();
         _btRoot.AddNode(new BTAction_Attack())
                .AddNode(new BTAction_Chase());
-    }
-    
-    private void Update()
-    {
-        OnUpdate();
-    }
-
-    protected virtual void OnUpdate()
-    {
-        _btRoot.UpdateNode();
+        
+        _btRoot.Execute();
     }
 }

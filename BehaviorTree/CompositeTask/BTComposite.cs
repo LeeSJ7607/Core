@@ -3,7 +3,7 @@ using System.Collections.Generic;
 internal interface IBTComposite
 {
     IBTComposite AddNode(BTNode node);
-    void UpdateNode();
+    void Execute();
 }
 
 internal abstract class BTComposite : BTNode, IBTComposite
@@ -16,13 +16,11 @@ internal abstract class BTComposite : BTNode, IBTComposite
         return this;
     }
 
-    void IBTComposite.UpdateNode()
+    void IBTComposite.Execute()
     {
-        if (_nodes.NullOrEmpty())
+        if (!_nodes.NullOrEmpty())
         {
-            return;
+            Update();
         }
-        
-        Update();
     }
 }

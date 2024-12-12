@@ -9,28 +9,28 @@ internal sealed class BTSequence : BTComposite
     
     public override Status Update()
     {
-        if (_curTaskIdx == _nodes.Count)
+        ResetTaskIdx();
+
+        while (_curTaskIdx < _nodes.Count)
         {
-            ResetTaskIdx();
-            return Status.Success;
+            var curTask = _nodes[_curTaskIdx];
+            var status = curTask.Update();
+
+            if (status == Status.Running)
+            {
+                continue;
+            }
+
+            if (status == Status.Failure)
+            {
+                ResetTaskIdx();
+                continue;
+            }
+
+            curTask.End();
+            ++_curTaskIdx;
         }
 
-        var curTask = _nodes[_curTaskIdx];
-        var status = curTask.Update();
-        
-        if (status == Status.Running)
-        {
-            return Status.Running;
-        }
-
-        if (status == Status.Failure)
-        {
-            ResetTaskIdx();
-            return Status.Failure;
-        }
-
-        curTask.End();
-        ++_curTaskIdx;
-        return Status.Running;
+        return Status.Success;
     }
 }
