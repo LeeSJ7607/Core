@@ -9,13 +9,13 @@ internal sealed class BTSequence : BTComposite
     
     public override EBTStatus Update()
     {
-        if (_curTaskIdx == _tasks.Count)
+        if (_curTaskIdx == _nodes.Count)
         {
             ResetTaskIdx();
             return EBTStatus.Success;
         }
 
-        var curTask = _tasks[_curTaskIdx];
+        var curTask = _nodes[_curTaskIdx];
         var status = curTask.Update();
         
         if (status == EBTStatus.Running)

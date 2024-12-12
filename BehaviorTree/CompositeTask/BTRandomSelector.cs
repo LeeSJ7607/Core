@@ -12,7 +12,7 @@ internal sealed class BTRandomSelector : BTSelector
 
     protected override void MoveToNextTask()
     {
-        if (_taskIdxList.Count == _tasks.Count)
+        if (_taskIdxList.Count == _nodes.Count)
         {
             return;
         }
@@ -29,6 +29,6 @@ internal sealed class BTRandomSelector : BTSelector
 
     private int RandomTaskIdx()
     {
-        return UnityEngine.Random.Range(0, _tasks.Count);
+        return UnityEngine.Random.Range(0, _nodes.Count);
     }
 }

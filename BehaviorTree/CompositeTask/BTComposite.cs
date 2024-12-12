@@ -2,23 +2,23 @@ using System.Collections.Generic;
 
 internal interface IBTComposite
 {
-    IBTComposite AddTask(BaseBT tasks);
+    IBTComposite AddTask(BTNode node);
     void UpdateTask();
 }
 
-internal abstract class BTComposite : BaseBT, IBTComposite
+internal abstract class BTComposite : BTNode, IBTComposite
 {
-    protected readonly List<BaseBT> _tasks = new();
+    protected readonly List<BTNode> _nodes = new();
     
-    IBTComposite IBTComposite.AddTask(BaseBT task)
+    IBTComposite IBTComposite.AddTask(BTNode node)
     {
-        _tasks.Add(task);
+        _nodes.Add(node);
         return this;
     }
 
     void IBTComposite.UpdateTask()
     {
-        if (_tasks.NullOrEmpty())
+        if (_nodes.NullOrEmpty())
         {
             return;
         }

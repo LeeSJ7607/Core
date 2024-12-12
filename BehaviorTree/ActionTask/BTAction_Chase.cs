@@ -1,4 +1,4 @@
-internal sealed class BTAction_Chase : BaseBT
+internal sealed class BTAction_Chase : BTNode
 {
     public override EBTStatus Update()
     {
