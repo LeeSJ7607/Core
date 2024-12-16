@@ -1,9 +1,11 @@
 internal sealed class BTSequence : BTComposite
 {
+    private bool _started;
     private int _curTaskIdx;
 
     private void ResetTaskIdx()
     {
+        _started = false;
         _curTaskIdx = 0;
     }
     
@@ -14,8 +16,14 @@ internal sealed class BTSequence : BTComposite
         while (_curTaskIdx < _nodes.Count)
         {
             var curTask = _nodes[_curTaskIdx];
-            var status = curTask.Update();
 
+            if (!_started)
+            {
+                curTask.Begin();
+                _started = true;
+            }
+            
+            var status = curTask.Update();
             if (status == Status.Running)
             {
                 continue;
@@ -28,6 +36,7 @@ internal sealed class BTSequence : BTComposite
             }
 
             curTask.End();
+            _started = false;
             ++_curTaskIdx;
         }
 

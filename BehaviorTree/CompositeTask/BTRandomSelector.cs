@@ -7,6 +7,7 @@ internal sealed class BTRandomSelector : BTSelector
     protected override void ResetTaskIdx()
     {
         _taskIdxList.Clear();
+        _started = false;
         _curTaskIdx = RandomTaskIdx();
     }
 

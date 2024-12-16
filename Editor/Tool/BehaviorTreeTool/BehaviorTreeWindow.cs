@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
+//TODO: 필요한 클래스인가??
 internal sealed class BehaviorTreeWindow : EditorWindow
 {
     private readonly BTNode[] _nodes;

@@ -1,9 +1,11 @@
 internal class BTSelector : BTComposite
 {
+    protected bool _started;
     protected int _curTaskIdx;
     
     protected virtual void ResetTaskIdx()
     {
+        _started = false;
         _curTaskIdx = 0;
     }
     
@@ -19,8 +21,14 @@ internal class BTSelector : BTComposite
         while (_curTaskIdx < _nodes.Count)
         {
             var curTask = _nodes[_curTaskIdx];
-            var status = curTask.Update();
 
+            if (!_started)
+            {
+                curTask.Begin();
+                _started = true;
+            }
+            
+            var status = curTask.Update();
             if (status == Status.Running)
             {
                 continue;
@@ -33,6 +41,7 @@ internal class BTSelector : BTComposite
             }
 
             curTask.End();
+            _started = false;
             MoveToNextTask();
         }
 

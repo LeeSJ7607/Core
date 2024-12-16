@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 
+//TODO: 필요한 인터페이스인가??
 internal interface IBTComposite
 {
     IBTComposite AddNode(BTNode node);

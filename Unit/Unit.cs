@@ -1,16 +1,26 @@
+using System;
+using GraphViewBehaviorTree.Nodes;
+using MoreMountains.Tools;
 using UnityEngine;
 
-public abstract class Unit : MonoBehaviour
+//TODO: 리버트 필수.
+public class Unit : MonoBehaviour
 {
-    private IBTComposite _btRoot;
+    private BehaviorTree _behaviorTree;
     
     protected virtual void Awake()
     {
-        //TODO: 툴에서 제작한 BT를 가져와 설정을 해야함.
-        _btRoot = new BTSelector();
-        _btRoot.AddNode(new BTAction_Attack())
-               .AddNode(new BTAction_Chase());
-        
-        _btRoot.Execute();
+        _behaviorTree = ScriptableObject.CreateInstance<BehaviorTree>();
+        var d = ScriptableObject.CreateInstance<DebugLogNode>();
+        _behaviorTree.RootNode = d;
+        _behaviorTree.TreeStatus = BTNode.Status.Running;
+    }
+
+    private void Update()
+    {
+        if (_behaviorTree != null)
+        {
+            _behaviorTree.Update();
+        }
     }
 }
