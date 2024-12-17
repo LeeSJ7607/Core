@@ -2,6 +2,6 @@
 
 public class UIBase : MonoBehaviour
 {
-    public void Show() => gameObject.Show();
-    public void Hide() => gameObject.Hide();
+    public virtual void Show() => gameObject.Show();
+    public virtual void Hide() => gameObject.Hide();
 }

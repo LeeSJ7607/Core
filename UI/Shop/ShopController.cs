@@ -1,20 +1,16 @@
 using R3;
 
-internal sealed class ShopController : MVCController
+internal sealed class ShopController : MVCController<ShopModel, ShopView>
 {
-    private ShopModel _shopModel;
-    private ShopView _shopView;
-    
-    public ShopController(IMVCModel model, IMVCView view) : base(model, view)
+    public ShopController(ShopModel model, ShopView view) : base(model, view)
     {
-        _shopModel = model as ShopModel;
-        _shopView = view as ShopView;
+        
     }
-
+    
     public void Set()
     {
-        _shopModel.Id
-                  .Subscribe(_ => _shopView.SetId(_))
-                  .AddTo(_disposable);
+        _model.Id
+              .Subscribe(_ => _view.SetId(_))
+              .AddTo(_disposable);
     }
 }

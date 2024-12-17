@@ -1,14 +1,22 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-internal sealed class ShopView : IMVCView
+internal sealed class ShopView : UIBase, IMVCView
 {
     private Button _btn;
+    private ShopModel _model;
 
     private void Awake()
     {
         _btn.AddClick(OnClick);
+    }
+
+    void IMVCView.Bind(IMVCModel model)
+    {
+        _model = model as ShopModel;
+        _model.ChangeId();
     }
     
     public void SetId(int id)
@@ -18,6 +26,6 @@ internal sealed class ShopView : IMVCView
 
     private void OnClick()
     {
-        //TODO: ShopModel 데이터 변경 가능??
+        _model.ChangeId();
     }
 }
