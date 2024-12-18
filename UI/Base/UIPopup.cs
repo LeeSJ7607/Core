@@ -1,4 +1,4 @@
-﻿public class UIPopup : UIBase
+﻿internal class UIPopup : UIBase
 {
     
 }

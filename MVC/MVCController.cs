@@ -1,8 +1,8 @@
 using System;
 using R3;
 
-internal abstract class MVCController<TModel, TView> : IDisposable 
-    where TModel : IMVCModel 
+internal abstract class MVCController<TModel, TView> : IDisposable
+    where TModel : IMVCModel
     where TView : IMVCView
 {
     protected TModel _model;
@@ -13,8 +13,6 @@ internal abstract class MVCController<TModel, TView> : IDisposable
     {
         _model = model;
         _view = view;
-
-        view.Bind(model, this);
     }
     
     void IDisposable.Dispose()
