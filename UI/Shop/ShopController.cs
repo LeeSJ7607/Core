@@ -7,10 +7,14 @@ internal sealed class ShopController : MVCController<ShopModel, ShopView>
         
     }
     
-    public void Set()
+    public void Bind()
     {
         _model.Id
               .Subscribe(_ => _view.SetId(_))
+              .AddTo(_disposable);
+        
+        _model.Count
+              .Subscribe(_ => _view.SetCount(_))
               .AddTo(_disposable);
     }
 }

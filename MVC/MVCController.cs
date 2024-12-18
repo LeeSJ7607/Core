@@ -13,11 +13,13 @@ internal abstract class MVCController<TModel, TView> : IDisposable
     {
         _model = model;
         _view = view;
-    }
 
-    //TODO: 어디서?
-    public void Dispose()
+        view.Bind(model, this);
+    }
+    
+    void IDisposable.Dispose()
     {
+        _model.Dispose();
         _disposable.Dispose();
     }
 }
