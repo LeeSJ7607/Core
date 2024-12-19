@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine.UI;
 
-internal sealed class SampleView : UIBase<SampleController>
+internal sealed class SampleView : UIPopup<SampleController>
 {
     private TextMeshProUGUI _pointTxt;
     private Button _addPointBtn;

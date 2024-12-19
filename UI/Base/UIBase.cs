@@ -1,19 +1,15 @@
 ﻿using UnityEngine;
 
-internal abstract class UIBase<TController> : MonoBehaviour, IMVCView 
-    where TController : IMVCController, new()
+public abstract class UIBase : MonoBehaviour
 {
-    protected TController _mvcController;
-    
     protected virtual void OnDestroy()
     {
-        _mvcController.Release();
+        
     }
     
     protected virtual void Awake()
     {
-        _mvcController = new TController();
-        _mvcController.Initialize(this);
+        
     }
     
     public virtual void Show()

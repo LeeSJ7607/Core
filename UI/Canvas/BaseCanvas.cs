@@ -4,7 +4,7 @@ using UnityEngine;
 internal abstract class BaseCanvas
 {
     private readonly UIContainer _uiContainer = new();
-    private readonly Stack<UIPopup> _popups = new();
+    private readonly Stack<UIBase> _popups = new();
     private readonly Transform _root;
     
     protected BaseCanvas(Transform root)
@@ -42,7 +42,7 @@ internal abstract class BaseCanvas
         popup.Hide();
     }
     
-    protected TPopup ShowPopup<TPopup>() where TPopup : UIPopup
+    protected TPopup ShowPopup<TPopup>() where TPopup : UIBase
     {
         var popup = _uiContainer.GetOrCreate<TPopup>(_root);
         popup.Show();
