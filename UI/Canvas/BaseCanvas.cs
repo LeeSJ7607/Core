@@ -34,12 +34,18 @@ internal abstract class BaseCanvas
     {
         if (_backKeyPopups.IsNullOrEmpty())
         {
-            //ShowPopup<UIPopup_System>();
+            ShowSystemPopup();
             return;
         }
 
         var popup = _backKeyPopups.Pop();
         popup.Hide();
+    }
+
+    private void ShowSystemPopup()
+    {
+        var popup = ShowPopup<UIPopup_System>();
+        popup.Set("게임을 종료하시겠습니까?");
     }
     
     protected TPopup ShowPopup<TPopup>() where TPopup : UIPopup
