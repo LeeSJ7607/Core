@@ -1,18 +1,4 @@
-﻿internal class UIPopup<TController> : UIBase, IMVCView 
-    where TController : IMVCController, new()
+﻿internal abstract class UIPopup : UIBase, IMVCView
 {
-    protected TController _mvcController;
-
-    protected override void OnDestroy()
-    {
-        _mvcController.Release();
-        base.OnDestroy();
-    }
-
-    protected override void Awake()
-    {
-        base.Awake();
-        _mvcController = new TController();
-        _mvcController.Initialize(this);
-    }
+    public virtual bool CanBackKey { get; } = true;
 }

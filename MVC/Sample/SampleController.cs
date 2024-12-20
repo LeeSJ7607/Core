@@ -1,8 +1,8 @@
 using R3;
 
 internal sealed class SampleController : MVCController<SampleModel, SampleView>
-{
-    protected override void Initialize()
+{ 
+    protected override void OnInitialize()
     {
         _model.OnRankingPoint
               .Subscribe(_ => _view.SetPoint(_))

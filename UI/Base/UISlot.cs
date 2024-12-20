@@ -1,4 +1,4 @@
-﻿internal class UISlot : UIBase
+﻿internal abstract class UISlot : UIBase
 {
     
 }

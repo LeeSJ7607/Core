@@ -1,32 +1,26 @@
 using R3;
 
-interface IMVCController
-{
-    void Release();
-    void Initialize(IMVCView view);
-}
-
-internal abstract class MVCController<TModel, TView> : IMVCController
+internal abstract class MVCController<TModel, TView>
     where TModel : IMVCModel, new()
     where TView : IMVCView
 {
     protected TModel _model;
     protected TView _view;
     protected readonly CompositeDisposable _disposable = new();
-
-    void IMVCController.Release()
+    
+    public void Release()
     {
         _model.Dispose();
         _disposable.Dispose();
     }
 
-    void IMVCController.Initialize(IMVCView view)
+    public void Initialize(IMVCView view)
     {
         _model = new TModel();
         _view = (TView)view;
         
-        Initialize();
+        OnInitialize();
     }
     
-    protected abstract void Initialize();
+    protected abstract void OnInitialize();
 }

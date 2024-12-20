@@ -1,13 +1,15 @@
 using TMPro;
 using UnityEngine.UI;
 
-internal sealed class SampleView : UIPopup<SampleController>
+internal sealed class SampleView : UIPopup
 {
     private TextMeshProUGUI _pointTxt;
     private Button _addPointBtn;
+    private SampleController _sampleController;
 
     protected override void OnDestroy()
     {
+        _sampleController.Release();
         _addPointBtn.RemoveClick();
         base.OnDestroy();
     }
@@ -15,6 +17,8 @@ internal sealed class SampleView : UIPopup<SampleController>
     protected override void Awake()
     {
         base.Awake();
+        _sampleController = new SampleController();
+        _sampleController.Initialize(this);
         _addPointBtn.AddClick(OnClick_AddPoint);
     }
 
@@ -25,6 +29,6 @@ internal sealed class SampleView : UIPopup<SampleController>
 
     private void OnClick_AddPoint()
     {
-        _mvcController.SetRankingPoint(10);
+        _sampleController.SetRankingPoint(10);
     }
 }

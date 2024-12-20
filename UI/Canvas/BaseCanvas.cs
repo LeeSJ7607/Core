@@ -4,7 +4,7 @@ using UnityEngine;
 internal abstract class BaseCanvas
 {
     private readonly UIContainer _uiContainer = new();
-    private readonly Stack<UIBase> _popups = new();
+    private readonly Stack<UIPopup> _backKeyPopups = new();
     private readonly Transform _root;
     
     protected BaseCanvas(Transform root)
@@ -32,22 +32,26 @@ internal abstract class BaseCanvas
     
     private void PopPopup()
     {
-        if (_popups.IsNullOrEmpty())
+        if (_backKeyPopups.IsNullOrEmpty())
         {
             //ShowPopup<UIPopup_System>();
             return;
         }
 
-        var popup = _popups.Pop();
+        var popup = _backKeyPopups.Pop();
         popup.Hide();
     }
     
-    protected TPopup ShowPopup<TPopup>() where TPopup : UIBase
+    protected TPopup ShowPopup<TPopup>() where TPopup : UIPopup
     {
         var popup = _uiContainer.GetOrCreate<TPopup>(_root);
         popup.Show();
-        
-        _popups.Push(popup);
+
+        if (popup.CanBackKey)
+        {
+            _backKeyPopups.Push(popup);
+        }
+
         return popup;
     }
 }
