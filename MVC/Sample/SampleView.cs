@@ -9,7 +9,6 @@ internal sealed class SampleView : UIPopup
 
     protected override void OnDestroy()
     {
-        _sampleController.Release();
         _addPointBtn.RemoveClick();
         base.OnDestroy();
     }
@@ -17,8 +16,7 @@ internal sealed class SampleView : UIPopup
     protected override void Awake()
     {
         base.Awake();
-        _sampleController = new SampleController();
-        _sampleController.Initialize(this);
+        CreateMVCController(_sampleController);
         _addPointBtn.AddClick(OnClick_AddPoint);
     }
 

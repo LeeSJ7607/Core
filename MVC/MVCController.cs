@@ -1,6 +1,12 @@
 using R3;
 
-internal abstract class MVCController<TModel, TView>
+internal interface IMVCController
+{
+    void Release();
+    void Initialize(IMVCView view);
+}
+
+internal abstract class MVCController<TModel, TView> : IMVCController
     where TModel : IMVCModel, new()
     where TView : IMVCView
 {
@@ -8,13 +14,13 @@ internal abstract class MVCController<TModel, TView>
     protected TView _view;
     protected readonly CompositeDisposable _disposable = new();
     
-    public void Release()
+    void IMVCController.Release()
     {
         _model.Dispose();
         _disposable.Dispose();
     }
 
-    public void Initialize(IMVCView view)
+    void IMVCController.Initialize(IMVCView view)
     {
         _model = new TModel();
         _view = (TView)view;
