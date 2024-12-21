@@ -4,7 +4,7 @@ internal abstract class UIPopup : UIBase, IMVCView
 {
     public virtual bool CanBackKey { get; } = true;
     
-    [SerializeField] private UIButton _btnClose;
+    [SerializeField] private ButtonEx _btnClose;
     private IMVCController _mvcController;
 
     protected override void OnDestroy()
