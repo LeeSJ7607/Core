@@ -1,6 +1,6 @@
 using R3;
 
-internal interface IMVCController
+public interface IMVCController
 {
     void Release();
     void Initialize(IMVCView view);

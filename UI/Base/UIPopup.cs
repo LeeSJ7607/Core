@@ -1,15 +1,12 @@
 ﻿using UnityEngine;
 
-internal abstract class UIPopup : UIBase, IMVCView
+internal abstract class UIPopup : UIBase
 {
     public virtual bool CanBackKey { get; } = true;
-    
     [SerializeField] private ButtonEx _btnClose;
-    private IMVCController _mvcController;
 
     protected override void OnDestroy()
     {
-        _mvcController?.Release();
         _btnClose.RemoveClick();
         base.OnDestroy();
     }
@@ -18,12 +15,6 @@ internal abstract class UIPopup : UIBase, IMVCView
     {
         base.Awake();
         _btnClose.AddClick(OnClick_Close);
-    }
-
-    protected void CreateMVCController(IMVCController mvcController)
-    {
-        _mvcController = mvcController;
-        _mvcController.Initialize(this);
     }
 
     protected virtual void OnClick_Close()
