@@ -7,7 +7,7 @@ internal sealed class NetworkManager : Singleton<NetworkManager>
 {
     private interface IMessage
     {
-        void OnResponse(object message);
+        void Response(object message);
     }
     
     private sealed class Response<TResponse> : IMessage where TResponse : class, IResponse
@@ -22,7 +22,7 @@ internal sealed class NetworkManager : Singleton<NetworkManager>
             _tcs = act == null ? new UniTaskCompletionSource<TResponse>() : null;
         }
         
-        void IMessage.OnResponse(object message)
+        void IMessage.Response(object message)
         {
             if (_act != null)
             {
@@ -57,7 +57,7 @@ internal sealed class NetworkManager : Singleton<NetworkManager>
             return;
         }
         
-        old.OnResponse(body);
+        old.Response(body);
     }
 
     private void RegisterResponse<TResponse>(IMessage message) where TResponse : class, IResponse
@@ -66,7 +66,7 @@ internal sealed class NetworkManager : Singleton<NetworkManager>
 
         if (_responseMap.Remove(type, out var old))
         {
-            old.OnResponse(null);
+            old.Response(null);
         }
         
         _responseMap.Add(type, message);
