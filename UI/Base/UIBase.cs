@@ -1,10 +1,21 @@
 ﻿using UnityEngine;
 
-public abstract class UIBase : MonoBehaviour, IMVCView
+public interface IReadOnlyUIBase
 {
+    void SetSlotCreator(ISlotCreator slotCreator);
+}
+
+public abstract class UIBase : MonoBehaviour, IReadOnlyUIBase, IMVCView
+{
+    protected ISlotCreator _slotCreator;
     private IMVCController _mvcController;
     
-    public void CreateMVCController(IMVCController mvcController)
+    void IReadOnlyUIBase.SetSlotCreator(ISlotCreator slotCreator)
+    {
+        _slotCreator = slotCreator;
+    }
+    
+    protected void SetMVCController(IMVCController mvcController)
     {
         _mvcController = mvcController;
         _mvcController.Initialize(this);
@@ -13,6 +24,7 @@ public abstract class UIBase : MonoBehaviour, IMVCView
     protected virtual void OnDestroy()
     {
         _mvcController?.Release();
+        _mvcController = null;
     }
     
     protected virtual void Awake()

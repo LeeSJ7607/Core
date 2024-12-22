@@ -16,7 +16,7 @@ internal sealed class SampleView : UIPopup
     protected override void Awake()
     {
         base.Awake();
-        CreateMVCController(_sampleController);
+        SetMVCController(_sampleController);
         _addPointBtn.AddClick(OnClick_AddPoint);
     }
 
