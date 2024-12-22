@@ -3,7 +3,12 @@ using UnityEngine;
 
 internal abstract class BaseScene : MonoBehaviour
 {
-    private BaseCanvas _baseCanvas;
+    private IReadOnlyBaseCanvas _baseCanvas;
+  
+    private void OnDestroy()
+    {
+        _baseCanvas.Release();
+    }
     
     protected virtual void Awake()
     {
@@ -20,11 +25,6 @@ internal abstract class BaseScene : MonoBehaviour
     {
         await AddressableManager.Instance.LoadAssetsAsync(SceneLoader.Instance.CurSceneType.ToString());
         _baseCanvas.Initialize();
-    }
-    
-    private void OnDestroy()
-    {
-        _baseCanvas.Release();
     }
     
     private void Update()

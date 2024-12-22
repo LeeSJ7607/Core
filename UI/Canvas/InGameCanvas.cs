@@ -6,4 +6,9 @@ internal sealed class InGameCanvas : BaseCanvas
     {
         
     }
+
+    protected override void OnInitialize()
+    {
+        base.OnInitialize();
+    }
 }

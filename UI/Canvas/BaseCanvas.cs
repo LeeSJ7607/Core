@@ -1,7 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-internal abstract class BaseCanvas
+internal interface IReadOnlyBaseCanvas
+{
+    void Release();
+    void Initialize();
+    void OnTick();
+}
+
+internal abstract class BaseCanvas : IReadOnlyBaseCanvas
 {
     private readonly UIContainer _uiContainer = new();
     private readonly Stack<UIPopup> _backKeyPopups = new();
@@ -12,17 +19,22 @@ internal abstract class BaseCanvas
         _root = root;
     }
     
-    public void Release()
+    void IReadOnlyBaseCanvas.Release()
     {
         _uiContainer.Release();
     }
+
+    void IReadOnlyBaseCanvas.Initialize()
+    {
+        OnInitialize();
+    }
     
-    public virtual void Initialize()
+    protected virtual void OnInitialize()
     {
         
     }
     
-    public void OnTick()
+    void IReadOnlyBaseCanvas.OnTick()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -59,5 +71,13 @@ internal abstract class BaseCanvas
         }
 
         return popup;
+    }
+    
+    protected TSlot ShowSlot<TSlot>() where TSlot : UISlot
+    {
+        var slot = _uiContainer.GetOrCreate<TSlot>(_root);
+        slot.Show();
+
+        return slot;
     }
 }
