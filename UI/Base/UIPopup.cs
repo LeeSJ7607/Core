@@ -2,7 +2,7 @@
 
 internal abstract class UIPopup : UIBase
 {
-    public virtual bool CanBackKey { get; } = true;
+    public virtual bool CanBackButton { get; } = true;
     [SerializeField] private ButtonEx _btnClose;
 
     protected override void OnDestroy()
