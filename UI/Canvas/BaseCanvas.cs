@@ -40,14 +40,25 @@ internal abstract partial class BaseCanvas : IReadOnlyBaseCanvas
     
     protected TPopup ShowPopup<TPopup>() where TPopup : UIPopup
     {
-        var popup = _uiContainer.GetOrCreate<TPopup>(_root);
-        popup.Show();
-        
+        var popup = ShowUI<TPopup>();
         if (popup.CanBackButton)
         {
             _backButtonPopups.Push(popup);
         }
 
         return popup;
+    }
+    
+    protected TSlot ShowSlot<TSlot>() where TSlot : UISlot
+    {
+        return ShowUI<TSlot>();
+    }
+
+    private T ShowUI<T>() where T : UIBase
+    {
+        var slot = _uiContainer.GetOrCreate<T>(_root);
+        slot.Show();
+
+        return slot;
     }
 }
