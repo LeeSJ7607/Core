@@ -21,7 +21,7 @@ internal abstract class BaseScene : MonoBehaviour
         }
     }
     
-    protected virtual async UniTaskVoid Start()
+    protected virtual async UniTask Start()
     {
         await AddressableManager.Instance.LoadAssetsAsync(SceneLoader.Instance.CurSceneType.ToString());
         _baseCanvas.Initialize();
