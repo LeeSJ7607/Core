@@ -44,20 +44,14 @@ internal abstract partial class BaseCanvas : IReadOnlyBaseCanvas
     
     protected TPopup ShowPopup<TPopup>() where TPopup : UIPopup
     {
-        var popup = ShowUI<TPopup>();
+        var popup = _uiContainer.GetOrCreate<TPopup>(_root);
+        popup.Show();
+        
         if (popup.CanBackButton)
         {
             _backButtonPopups.Push(popup);
         }
 
         return popup;
-    }
-    
-    protected T ShowUI<T>() where T : UIBase
-    {
-        var ui = _uiContainer.GetOrCreate<T>(_root);
-        ui.Show();
-
-        return ui;
     }
 }
