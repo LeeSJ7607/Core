@@ -8,15 +8,17 @@ internal interface IReadOnlyBaseCanvas
     void OnTick();
 }
 
-internal abstract partial class BaseCanvas : IReadOnlyBaseCanvas
+internal abstract class BaseCanvas : IReadOnlyBaseCanvas
 {
     private readonly UIContainer _uiContainer = new();
-    private readonly Stack<UIPopup> _backButtonPopups = new();
+    private readonly Stack<UIPopup> _popups = new();
     private readonly Transform _root;
+    private readonly HandleBackButton _handleBackButton;
     
     protected BaseCanvas(Transform root)
     {
         _root = root;
+        _handleBackButton = new HandleBackButton(_popups);
     }
     
     void IReadOnlyBaseCanvas.Release()
@@ -32,10 +34,26 @@ internal abstract partial class BaseCanvas : IReadOnlyBaseCanvas
     
     void IReadOnlyBaseCanvas.OnTick()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        ProcessHandleBackButton();
+    }
+
+    private void ProcessHandleBackButton()
+    {
+        if (!Input.GetKeyDown(KeyCode.Escape))
         {
-            HandleBackButton();
+            return;
         }
+
+        if (!_handleBackButton.TryProcess())
+        {
+            ShowSystemPopup();
+        }
+    }
+    
+    private void ShowSystemPopup()
+    {
+        var popup = ShowPopup<UIPopup_System>();
+        popup.Set("게임을 종료하시겠습니까?");
     }
     
     protected TPopup ShowPopup<TPopup>() where TPopup : UIPopup
@@ -43,7 +61,7 @@ internal abstract partial class BaseCanvas : IReadOnlyBaseCanvas
         var popup = ShowUI<TPopup>();
         if (popup.CanBackButton)
         {
-            _backButtonPopups.Push(popup);
+            _popups.Push(popup);
         }
 
         return popup;
