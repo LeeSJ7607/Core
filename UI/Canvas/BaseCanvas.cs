@@ -24,14 +24,10 @@ internal abstract partial class BaseCanvas : IReadOnlyBaseCanvas
         _uiContainer.Release();
     }
 
+    protected abstract void OnInitialize();
     void IReadOnlyBaseCanvas.Initialize()
     {
         OnInitialize();
-    }
-    
-    protected virtual void OnInitialize()
-    {
-        
     }
     
     void IReadOnlyBaseCanvas.OnTick()

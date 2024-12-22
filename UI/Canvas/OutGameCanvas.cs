@@ -6,4 +6,9 @@ internal sealed class OutGameCanvas : BaseCanvas
     {
         
     }
+
+    protected override void OnInitialize()
+    {
+        
+    }
 }

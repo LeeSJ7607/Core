@@ -6,4 +6,9 @@ internal sealed class LoadingCanvas : BaseCanvas
     {
         
     }
+
+    protected override void OnInitialize()
+    {
+        
+    }
 }

@@ -6,4 +6,9 @@ internal sealed class LoginCanvas : BaseCanvas
     {
         
     }
+
+    protected override void OnInitialize()
+    {
+        
+    }
 }
