@@ -7,13 +7,13 @@ internal abstract partial class BaseCanvas
     
     private void PopPopup()
     {
-        if (_backKeyPopups.IsNullOrEmpty())
+        if (_backButtonPopups.IsNullOrEmpty())
         {
             ShowSystemPopup();
             return;
         }
 
-        var popup = _backKeyPopups.Pop();
+        var popup = _backButtonPopups.Pop();
         popup.Hide();
     }
 

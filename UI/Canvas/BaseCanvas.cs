@@ -11,7 +11,7 @@ internal interface IReadOnlyBaseCanvas
 internal abstract partial class BaseCanvas : IReadOnlyBaseCanvas
 {
     private readonly UIContainer _uiContainer = new();
-    private readonly Stack<UIPopup> _backKeyPopups = new();
+    private readonly Stack<UIPopup> _backButtonPopups = new();
     private readonly Transform _root;
     
     protected BaseCanvas(Transform root)
@@ -44,22 +44,20 @@ internal abstract partial class BaseCanvas : IReadOnlyBaseCanvas
     
     protected TPopup ShowPopup<TPopup>() where TPopup : UIPopup
     {
-        var popup = _uiContainer.GetOrCreate<TPopup>(_root);
-        popup.Show();
-
+        var popup = ShowUI<TPopup>();
         if (popup.CanBackButton)
         {
-            _backKeyPopups.Push(popup);
+            _backButtonPopups.Push(popup);
         }
 
         return popup;
     }
     
-    protected TSlot ShowSlot<TSlot>() where TSlot : UISlot
+    protected T ShowUI<T>() where T : UIBase
     {
-        var slot = _uiContainer.GetOrCreate<TSlot>(_root);
-        slot.Show();
+        var ui = _uiContainer.GetOrCreate<T>(_root);
+        ui.Show();
 
-        return slot;
+        return ui;
     }
 }
