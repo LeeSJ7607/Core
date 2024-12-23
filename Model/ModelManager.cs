@@ -4,58 +4,46 @@ using UnityEngine;
 
 internal sealed class ModelManager : Singleton<ModelManager>
 {
-    private static readonly string _savePath = $"{Application.persistentDataPath}/Model";
-    private readonly Dictionary<Type, IModel> _modelMap = new()
+    private readonly Dictionary<Type, IReadOnlyModel> _modelMap = new()
     {
         { typeof(CMUser), new CMUser() },
-        { typeof(SMUser), new SMUser() },
+        { typeof(CMRanking), new CMRanking() },
     };
     
-    public void Release()
+    public void SaveAll()
     {
-        foreach (var (_, model) in _modelMap)
+        foreach (var model in _modelMap.Values)
         {
-            FileUtil.SaveAsJson(_savePath, model);
+            model.Save();
         }
     }
 
-    public void Initialize()
+    public void LoadAll()
     {
-        SyncAll(LoadFileAll());
-    }
-    
-    private void SyncAll(IReadOnlyDictionary<Type, IModel> models)
-    {
-        foreach (var (type, model) in models)
+        var loadedModels = CalcLoadModels();
+
+        foreach (var (type, model) in loadedModels)
         {
             _modelMap[type] = model;
-            
-            if (_modelMap[type] is IClientModel clientModel)
-            {
-                clientModel.Sync();
-            }
         }
     }
-
-    private IReadOnlyDictionary<Type, IModel> LoadFileAll()
+    
+    private IReadOnlyDictionary<Type, IReadOnlyModel> CalcLoadModels()
     {
-        var dic = new Dictionary<Type, IModel>(_modelMap.Count);
+        var dic = new Dictionary<Type, IReadOnlyModel>();
         
-        foreach (var (type, _) in _modelMap)
+        foreach (var (type, model) in _modelMap)
         {
-            var filePath = $"{_savePath}/{type.Name}";
-            var loadedModel = (IModel)FileUtil.LoadFromJson(filePath, type);
-            
-            if (loadedModel != null)
+            if (model.TryLoad(out var refModel))
             {
-                dic.Add(type, loadedModel);
+                dic.Add(type, refModel);
             }
         }
 
         return dic;
     }
 
-    public TModel Get<TModel>() where TModel : class, IModel
+    public TModel Get<TModel>() where TModel : Model
     {
         if (_modelMap.TryGetValue(typeof(TModel), out var model))
         {

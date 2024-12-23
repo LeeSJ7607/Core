@@ -34,6 +34,6 @@ internal abstract class BaseScene : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        ModelManager.Instance.Release();
+        ModelManager.Instance.SaveAll();
     }
 }
