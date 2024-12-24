@@ -9,6 +9,14 @@ internal sealed class ModelManager : Singleton<ModelManager>
         { typeof(CMUser), new CMUser() },
         { typeof(CMRanking), new CMRanking() },
     };
+
+    public void Release()
+    {
+        foreach (var model in _modelMap.Values)
+        {
+            model.Release();
+        }
+    }
     
     public void SaveAll()
     {

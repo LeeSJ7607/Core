@@ -20,6 +20,7 @@ internal abstract class MVCController<TModel, TView> : IMVCController
         _disposable.Dispose();
     }
 
+    protected abstract void OnInitialize();
     void IMVCController.Initialize(IMVCView view)
     {
         _model = new TModel();
@@ -27,6 +28,4 @@ internal abstract class MVCController<TModel, TView> : IMVCController
         
         OnInitialize();
     }
-    
-    protected abstract void OnInitialize();
 }

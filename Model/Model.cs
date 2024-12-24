@@ -2,6 +2,7 @@
 
 internal interface IReadOnlyModel
 {
+    void Release();
     void Save();
     bool TryLoad(out IReadOnlyModel refModel);
 }
@@ -10,6 +11,12 @@ internal abstract class Model : IReadOnlyModel
 {
     private static readonly string _savePath = $"{Application.persistentDataPath}/Model";
     private bool _canSave;
+
+    protected abstract void Release();
+    void IReadOnlyModel.Release()
+    {
+        Release();
+    }
     
     void IReadOnlyModel.Save()
     {
