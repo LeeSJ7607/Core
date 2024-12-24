@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using R3;
+using UnityEngine;
 
 internal interface IReadOnlyUIBase
 {
@@ -7,8 +8,9 @@ internal interface IReadOnlyUIBase
 
 public abstract class UIBase : MonoBehaviour, IReadOnlyUIBase, IMVCView
 {
-    protected ISlotCreator _slotCreator;
     private IMVCController _mvcController;
+    protected ISlotCreator _slotCreator;
+    protected readonly CompositeDisposable _disposable = new();
     
     void IReadOnlyUIBase.SetSlotCreator(ISlotCreator slotCreator)
     {
@@ -23,6 +25,7 @@ public abstract class UIBase : MonoBehaviour, IReadOnlyUIBase, IMVCView
     
     protected virtual void OnDestroy()
     {
+        _disposable.Dispose();
         _mvcController?.Release();
         _mvcController = null;
     }
@@ -39,6 +42,7 @@ public abstract class UIBase : MonoBehaviour, IReadOnlyUIBase, IMVCView
     
     public virtual void Hide()
     {
+        _disposable.Clear();
         gameObject.Hide();
     }
 }
