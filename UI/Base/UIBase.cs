@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public interface IReadOnlyUIBase
+internal interface IReadOnlyUIBase
 {
     void SetSlotCreator(ISlotCreator slotCreator);
 }
