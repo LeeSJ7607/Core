@@ -2,23 +2,23 @@
 
 public static class UnityExtension
 {
-    public static void Show(this GameObject param)
+    public static void Show(this GameObject obj)
     {
-        if (param.IsNull() || param.activeSelf)
+        if (obj.IsNull() || obj.activeSelf)
         {
             return;
         }
         
-        param.SetActive(true);
+        obj.SetActive(true);
     }
     
-    public static void Hide(this GameObject param)
+    public static void Hide(this GameObject obj)
     {
-        if (param.IsNull() || !param.activeSelf)
+        if (obj.IsNull() || !obj.activeSelf)
         {
             return;
         }
         
-        param.SetActive(false);
+        obj.SetActive(false);
     }
 }

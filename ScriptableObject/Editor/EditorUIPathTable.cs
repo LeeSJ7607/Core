@@ -46,19 +46,19 @@ internal sealed class EditorUIPathTable : Editor
 
             if (GUILayout.Button("Refresh", btnStyle))
             {
-                TryRefresh();
+                Refresh();
             }
         }
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
     }
 
-    private bool TryRefresh()
+    private void Refresh()
     {
         var pathTable = (UIPathTable)target;
         if (pathTable == null)
         {
-            return false;
+            return;
         }
         
         pathTable.Clear();
@@ -78,6 +78,5 @@ internal sealed class EditorUIPathTable : Editor
         }
         
         EditorUtility.SetDirty(target);
-        return true;
     }
 }
