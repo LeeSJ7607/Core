@@ -10,7 +10,8 @@ internal sealed class Sender
     public sealed class Request
     {
         public Type ResponseType { get; private set; }
-        public UnityWebRequest WebRequest { get; private set; }
+        public UnityWebRequest WebRequest { get; }
+        
         public Request(Type responseType, UnityWebRequest webRequest)
         {
             ResponseType = responseType;
