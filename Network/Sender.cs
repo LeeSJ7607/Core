@@ -32,12 +32,11 @@ internal sealed class Sender
         {
             await UniTask.NextFrame();
             
-            if (_requests.Count == 0)
+            if (!_requests.TryDequeue(out var request))
             {
                 continue;
             }
             
-            var request = _requests.Dequeue();
             var responseResult = await SendWebRequest(request.WebRequest);
             _session.Receiver.ReceiveProcess(responseResult, request);
         }
@@ -72,23 +71,40 @@ internal sealed class Sender
 
     private async UniTask<EResponseResult> SendWebRequest(UnityWebRequest webRequest)
     {
-        try
+        var remainedRetryCount = 3;
+        while (remainedRetryCount > 0)
         {
-            await webRequest.SendWebRequest();
-
-            if (IsValidRequest(webRequest))
+            try
             {
-                return EResponseResult.Success;
-            }
+                await webRequest.SendWebRequest();
+                if (IsValidRequest(webRequest))
+                {
+                    return EResponseResult.Success;
+                }
 
-            //TODO: 재시도.
-            return EResponseResult.Retry;
+                remainedRetryCount = await DecrementRetryWithDelay(remainedRetryCount, webRequest.url);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+                remainedRetryCount = await DecrementRetryWithDelay(remainedRetryCount, webRequest.url);
+            }
         }
-        catch (Exception e)
+        
+        return EResponseResult.Shutdown;
+    }
+    
+    private async UniTask<int> DecrementRetryWithDelay(int remainedRetryCount, string webRequestUrl)
+    {
+        const float RETRY_DELAY_TIME_SECOND = 2f;
+
+        if (remainedRetryCount > 1)
         {
-            Debug.LogError(e);
-            return EResponseResult.Shutdown;
+            Debug.Log($"Network Retrying.. webRequestUrl: {webRequestUrl}, remainedRetryCount: {remainedRetryCount}");
+            await UniTask.Delay(TimeSpan.FromSeconds(RETRY_DELAY_TIME_SECOND));
         }
+        
+        return --remainedRetryCount;
     }
 
     private bool IsValidRequest(UnityWebRequest webRequest)
