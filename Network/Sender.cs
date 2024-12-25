@@ -26,9 +26,14 @@ internal sealed class Sender
         OnTick().Forget();
     }
 
+    public void Release()
+    {
+        _requests.Clear();
+    }
+
     private async UniTaskVoid OnTick()
     {
-        while (_session.IsValid())
+        while (_session.IsValidSession)
         {
             await UniTask.NextFrame();
             
