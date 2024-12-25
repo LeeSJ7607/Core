@@ -8,6 +8,7 @@ internal interface IReadOnlyBaseCanvas
     void OnTick();
 }
 
+//TODO: 상속 받은 클래스들이 하는 역할이 별로 없으면 그냥 UIManager 로 가야할 듯 싶다. (Receiver 에서 팝업을 띄울 수가 없음)
 internal abstract class BaseCanvas : IReadOnlyBaseCanvas
 {
     private readonly UIContainer _uiContainer = new();

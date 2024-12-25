@@ -6,7 +6,7 @@ using UnityEngine;
 
 internal sealed class AddressableManager : Singleton<AddressableManager>
 {
-    private readonly SerializableDictionary<string, UnityEngine.Object> _resMap = new();
+    private readonly Dictionary<string, UnityEngine.Object> _resMap = new();
     
     public void Release()
     {
