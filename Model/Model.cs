@@ -12,10 +12,10 @@ internal abstract class Model : IReadOnlyModel
     private static readonly string _savePath = $"{Application.persistentDataPath}/Model";
     private bool _canSave;
 
-    protected abstract void Release();
+    protected abstract void OnRelease();
     void IReadOnlyModel.Release()
     {
-        Release();
+        OnRelease();
     }
     
     void IReadOnlyModel.Save()
