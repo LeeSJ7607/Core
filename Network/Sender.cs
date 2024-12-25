@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine.Networking;
@@ -14,6 +15,11 @@ internal sealed class Sender
         {
             ResponseType = responseType;
             WebRequest = webRequest;
+        }
+
+        public bool HasSameData(string url)
+        {
+            return WebRequest.url.Equals(url);
         }
     }
     
@@ -49,7 +55,17 @@ internal sealed class Sender
 
     public void Push<TResponse>(IRequest request) where TResponse : IResponse
     {
+        if (HasSameRequest(request))
+        {
+            return;
+        }
+
         _requests.Enqueue(new Request(typeof(TResponse), CreateUnityWebRequest(request)));
+    }
+
+    private bool HasSameRequest(IRequest request)
+    {
+        return _requests.Any(_ => _.HasSameData(request.Url));
     }
 
     private UnityWebRequest CreateUnityWebRequest(IRequest request)
