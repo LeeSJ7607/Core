@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-internal sealed class ModelManager : Singleton<ModelManager>
+internal sealed class ModelManager : MonoSingleton<ModelManager>
 {
     private readonly Dictionary<Type, IReadOnlyModel> _modelMap = new()
     {
@@ -16,6 +16,12 @@ internal sealed class ModelManager : Singleton<ModelManager>
         {
             model.Release();
         }
+    }
+    
+    public void Initialize()
+    {
+        LoadAll();
+        InitializeAll();
     }
     
     public void SaveAll()
@@ -49,6 +55,22 @@ internal sealed class ModelManager : Singleton<ModelManager>
         }
 
         return dic;
+    }
+    
+    private void InitializeAll()
+    {
+        foreach (var model in _modelMap.Values)
+        {
+            model.Initialize();
+        }
+    }
+
+    private void Update()
+    {
+        foreach (var model in _modelMap.Values)
+        {
+            model.Update();
+        }
     }
 
     public TModel Get<TModel>() where TModel : Model

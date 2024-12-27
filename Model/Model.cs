@@ -3,6 +3,8 @@
 internal interface IReadOnlyModel
 {
     void Release();
+    void Initialize();
+    void Update();
     void Save();
     bool TryLoad(out IReadOnlyModel refModel);
 }
@@ -16,6 +18,26 @@ public abstract class Model : IReadOnlyModel
     void IReadOnlyModel.Release()
     {
         OnRelease();
+    }
+
+    void IReadOnlyModel.Initialize()
+    {
+        OnInitialize();
+    }
+
+    protected virtual void OnInitialize()
+    {
+        
+    }
+    
+    void IReadOnlyModel.Update()
+    {
+        OnUpdate();
+    }
+    
+    protected virtual void OnUpdate()
+    {
+        
     }
     
     void IReadOnlyModel.Save()
@@ -35,7 +57,7 @@ public abstract class Model : IReadOnlyModel
         refModel = model;
         return model != null;
     }
-
+    
     public void EnableSave()
     {
         _canSave = true;
