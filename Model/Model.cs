@@ -7,7 +7,7 @@ internal interface IReadOnlyModel
     bool TryLoad(out IReadOnlyModel refModel);
 }
 
-internal abstract class Model : IReadOnlyModel
+public abstract class Model : IReadOnlyModel
 {
     private static readonly string _savePath = $"{Application.persistentDataPath}/Model";
     private bool _canSave;
