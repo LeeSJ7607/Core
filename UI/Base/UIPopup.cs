@@ -7,14 +7,14 @@ internal abstract class UIPopup : UIBase
 
     protected override void OnDestroy()
     {
-        _btnClose.RemoveClick();
+        _btnClose.RemoveAllListeners();
         base.OnDestroy();
     }
 
     protected override void Awake()
     {
         base.Awake();
-        _btnClose.AddClick(OnClick_Close);
+        _btnClose.AddListener(OnClick_Close);
     }
 
     protected virtual void OnClick_Close()

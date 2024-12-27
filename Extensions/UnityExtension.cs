@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 public static class UnityExtension
 {
@@ -20,5 +22,25 @@ public static class UnityExtension
         }
         
         obj.SetActive(false);
+    }
+
+    public static void AddListener(this Button btn, UnityAction act)
+    {
+        if (btn.IsNull())
+        {
+            return;
+        }
+        
+        btn.onClick.AddListener(act);
+    }
+
+    public static void RemoveAllListeners(this Button btn)
+    {
+        if (btn.IsNull())
+        {
+            return;
+        }
+        
+        btn.onClick.RemoveAllListeners();
     }
 }

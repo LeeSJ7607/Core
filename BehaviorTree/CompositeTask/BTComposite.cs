@@ -18,7 +18,7 @@ internal abstract class BTComposite : BTNode, IBTComposite
 
     void IBTComposite.Execute()
     {
-        if (!_nodes.NullOrEmpty())
+        if (!_nodes.IsNullOrEmpty())
         {
             Update();
         }

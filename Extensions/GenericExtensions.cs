@@ -5,11 +5,11 @@ public static class GenericExtensions
 {
     public static bool IsNullOrEmpty<T>(this T[] param)
     {
-        return param == null || param.Length == 0;
+        return param.IsNull() || param.Length == 0;
     }
 
     public static bool IsNullOrEmpty<T>(this IEnumerable<T> param)
     {
-        return param == null || !param.Any();
+        return param.IsNull() || !param.Any();
     }
 }
