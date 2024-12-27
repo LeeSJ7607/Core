@@ -23,6 +23,46 @@ public static class UnityExtension
         
         obj.SetActive(false);
     }
+    
+    public static void Show(this Transform tm)
+    {
+        if (tm.IsNull())
+        {
+            return;
+        }
+        
+        tm.gameObject.Show();
+    }
+    
+    public static void Hide(this Transform tm)
+    {
+        if (tm.IsNull())
+        {
+            return;
+        }
+        
+        tm.gameObject.Hide();
+    }
+    
+    public static void Show(this MonoBehaviour mono)
+    {
+        if (mono.IsNull())
+        {
+            return;
+        }
+        
+        mono.gameObject.Show();
+    }
+    
+    public static void Hide(this MonoBehaviour mono)
+    {
+        if (mono.IsNull())
+        {
+            return;
+        }
+        
+        mono.gameObject.Hide();
+    }
 
     public static void AddListener(this Button btn, UnityAction act)
     {
