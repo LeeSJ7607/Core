@@ -13,8 +13,9 @@ public abstract class Model : IReadOnlyModel
 {
     private static readonly string _savePath = $"{Application.persistentDataPath}/Model";
     private bool _canSave;
-
+    
     protected abstract void OnRelease();
+    
     void IReadOnlyModel.Release()
     {
         OnRelease();
@@ -24,20 +25,10 @@ public abstract class Model : IReadOnlyModel
     {
         OnInitialize();
     }
-
-    protected virtual void OnInitialize()
-    {
-        
-    }
     
     void IReadOnlyModel.Update()
     {
         OnUpdate();
-    }
-    
-    protected virtual void OnUpdate()
-    {
-        
     }
     
     void IReadOnlyModel.Save()
@@ -56,6 +47,16 @@ public abstract class Model : IReadOnlyModel
 
         refModel = model;
         return model != null;
+    }
+
+    protected virtual void OnInitialize()
+    {
+        
+    }
+    
+    protected virtual void OnUpdate()
+    {
+        
     }
     
     public void EnableSave()

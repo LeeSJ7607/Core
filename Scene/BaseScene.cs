@@ -31,9 +31,4 @@ internal abstract class BaseScene : MonoBehaviour
     {
         _baseCanvas.OnUpdate();
     }
-
-    private void OnApplicationQuit()
-    {
-        ModelManager.Instance.SaveAll();
-    }
 }
