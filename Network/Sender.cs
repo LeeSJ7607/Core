@@ -30,7 +30,7 @@ internal sealed class Sender
     public Sender(Session session)
     {
         _session = session;
-        OnTick().Forget();
+        OnUpdate().Forget();
     }
 
     public void Release()
@@ -38,7 +38,7 @@ internal sealed class Sender
         _requests.Clear();
     }
 
-    private async UniTaskVoid OnTick()
+    private async UniTaskVoid OnUpdate()
     {
         while (_session.IsValidSession)
         {

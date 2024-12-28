@@ -29,7 +29,7 @@ internal abstract class BaseScene : MonoBehaviour
     
     private void Update()
     {
-        _baseCanvas.OnTick();
+        _baseCanvas.OnUpdate();
     }
 
     private void OnApplicationQuit()
