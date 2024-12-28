@@ -23,9 +23,10 @@
 
         case EResponseResult.Shutdown:
             {
-                //TODO: 네트워크 연결이 끊겼다는 팝업을 보여줘야함.
-                //TODO: UIManager 없이 어떻게 팝업을 띄우지?
                 _session.Release();
+                
+                var popup = UIManager.Instance.ShowPopup<UIPopup_System>();
+                popup.Set("서버가 종료되었습니다.");
             }
             break;
         }

@@ -9,15 +9,16 @@ internal sealed class HandleBackButton
         _popups = popups;
     }
     
-    public bool TryProcess()
+    public void Execute()
     {
         if (_popups.IsNullOrEmpty())
         {
-            return false;
+            var popup = UIManager.Instance.ShowPopup<UIPopup_System>();
+            popup.Set("게임을 종료하시겠습니까?");
+            return;
         }
         
         PopPopup();
-        return true;
     }
     
     private void PopPopup()

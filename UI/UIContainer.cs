@@ -1,26 +1,16 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public interface ISlotCreator
+internal sealed class UIContainer
 {
-    TSlot Create<TSlot>(Transform root) where TSlot : UISlot;
-}
-
-internal sealed class UIContainer : ISlotCreator
-{
-    private readonly Dictionary<int, IReadOnlyUIBase> _uiBaseMap = new();
+    private readonly Dictionary<int, UIBase> _uiBaseMap = new();
 
     public void Release()
     {
         _uiBaseMap.Clear();
     }
-    
-    TSlot ISlotCreator.Create<TSlot>(Transform root)
-    {
-        return GetOrCreate<TSlot>(root);
-    }
 
-    public TBase GetOrCreate<TBase>(Transform root) where TBase : IReadOnlyUIBase
+    public TBase GetOrCreate<TBase>(Transform root) where TBase : UIBase
     {
         if (_uiBaseMap.TryGetValue(typeof(TBase).GetHashCode(), out var uiBase))
         {
@@ -30,14 +20,13 @@ internal sealed class UIContainer : ISlotCreator
         return Create<TBase>(root);
     }
 
-    private TBase Create<TBase>(Transform root) where TBase : IReadOnlyUIBase
+    private TBase Create<TBase>(Transform root) where TBase : UIBase
     {
         var fileName = GetFileName<TBase>();
         var res = AddressableManager.Instance.Get<GameObject>(fileName);
 
         if (UnityEngine.Object.Instantiate(res, root).TryGetComponent<TBase>(out var uiBase))
         {
-            uiBase.SetSlotCreator(this);
             _uiBaseMap.Add(typeof(TBase).GetHashCode(), uiBase);
             return uiBase;
         }
@@ -46,7 +35,7 @@ internal sealed class UIContainer : ISlotCreator
         return default;
     }
     
-    private string GetFileName<TBase>() where TBase : IReadOnlyUIBase
+    private string GetFileName<TBase>() where TBase : UIBase
     {
         var uiPathTable = AddressableManager.Instance.Get<UIPathTable>(nameof(UIPathTable));
         return uiPathTable.GetFileName(typeof(TBase).Name);

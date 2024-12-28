@@ -16,5 +16,6 @@ internal sealed class LoadingScene : BaseScene
         GC.Collect();
         await Resources.UnloadUnusedAssets();
         AddressableManager.Instance.Release();
+        UIManager.Instance.Release();
     }
 }
