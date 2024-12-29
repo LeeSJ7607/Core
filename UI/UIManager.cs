@@ -17,9 +17,10 @@ internal sealed class UIManager : MonoSingleton<UIManager>
     {
         _handleBackButton = new HandleBackButton(_popups);
     }
-    
-    private void Update()
+
+    protected override void Update()
     {
+        base.Update();
         ProcessHandleBackButton();
     }
     

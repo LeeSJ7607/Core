@@ -38,12 +38,7 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
         return obj.AddComponent<T>();
     }
 
-    private void Update()
-    {
-        OnUpdate();
-    }
-
-    protected virtual void OnUpdate()
+    protected virtual void Update()
     {
         
     }

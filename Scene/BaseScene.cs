@@ -18,4 +18,9 @@ internal abstract class BaseScene : MonoBehaviour
         await AddressableManager.Instance.LoadAssetsAsync(SceneLoader.Instance.CurSceneType.ToString());
         UIManager.Instance.Initialize();
     }
+    
+    protected virtual void Update()
+    {
+        
+    }
 }

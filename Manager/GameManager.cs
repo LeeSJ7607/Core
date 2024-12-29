@@ -10,9 +10,9 @@ internal sealed class GameManager : MonoSingleton<GameManager>
         ModelManager.Instance.Initialize();
     }
 
-    protected override void OnUpdate()
+    protected override void Update()
     {
-        base.OnUpdate();
+        base.Update();
         ModelManager.Instance.OnUpdate();
     }
 
