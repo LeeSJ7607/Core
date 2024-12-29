@@ -33,10 +33,18 @@ internal sealed class TextMeshProUGUIEx : TextMeshProUGUI
         }
 
         _cmOption ??= ModelManager.Instance.Get<CMOption>();
-        _cmOption.LanguageChanged.Subscribe(_ =>
-        {
-            //TODO: 로컬라이징.
-            //text = localizeId;
-        }).AddTo(_disposable);
+        _cmOption.LanguageChanged
+                 .Subscribe(_ => text = LocalizeUtil.GetText(localizeId))
+                 .AddTo(_disposable);
+    }
+}
+
+internal static class LocalizeUtil
+{
+    public static string GetText(int localizeId)
+    {
+        //TODO: 스트링 테이블에서 값을 가져온 뒤 리턴
+        //TODO: 스트링 테이블에 존재하지 않을 경우 localizeId 을 리턴.
+        return $"localizeId is {localizeId}";
     }
 }
