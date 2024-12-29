@@ -4,6 +4,7 @@ using UnityEngine;
 public abstract class UIBase : MonoBehaviour
 {
     protected readonly CompositeDisposable _disposable = new();
+    public bool ActiveSelf { get; private set; }
     
     protected virtual void OnDestroy()
     {
@@ -17,12 +18,24 @@ public abstract class UIBase : MonoBehaviour
     
     public virtual void Show()
     {
+        if (ActiveSelf)
+        {
+            return;
+        }
+        
         gameObject.Show();
+        ActiveSelf = true;
     }
     
     public virtual void Hide()
     {
+        if (!ActiveSelf)
+        {
+            return;
+        }
+        
         _disposable.Clear();
         gameObject.Hide();
+        ActiveSelf = false;
     }
 }
