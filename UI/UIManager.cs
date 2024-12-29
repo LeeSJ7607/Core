@@ -9,8 +9,9 @@ internal sealed class UIManager : MonoSingleton<UIManager>
     
     public void Release()
     {
-        _uiContainer.Release();
+        HidePopupAll();
         _popups.Clear();
+        _uiContainer.Release();
     }
 
     public void Initialize()
@@ -32,6 +33,14 @@ internal sealed class UIManager : MonoSingleton<UIManager>
         }
 
         _handleBackButton.Execute();
+    }
+
+    private void HidePopupAll()
+    {
+        foreach (var popup in _popups)
+        {
+            popup.Hide();
+        }
     }
     
     public TPopup ShowPopup<TPopup>() where TPopup : UIPopup

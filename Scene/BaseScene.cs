@@ -3,11 +3,6 @@ using UnityEngine;
 
 internal abstract class BaseScene : MonoBehaviour
 {
-    private void OnDestroy()
-    {
-        UIManager.Instance.Release();
-    }
-    
     protected virtual void Awake()
     {
         
