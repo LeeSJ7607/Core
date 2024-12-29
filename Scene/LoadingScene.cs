@@ -8,7 +8,9 @@ internal sealed class LoadingScene : BaseScene
     {
         await base.Start(); 
         await ReleaseAll();
-        SceneLoader.Instance.LoadNextScene();
+        
+        await AddressableManager.Instance.LoadAssetsAsync(_sceneLoader.CurSceneType.ToString());
+        _sceneLoader.LoadNextScene();
     }
 
     private async UniTask ReleaseAll()
