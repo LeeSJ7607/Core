@@ -8,7 +8,7 @@ public enum EScene
     Loading,
 }
 
-internal sealed class SceneLoader : Singleton<SceneLoader>
+internal sealed class SceneLoader
 {
     public EScene CurSceneType = EScene.Login;
     

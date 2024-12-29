@@ -3,6 +3,8 @@ using UnityEngine;
 
 internal abstract class BaseScene : MonoBehaviour
 {
+    protected readonly SceneLoader _sceneLoader = new();
+    
     protected virtual void Awake()
     {
         
@@ -10,7 +12,6 @@ internal abstract class BaseScene : MonoBehaviour
     
     protected virtual async UniTask Start()
     {
-        await AddressableManager.Instance.LoadAssetsAsync(SceneLoader.Instance.CurSceneType.ToString());
         UIManager.Instance.Initialize();
     }
     
