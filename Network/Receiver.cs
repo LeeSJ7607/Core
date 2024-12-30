@@ -26,7 +26,7 @@
                 _session.Release();
                 
                 var popup = UIManager.Instance.ShowPopup<UIPopup_System>();
-                popup.Set("서버가 종료되었습니다.");
+                //popup.Set("서버가 종료되었습니다.");
             }
             break;
         }

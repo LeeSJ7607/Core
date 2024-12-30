@@ -27,7 +27,7 @@ internal sealed class HandleBackButton
     private void ShowSystemPopup()
     {
         var popup = UIManager.Instance.ShowPopup<UIPopup_System>();
-        popup.Set("게임을 종료하시겠습니까?");
+        //popup.Set("게임을 종료하시겠습니까?");
     }
     
     private void PopPopup(Stack<UIPopup> popups)
