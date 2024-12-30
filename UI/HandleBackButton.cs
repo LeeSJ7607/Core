@@ -1,29 +1,43 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 internal sealed class HandleBackButton
 {
-    private readonly Stack<UIPopup> _popups;
-
-    public HandleBackButton(Stack<UIPopup> popups)
+    public void Execute(Stack<UIPopup> popups)
     {
-        _popups = popups;
-    }
-    
-    public void Execute()
-    {
-        if (_popups.IsNullOrEmpty())
+        if (!Input.GetKeyDown(KeyCode.Escape))
         {
-            var popup = UIManager.Instance.ShowPopup<UIPopup_System>();
-            popup.Set("게임을 종료하시겠습니까?");
+            return;
+        }
+
+        if (!CanBackButton())
+        {
             return;
         }
         
-        PopPopup();
+        if (popups.IsNullOrEmpty())
+        {
+            ShowSystemPopup();
+            return;
+        }
+        
+        PopPopup(popups);
     }
     
-    private void PopPopup()
+    private void ShowSystemPopup()
     {
-        var popup = _popups.Pop();
+        var popup = UIManager.Instance.ShowPopup<UIPopup_System>();
+        popup.Set("게임을 종료하시겠습니까?");
+    }
+    
+    private void PopPopup(Stack<UIPopup> popups)
+    {
+        var popup = popups.Pop();
         popup.Hide();
+    }
+
+    private bool CanBackButton()
+    {
+        return true;
     }
 }

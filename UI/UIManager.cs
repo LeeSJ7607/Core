@@ -1,11 +1,10 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 internal sealed class UIManager : MonoSingleton<UIManager> 
 {
     private readonly UIContainer _uiContainer = new();
     private readonly Stack<UIPopup> _popups = new();
-    private HandleBackButton _handleBackButton;
+    private readonly HandleBackButton _handleBackButton = new();
     
     public void Release()
     {
@@ -14,27 +13,12 @@ internal sealed class UIManager : MonoSingleton<UIManager>
         _uiContainer.Release();
     }
 
-    public void Initialize()
-    {
-        _handleBackButton = new HandleBackButton(_popups);
-    }
-
     protected override void Update()
     {
         base.Update();
-        ProcessHandleBackButton();
+        _handleBackButton.Execute(_popups);
     }
     
-    private void ProcessHandleBackButton()
-    {
-        if (!Input.GetKeyDown(KeyCode.Escape))
-        {
-            return;
-        }
-
-        _handleBackButton.Execute();
-    }
-
     private void HidePopupAll()
     {
         foreach (var popup in _popups)

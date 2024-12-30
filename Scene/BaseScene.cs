@@ -12,7 +12,7 @@ internal abstract class BaseScene : MonoBehaviour
     
     protected virtual async UniTask Start()
     {
-        UIManager.Instance.Initialize();
+        
     }
     
     protected virtual void Update()
