@@ -5,8 +5,8 @@ using UnityEngine;
 
 internal sealed class AssetManagementGUI_Main : EditorWindow
 {
+    private static readonly string KEY_SELECTED_FOLDER_PATH = $"{typeof(AssetManagementGUI_Main)}_{KEY_SELECTED_FOLDER_PATH}";
     private const float DRAW_MENU_BTN = 30;
-    private const string KEY_SELECTED_FILE_PATH = "AssetManagementGUI_Main_SELECTED_FILE_PATH";
     private readonly IAssetManagementGUI[] _assetManagementGuis;
     private string _selectedFolderPath;
     private int _selectedAssetKindIdx;
@@ -25,7 +25,7 @@ internal sealed class AssetManagementGUI_Main : EditorWindow
     public static void Open()
     {
         var tool = GetWindow<AssetManagementGUI_Main>();
-        var selectedFilePath = tool._selectedFolderPath = PlayerPrefs.GetString(KEY_SELECTED_FILE_PATH);
+        var selectedFilePath = tool._selectedFolderPath = PlayerPrefs.GetString(KEY_SELECTED_FOLDER_PATH);
 
         if (selectedFilePath.IsNullOrEmpty())
         {
@@ -61,7 +61,7 @@ internal sealed class AssetManagementGUI_Main : EditorWindow
             {
                 assetManagementGUI.Initialize(_selectedFolderPath);
             }
-            PlayerPrefs.SetString(KEY_SELECTED_FILE_PATH, _selectedFolderPath);
+            PlayerPrefs.SetString(KEY_SELECTED_FOLDER_PATH, _selectedFolderPath);
         }
 
         GUILayout.Label(_selectedFolderPath);
