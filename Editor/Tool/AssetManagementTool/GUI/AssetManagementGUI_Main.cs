@@ -21,7 +21,7 @@ internal sealed class AssetManagementGUI_Main : EditorWindow
                                                           .ToArray();
     }
     
-    [MenuItem("Tools/AssetManagementTool &Q")]
+    [MenuItem("Custom/AssetManagementWindow")]
     public static void Open()
     {
         var tool = GetWindow<AssetManagementGUI_Main>();

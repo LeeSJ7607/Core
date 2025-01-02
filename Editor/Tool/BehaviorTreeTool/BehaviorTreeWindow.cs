@@ -16,10 +16,10 @@ internal sealed class BehaviorTreeWindow : EditorWindow
                                .ToArray();
     }
     
-    [MenuItem("Tools/BehaviorTreeTool &W")]
+    [MenuItem("Custom/BehaviorTreeWindow")]
     public static void Open()
     {
-        var tool = GetWindow<BehaviorTreeWindow>();
+        GetWindow<BehaviorTreeWindow>();
     }
 
     private void OnGUI()
