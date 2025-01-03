@@ -6,7 +6,7 @@ using UnityEngine;
 internal sealed class AssetManagementGUI_Main : EditorWindow
 {
     private static readonly string KEY_SELECTED_FOLDER_PATH = $"{typeof(AssetManagementGUI_Main)}_{KEY_SELECTED_FOLDER_PATH}";
-    private const float DRAW_MENU_BTN = 30;
+    private const float MENU_BTN_HEIGHT = 30;
     private readonly IAssetManagementGUI[] _assetManagementGuis;
     private string _selectedFolderPath;
     private int _selectedAssetKindIdx;
@@ -108,7 +108,7 @@ internal sealed class AssetManagementGUI_Main : EditorWindow
 
     private void DrawDiffBtn()
     {
-        if (!GUILayout.Button("변경된 에셋 보기", GUIUtil.ButtonStyle(), GUILayout.Height(DRAW_MENU_BTN)))
+        if (!GUILayout.Button("변경된 에셋 보기", GUIUtil.ButtonStyle(), GUILayout.Height(MENU_BTN_HEIGHT)))
         {
             return;
         }
@@ -135,7 +135,7 @@ internal sealed class AssetManagementGUI_Main : EditorWindow
     
     private void DrawConfirmBtn()
     {
-        if (GUILayout.Button("변경된 에셋 적용", GUIUtil.ButtonStyle(), GUILayout.Height(DRAW_MENU_BTN)))
+        if (GUILayout.Button("변경된 에셋 적용", GUIUtil.ButtonStyle(), GUILayout.Height(MENU_BTN_HEIGHT)))
         {
             Save();
         }
