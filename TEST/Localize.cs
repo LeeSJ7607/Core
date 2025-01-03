@@ -22,14 +22,14 @@ public sealed class Localize : MonoBehaviour
             return false;
         }
         
-        var table = TableManager.Instance.Get<TblLocalize>();
-        if (table.Dic.TryGetValue(_key, out var value) == false)
-        {
-            errorMsg_ = $"{_key}.. KeyNotFoundException";
-            return false;
-        }
-
-        localizeTableMap_ = value;
+        // var table = TableManager.Instance.Get<TblLocalize>();
+        // if (table.Dic.TryGetValue(_key, out var value) == false)
+        // {
+        //     errorMsg_ = $"{_key}.. KeyNotFoundException";
+        //     return false;
+        // }
+        //
+        // localizeTableMap_ = value;
         return true;
     }
 }
