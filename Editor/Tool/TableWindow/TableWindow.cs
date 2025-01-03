@@ -44,7 +44,7 @@ internal sealed class TableWindow : EditorWindow
 
     private void OnGUI()
     {
-        DrawFolderPath();
+        DrawTableFolderPath();
         
         if (_checkToggleTables.IsNullOrEmpty())
         {
@@ -59,8 +59,8 @@ internal sealed class TableWindow : EditorWindow
 
     private void DrawSelectedTableInfo()
     {
-        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-
+        EditorGUILayout.BeginVertical();
+        
         foreach (var (toggle, tableInfo) in _checkToggleTables)
         {
             if (!toggle)
@@ -68,14 +68,24 @@ internal sealed class TableWindow : EditorWindow
                 continue;
             }
             
-            GUIUtil.Desc($"{tableInfo.TableType.Name}{TABLE_EXTENSION}");
-            GUIUtil.Desc($"Bake Time: {tableInfo.BakeTimeStr}");
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            GUIUtil.Desc($"{tableInfo.TableName}{TABLE_EXTENSION}");
+
+            if (tableInfo.HasTableFile)
+            {
+                GUIUtil.Desc($"Bake Time: {tableInfo.BakeTimeStr}");
+            }
+            else
+            {
+                GUIUtil.Desc("Table file not found.", Color.red);
+            }
+            EditorGUILayout.EndVertical();
         }
         
         EditorGUILayout.EndVertical();
     }
     
-    private void DrawFolderPath()
+    private void DrawTableFolderPath()
     {
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
         GUIUtil.Btn("Specify the folder path", 140, () =>
@@ -117,7 +127,7 @@ internal sealed class TableWindow : EditorWindow
         for (var i = 0; i < _tableWindowLogic.TableInfos.Length; i++)
         {
             var tableInfo = _tableWindowLogic.TableInfos[i];
-            var tableName = tableInfo.TableType.Name;
+            var tableName = tableInfo.TableName;
 
             if (!_searchedTableName.IsNullOrEmpty() 
              && !_searchedTableName.Equals(tableName))

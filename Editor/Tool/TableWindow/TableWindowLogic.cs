@@ -1,27 +1,31 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 internal sealed class TableWindowLogic
 {
     internal sealed class TableInfo
     {
-        public Type TableType { get; }
+        private readonly Type _tableType;
+        public string TableName => _tableType.Name;
         public string BakeTimeStr { get; private set; }
+        public bool HasTableFile { get; set; }
 
         public TableInfo(Type type)
         {
-            TableType = type;
+            _tableType = type;
             BakeTimeStr = PlayerPrefs.GetString(KeyBakeTime, null);
         }
 
-        public void SetBake()
+        public void SetBakeTime()
         {
             BakeTimeStr = DateTime.Now.ToString();
             PlayerPrefs.SetString(KeyBakeTime, BakeTimeStr);
         }
         
-        private string KeyBakeTime => $"{nameof(TableInfo)}_{TableType.Name}";
+        private string KeyBakeTime => $"{nameof(TableInfo)}_{TableName}";
     }
     
     public TableInfo[] TableInfos { get; private set; }
@@ -72,6 +76,10 @@ internal sealed class TableWindowLogic
         for (var i = 0; i < types.Length; i++)
         {
             TableInfos[i] = new TableInfo(types[i]);
+            var tableInfo = TableInfos[i];
+            
+            var tablePath = $"{_selectedExcelFolderPath}/{tableInfo.TableName}{TableWindow.TABLE_EXTENSION}";
+            tableInfo.HasTableFile = File.Exists(tablePath);
         }
 
         return true;
@@ -91,9 +99,31 @@ internal sealed class TableWindowLogic
             {
                 continue;
             }
+
+            var tablePath = $"{_selectedExcelFolderPath}/{tableInfo.TableName}{TableWindow.TABLE_EXTENSION}";
+            if (!File.Exists(tablePath))
+            {
+                Debug.LogError("Table file not found.");
+                continue;
+            }
+        
+            var fileLines = File.ReadAllLines(tablePath, Encoding.UTF8);
+            if (fileLines.IsNullOrEmpty())
+            {
+                continue;
+            }
             
-            //TODO: 베이크 시작.
-            tableInfo.SetBake();
+            var columns = fileLines[0].Split(',');
+            var rows = fileLines.Skip(1).Select(row => row.Split(',')).ToArray();
+            
+            tableInfo.SetBakeTime();
         }
+    }
+    
+    private bool TryGetTableAsset(out BaseTable tableAsset)
+    {
+        var instance = ScriptableObject.CreateInstance<BaseTable>();
+        tableAsset = null;
+        return true;
     }
 }
