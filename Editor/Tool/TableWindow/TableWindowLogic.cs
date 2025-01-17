@@ -2,20 +2,22 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 
 internal sealed class TableWindowLogic
 {
     internal sealed class TableInfo
     {
-        private readonly Type _tableType;
-        public string TableName => _tableType.Name;
+        public Type TableType { get; }
+        public string TableName => TableType.Name;
+        private string KeyBakeTime => $"{nameof(TableInfo)}_{TableName}";
         public string BakeTimeStr { get; private set; }
         public bool HasTableFile { get; set; }
 
         public TableInfo(Type type)
         {
-            _tableType = type;
+            TableType = type;
             BakeTimeStr = PlayerPrefs.GetString(KeyBakeTime, null);
         }
 
@@ -24,21 +26,16 @@ internal sealed class TableWindowLogic
             BakeTimeStr = DateTime.Now.ToString();
             PlayerPrefs.SetString(KeyBakeTime, BakeTimeStr);
         }
-        
-        private string KeyBakeTime => $"{nameof(TableInfo)}_{TableName}";
     }
     
     public TableInfo[] TableInfos { get; private set; }
     private string _selectedExcelFolderPath;
+    private string _selectedOutputFolderPath;
     
-    public bool Initialize(string selectedExcelFolderPath)
+    public bool Initialize(string selectedExcelFolderPath, string selectedOutputFolderPath)
     {
-        if (!TrySetExcelFolderPath(selectedExcelFolderPath))
-        {
-            return false;
-        }
-        
-        return CreateTables();
+        _selectedOutputFolderPath = selectedOutputFolderPath;
+        return TrySetExcelFolderPath(selectedExcelFolderPath) && CreateTables();
     }
 
     private bool TrySetExcelFolderPath(string excelFolderPath)
@@ -113,17 +110,30 @@ internal sealed class TableWindowLogic
                 continue;
             }
             
+            var createTable = GetOrCreateTable(tableInfo.TableType);
             var columns = fileLines[0].Split(',');
             var rows = fileLines.Skip(1).Select(row => row.Split(',')).ToArray();
             
+            if (!createTable.TryParse(columns, rows))
+            {
+                continue;
+            }
+            
+            EditorUtility.SetDirty(createTable);
             tableInfo.SetBakeTime();
         }
     }
     
-    private bool TryGetTableAsset(out BaseTable tableAsset)
+    private BaseTable GetOrCreateTable(Type type)
     {
-        var instance = ScriptableObject.CreateInstance<BaseTable>();
-        tableAsset = null;
-        return true;
+        var instance = ScriptableObject.CreateInstance(type);
+
+        var assetPath = $"{_selectedOutputFolderPath}/{type.Name}.asset";
+        if (!File.Exists(assetPath))
+        {
+            AssetDatabase.CreateAsset(instance, assetPath);
+        }
+
+        return (BaseTable)AssetDatabase.LoadAssetAtPath(assetPath, type);
     }
 }

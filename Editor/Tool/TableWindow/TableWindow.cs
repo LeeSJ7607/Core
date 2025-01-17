@@ -5,8 +5,11 @@ internal sealed class TableWindow : EditorWindow
 {
     public const string TABLE_EXTENSION = ".csv";
     private static readonly string KEY_EXCEL_FOLDER_PATH = $"{typeof(TableWindow)}_{KEY_EXCEL_FOLDER_PATH}";
+    private static readonly string KEY_OUTPUT_FOLDER_PATH = $"{typeof(TableWindow)}_{KEY_OUTPUT_FOLDER_PATH}";
+    
     private readonly TableWindowLogic _tableWindowLogic = new();
     private (bool toggle, TableWindowLogic.TableInfo tableInfo)[] _checkToggleTables;
+    private string _selectedOutputFolderPath;
     private string _selectedExcelFolderPath;
     private string _searchedTableName;
     private Vector2 _tableListScrollPos;
@@ -15,19 +18,18 @@ internal sealed class TableWindow : EditorWindow
     public static void Open()
     {
         var tool = GetWindow<TableWindow>();
-        var excelFolderPath = tool._selectedExcelFolderPath = PlayerPrefs.GetString(KEY_EXCEL_FOLDER_PATH);
-
-        if (excelFolderPath.IsNullOrEmpty())
-        {
-            return;
-        }
+        tool._selectedOutputFolderPath = PlayerPrefs.GetString(KEY_OUTPUT_FOLDER_PATH);
+        tool._selectedExcelFolderPath = PlayerPrefs.GetString(KEY_EXCEL_FOLDER_PATH);
         
-        tool.CreateTableWindowLogic();
+        if (!tool._selectedExcelFolderPath.IsNullOrEmpty())
+        {
+            tool.CreateTableWindowLogic();
+        }
     }
     
     private void CreateTableWindowLogic()
     {
-        if (!_tableWindowLogic.Initialize(_selectedExcelFolderPath))
+        if (!_tableWindowLogic.Initialize(_selectedExcelFolderPath, _selectedOutputFolderPath))
         {
             _checkToggleTables = null;
             return;
@@ -44,7 +46,8 @@ internal sealed class TableWindow : EditorWindow
 
     private void OnGUI()
     {
-        DrawTableFolderPath();
+        DrawOutputFolderPath();
+        DrawExcelFolderPath();
         
         if (_checkToggleTables.IsNullOrEmpty())
         {
@@ -85,10 +88,30 @@ internal sealed class TableWindow : EditorWindow
         EditorGUILayout.EndVertical();
     }
     
-    private void DrawTableFolderPath()
+    private void DrawOutputFolderPath()
     {
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-        GUIUtil.Btn("Specify the folder path", 140, () =>
+        GUIUtil.Btn("Output Folder Path", 140, () =>
+        {
+            var excelFolderPath = EditorUtility.OpenFolderPanel("Specify the folder path", _selectedOutputFolderPath, "");
+            if (excelFolderPath.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            _selectedOutputFolderPath = excelFolderPath;
+            CreateTableWindowLogic();
+            PlayerPrefs.SetString(KEY_OUTPUT_FOLDER_PATH, _selectedOutputFolderPath);
+        });
+        
+        GUILayout.Label(_selectedOutputFolderPath);
+        EditorGUILayout.EndHorizontal();
+    }
+    
+    private void DrawExcelFolderPath()
+    {
+        EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+        GUIUtil.Btn("Excel Folder Path", 140, () =>
         {
             var excelFolderPath = EditorUtility.OpenFolderPanel("Specify the folder path", _selectedExcelFolderPath, "");
             if (excelFolderPath.IsNullOrEmpty())
