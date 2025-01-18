@@ -18,13 +18,13 @@ internal sealed class TableWindowLogic
         public TableInfo(Type type)
         {
             TableType = type;
-            BakeTimeStr = PlayerPrefs.GetString(KeyBakeTime, null);
+            BakeTimeStr = EditorPrefs.GetString(KeyBakeTime, null);
         }
 
         public void SetBakeTime()
         {
             BakeTimeStr = DateTime.Now.ToString();
-            PlayerPrefs.SetString(KeyBakeTime, BakeTimeStr);
+            EditorPrefs.SetString(KeyBakeTime, BakeTimeStr);
         }
     }
     

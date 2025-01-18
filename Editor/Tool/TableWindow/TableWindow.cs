@@ -18,8 +18,8 @@ internal sealed class TableWindow : EditorWindow
     public static void Open()
     {
         var tool = GetWindow<TableWindow>();
-        tool._selectedOutputFolderPath = PlayerPrefs.GetString(KEY_OUTPUT_FOLDER_PATH);
-        tool._selectedExcelFolderPath = PlayerPrefs.GetString(KEY_EXCEL_FOLDER_PATH);
+        tool._selectedOutputFolderPath = EditorPrefs.GetString(KEY_OUTPUT_FOLDER_PATH);
+        tool._selectedExcelFolderPath = EditorPrefs.GetString(KEY_EXCEL_FOLDER_PATH);
         
         if (!tool._selectedExcelFolderPath.IsNullOrEmpty())
         {
