@@ -152,16 +152,26 @@ internal sealed class TableWindow : EditorWindow
             var tableInfo = _tableWindowLogic.TableInfos[i];
             var tableName = tableInfo.TableName;
 
-            if (!_searchedTableName.IsNullOrEmpty() 
-             && !_searchedTableName.Equals(tableName))
+            if (FilterTableName(tableName))
             {
-                continue;
+                _checkToggleTables[i].toggle = GUILayout.Toggle(_checkToggleTables[i].toggle, tableName);
             }
-
-            _checkToggleTables[i].toggle = GUILayout.Toggle(_checkToggleTables[i].toggle, tableName);
         }
         
         EditorGUILayout.EndScrollView();
+    }
+    
+    private bool FilterTableName(string tableName)
+    {
+        if (_searchedTableName.IsNullOrEmpty())
+        {
+            return true;
+        }
+        
+        var searchedTableNameLower = _searchedTableName.ToLower();
+        var tableNameLower = tableName.ToLower();
+        
+        return tableNameLower.Contains(searchedTableNameLower);
     }
     
     private void DrawBakeSelectedAndBakeAll()
