@@ -93,13 +93,13 @@ internal sealed class TableWindow : EditorWindow
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
         GUIUtil.Btn("Output Folder Path", 140, () =>
         {
-            var excelFolderPath = EditorUtility.OpenFolderPanel("Specify the folder path", _selectedOutputFolderPath, "");
-            if (excelFolderPath.IsNullOrEmpty())
+            var outputFolderPath = EditorUtility.OpenFolderPanel("Specify the folder path", _selectedOutputFolderPath, "");
+            if (outputFolderPath.IsNullOrEmpty())
             {
                 return;
             }
 
-            _selectedOutputFolderPath = excelFolderPath;
+            _selectedOutputFolderPath = outputFolderPath.Replace(Application.dataPath, "Assets");
             CreateTableWindowLogic();
             PlayerPrefs.SetString(KEY_OUTPUT_FOLDER_PATH, _selectedOutputFolderPath);
         });
