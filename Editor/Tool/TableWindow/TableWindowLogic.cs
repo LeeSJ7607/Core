@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -57,10 +58,10 @@ internal sealed class TableWindowLogic
 
     private bool CreateTables()
     {
-        var types = typeof(BaseTable).Assembly
+        var types = typeof(IBaseTable).Assembly
                                      .GetExportedTypes()
                                      .Where(_ => _.IsInterface == false && _.IsAbstract == false)
-                                     .Where(_ => typeof(BaseTable).IsAssignableFrom(_))
+                                     .Where(_ => typeof(IBaseTable).IsAssignableFrom(_))
                                      .ToArray();
 
         if (types.IsNullOrEmpty())
@@ -104,36 +105,61 @@ internal sealed class TableWindowLogic
                 continue;
             }
         
-            var fileLines = File.ReadAllLines(tablePath, Encoding.UTF8);
-            if (fileLines.IsNullOrEmpty())
+            var tableFileLines = File.ReadAllLines(tablePath, Encoding.UTF8);
+            if (tableFileLines.IsNullOrEmpty())
             {
+                Debug.LogError("Table file is empty.");
                 continue;
             }
-            
+
+            if (tableFileLines[1].IsNullOrEmpty())
+            {
+                Debug.LogError("Table file first row is empty.");
+                continue;
+            }
+
+            var rows = ConvertTable(tableFileLines);
             var createTable = GetOrCreateTable(tableInfo.TableType);
-            var columns = fileLines[0].Split(',');
-            var rows = fileLines.Skip(1).Select(row => row.Split(',')).ToArray();
-            
-            if (!createTable.TryParse(columns, rows))
+            if (!createTable.TryParse(rows))
             {
                 continue;
             }
             
-            EditorUtility.SetDirty(createTable);
             tableInfo.SetBakeTime();
+            EditorUtility.SetDirty(createTable as ScriptableObject);
         }
     }
+
+    private IReadOnlyList<Dictionary<string, string>> ConvertTable(string[] tableFileLines)
+    {
+        var rows = new List<Dictionary<string, string>>();
+        var columns = tableFileLines[0].Split(',');
+        var rawRows = tableFileLines.Skip(1).Select(row => row.Split(',')).ToArray();
+
+        foreach (var rawRow in rawRows)
+        {
+            var rowData = new Dictionary<string, string>();
+            for (var i = 0; i < columns.Length; i++)
+            {
+                rowData.Add(columns[i], rawRow[i]);
+            }
+            
+            rows.Add(rowData);
+        }
+
+        return rows;
+    }
     
-    private BaseTable GetOrCreateTable(Type type)
+    private IBaseTable GetOrCreateTable(Type type)
     {
         var instance = ScriptableObject.CreateInstance(type);
-
         var assetPath = $"{_selectedOutputFolderPath}/{type.Name}.asset";
+        
         if (!File.Exists(assetPath))
         {
             AssetDatabase.CreateAsset(instance, assetPath);
         }
 
-        return (BaseTable)AssetDatabase.LoadAssetAtPath(assetPath, type);
+        return (IBaseTable)AssetDatabase.LoadAssetAtPath(assetPath, type);
     }
 }

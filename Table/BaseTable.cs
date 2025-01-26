@@ -1,15 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
-public abstract class BaseTable : ScriptableObject
+public interface IBaseTable
 {
-    [Serializable] internal sealed class RowMap : SerializableDictionary<int, BaseTable> { }
-    [SerializeField] private RowMap _rowMap = new();
+    bool TryParse(IReadOnlyList<Dictionary<string, string>> rows);
+}
 
-    public bool TryParse(string[] columns, string[][] rows)
+public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
+{
+    public bool TryParse(IReadOnlyList<Dictionary<string, string>> rows)
     {
-        _rowMap.Clear();
-        //var rowMap = JsonConvert.DeserializeObject<List<TRow>>(JsonConvert.SerializeObject(csv_));
-        return true;
+        var ser = JsonConvert.SerializeObject(rows);
+        List<TRow> des = null;
+        
+        try
+        {
+            des = JsonConvert.DeserializeObject<List<TRow>>(ser);
+            OnParse(des);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.Message);
+        }
+
+        return des != null;
     }
+
+    protected abstract void OnParse(List<TRow> rows);
 }
