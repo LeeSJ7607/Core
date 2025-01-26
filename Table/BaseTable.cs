@@ -13,19 +13,18 @@ public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
     public bool TryParse(IReadOnlyList<Dictionary<string, string>> rows)
     {
         var ser = JsonConvert.SerializeObject(rows);
-        List<TRow> des = null;
         
         try
         {
-            des = JsonConvert.DeserializeObject<List<TRow>>(ser);
-            OnParse(des);
+            OnParse(JsonConvert.DeserializeObject<List<TRow>>(ser));
         }
         catch (Exception e)
         {
             Debug.LogError(e.Message);
+            return false;
         }
 
-        return des != null;
+        return true;
     }
 
     protected abstract void OnParse(List<TRow> rows);
