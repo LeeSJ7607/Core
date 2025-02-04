@@ -3,8 +3,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
+using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 
 internal sealed class TableWindowLogic
 {
@@ -152,14 +155,45 @@ internal sealed class TableWindowLogic
     
     private IBaseTable GetOrCreateTable(Type type)
     {
-        var instance = ScriptableObject.CreateInstance(type);
         var assetPath = $"{_selectedOutputFolderPath}/{type.Name}.asset";
         
         if (!File.Exists(assetPath))
         {
+            var instance = ScriptableObject.CreateInstance(type);
             AssetDatabase.CreateAsset(instance, assetPath);
         }
 
+        AddAddressTable(assetPath);
         return (IBaseTable)AssetDatabase.LoadAssetAtPath(assetPath, type);
+    }
+
+    private void AddAddressTable(string assetPath)
+    {
+        var settings = AddressableAssetSettingsDefaultObject.Settings;
+        var group = GetOrCreateGroup();
+        var entry = settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(assetPath), group, false, false);
+        var fileName = Path.GetFileNameWithoutExtension(assetPath);
+        
+        entry.SetAddress(fileName);
+        settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, entry, true);
+    }
+
+    private AddressableAssetGroup GetOrCreateGroup()
+    {
+        const string groupName = "Table";
+        var groupPath = $"Assets/AddressableAssetsData/AssetGroups/{groupName}.asset";
+        
+        if (File.Exists(groupPath))
+        {
+            return AssetDatabase.LoadAssetAtPath<AddressableAssetGroup>(groupPath);
+        }
+
+        var group = ScriptableObject.CreateInstance<AddressableAssetGroup>();
+        group.Name = groupName;
+        group.AddSchema<BundledAssetGroupSchema>();
+        group.AddSchema<ContentUpdateGroupSchema>();
+        AssetDatabase.CreateAsset(group, groupPath);
+        
+        return group;
     }
 }
