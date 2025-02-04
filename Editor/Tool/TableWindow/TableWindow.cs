@@ -9,19 +9,19 @@ internal sealed class TableWindow : EditorWindow
     
     private readonly TableWindowLogic _tableWindowLogic = new();
     private (bool toggle, TableWindowLogic.TableInfo tableInfo)[] _checkToggleTables;
-    private string _selectedOutputFolderPath;
-    private string _selectedExcelFolderPath;
     private string _searchedTableName;
     private Vector2 _tableListScrollPos;
+    private string _selectedOutputFolderPath;
+    public static string SelectedExcelFolderPath;
     
-    [MenuItem("Custom/TableWindow")]
+    [MenuItem("Custom/Window/TableWindow")]
     public static void Open()
     {
         var tool = GetWindow<TableWindow>();
         tool._selectedOutputFolderPath = EditorPrefs.GetString(KEY_OUTPUT_FOLDER_PATH);
-        tool._selectedExcelFolderPath = EditorPrefs.GetString(KEY_EXCEL_FOLDER_PATH);
+        SelectedExcelFolderPath = EditorPrefs.GetString(KEY_EXCEL_FOLDER_PATH);
         
-        if (!tool._selectedExcelFolderPath.IsNullOrEmpty())
+        if (!SelectedExcelFolderPath.IsNullOrEmpty())
         {
             tool.CreateTableWindowLogic();
         }
@@ -29,7 +29,7 @@ internal sealed class TableWindow : EditorWindow
     
     private void CreateTableWindowLogic()
     {
-        if (!_tableWindowLogic.Initialize(_selectedExcelFolderPath, _selectedOutputFolderPath))
+        if (!_tableWindowLogic.Initialize(SelectedExcelFolderPath, _selectedOutputFolderPath))
         {
             _checkToggleTables = null;
             return;
@@ -113,18 +113,18 @@ internal sealed class TableWindow : EditorWindow
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
         GUIUtil.Btn("Excel Folder Path", 140, () =>
         {
-            var excelFolderPath = EditorUtility.OpenFolderPanel("Specify the folder path", _selectedExcelFolderPath, "");
+            var excelFolderPath = EditorUtility.OpenFolderPanel("Specify the folder path", SelectedExcelFolderPath, "");
             if (excelFolderPath.IsNullOrEmpty())
             {
                 return;
             }
 
-            _selectedExcelFolderPath = excelFolderPath;
+            SelectedExcelFolderPath = excelFolderPath;
             CreateTableWindowLogic();
-            PlayerPrefs.SetString(KEY_EXCEL_FOLDER_PATH, _selectedExcelFolderPath);
+            PlayerPrefs.SetString(KEY_EXCEL_FOLDER_PATH, SelectedExcelFolderPath);
         });
         
-        GUILayout.Label(_selectedExcelFolderPath);
+        GUILayout.Label(SelectedExcelFolderPath);
         EditorGUILayout.EndHorizontal();
     }
 
