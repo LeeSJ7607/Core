@@ -1,0 +1,24 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+public sealed class #CLASSNAME# : BaseTable<#CLASSNAME#.Row>
+{
+    [Serializable]
+    public sealed class Row
+    {
+        #FIELD#
+    }
+    
+    [SerializeField] private List<Row> _rows;
+
+    protected override void OnParse(List<Row> rows)
+    {
+        _rows = rows;
+    }
+    
+    public Row GetRow(int id)
+    {
+        return _rows.Find(row => row.Id == id);
+    }
+}
