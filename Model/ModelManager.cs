@@ -4,58 +4,72 @@ using UnityEngine;
 
 internal sealed class ModelManager : Singleton<ModelManager>
 {
-    private static readonly string _savePath = $"{Application.persistentDataPath}/Model";
-    private readonly Dictionary<Type, IModel> _modelMap = new()
+    private readonly Dictionary<Type, IReadOnlyModel> _modelMap = new()
     {
         { typeof(CMUser), new CMUser() },
-        { typeof(SMUser), new SMUser() },
+        { typeof(CMRanking), new CMRanking() },
     };
-    
+
     public void Release()
     {
-        foreach (var (_, model) in _modelMap)
+        foreach (var model in _modelMap.Values)
         {
-            FileUtil.SaveAsJson(_savePath, model);
+            model.Release();
         }
-    }
-
-    public void Initialize()
-    {
-        SyncAll(LoadFileAll());
     }
     
-    private void SyncAll(IReadOnlyDictionary<Type, IModel> models)
+    public void Initialize()
     {
-        foreach (var (type, model) in models)
+        RefreshModelMap();
+        
+        foreach (var model in _modelMap.Values)
         {
-            _modelMap[type] = model;
-            
-            if (_modelMap[type] is IClientModel clientModel)
-            {
-                clientModel.Sync();
-            }
+            model.Initialize();
+        }
+    }
+    
+    public void OnUpdate()
+    {
+        foreach (var model in _modelMap.Values)
+        {
+            model.Update();
         }
     }
 
-    private IReadOnlyDictionary<Type, IModel> LoadFileAll()
+    private void RefreshModelMap()
     {
-        var dic = new Dictionary<Type, IModel>(_modelMap.Count);
-        
-        foreach (var (type, _) in _modelMap)
+        var loadedModels = CalcLoadModels();
+
+        foreach (var (type, model) in loadedModels)
         {
-            var filePath = $"{_savePath}/{type.Name}";
-            var loadedModel = (IModel)FileUtil.LoadFromJson(filePath, type);
-            
-            if (loadedModel != null)
+            _modelMap[type] = model;
+        }
+    }
+    
+    private IReadOnlyDictionary<Type, IReadOnlyModel> CalcLoadModels()
+    {
+        var dic = new Dictionary<Type, IReadOnlyModel>();
+        
+        foreach (var (type, model) in _modelMap)
+        {
+            if (model.TryLoad(out var refModel))
             {
-                dic.Add(type, loadedModel);
+                dic.Add(type, refModel);
             }
         }
 
         return dic;
     }
+    
+    public void SaveAll()
+    {
+        foreach (var model in _modelMap.Values)
+        {
+            model.Save();
+        }
+    }
 
-    public TModel Get<TModel>() where TModel : class, IModel
+    public TModel Get<TModel>() where TModel : Model
     {
         if (_modelMap.TryGetValue(typeof(TModel), out var model))
         {

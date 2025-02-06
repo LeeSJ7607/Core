@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine.Networking;
@@ -9,11 +10,17 @@ internal sealed class Sender
     public sealed class Request
     {
         public Type ResponseType { get; private set; }
-        public UnityWebRequest WebRequest { get; private set; }
+        public UnityWebRequest WebRequest { get; }
+        
         public Request(Type responseType, UnityWebRequest webRequest)
         {
             ResponseType = responseType;
             WebRequest = webRequest;
+        }
+
+        public bool HasSameData(string url)
+        {
+            return WebRequest.url.Equals(url);
         }
     }
     
@@ -23,21 +30,25 @@ internal sealed class Sender
     public Sender(Session session)
     {
         _session = session;
-        OnTick().Forget();
+        OnUpdate().Forget();
     }
 
-    private async UniTaskVoid OnTick()
+    public void Release()
     {
-        while (_session.IsValid())
+        _requests.Clear();
+    }
+
+    private async UniTaskVoid OnUpdate()
+    {
+        while (_session.IsValidSession)
         {
             await UniTask.NextFrame();
             
-            if (_requests.Count == 0)
+            if (!_requests.TryDequeue(out var request))
             {
                 continue;
             }
             
-            var request = _requests.Dequeue();
             var responseResult = await SendWebRequest(request.WebRequest);
             _session.Receiver.ReceiveProcess(responseResult, request);
         }
@@ -45,7 +56,17 @@ internal sealed class Sender
 
     public void Push<TResponse>(IRequest request) where TResponse : IResponse
     {
+        if (HasSameRequest(request))
+        {
+            return;
+        }
+
         _requests.Enqueue(new Request(typeof(TResponse), CreateUnityWebRequest(request)));
+    }
+
+    private bool HasSameRequest(IRequest request)
+    {
+        return _requests.Any(_ => _.HasSameData(request.Url));
     }
 
     private UnityWebRequest CreateUnityWebRequest(IRequest request)
@@ -72,23 +93,40 @@ internal sealed class Sender
 
     private async UniTask<EResponseResult> SendWebRequest(UnityWebRequest webRequest)
     {
-        try
+        var remainedRetryCount = 3;
+        while (remainedRetryCount > 0)
         {
-            await webRequest.SendWebRequest();
-
-            if (IsValidRequest(webRequest))
+            try
             {
-                return EResponseResult.Success;
-            }
+                await webRequest.SendWebRequest();
+                if (IsValidRequest(webRequest))
+                {
+                    return EResponseResult.Success;
+                }
 
-            //TODO: 재시도.
-            return EResponseResult.Retry;
+                remainedRetryCount = await DecrementRetryWithDelay(remainedRetryCount, webRequest.url);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+                remainedRetryCount = await DecrementRetryWithDelay(remainedRetryCount, webRequest.url);
+            }
         }
-        catch (Exception e)
+        
+        return EResponseResult.Shutdown;
+    }
+    
+    private async UniTask<int> DecrementRetryWithDelay(int remainedRetryCount, string webRequestUrl)
+    {
+        const float RETRY_DELAY_TIME_SECOND = 2f;
+
+        if (remainedRetryCount > 1)
         {
-            Debug.LogError(e);
-            return EResponseResult.Shutdown;
+            Debug.Log($"Network Retrying.. webRequestUrl: {webRequestUrl}, remainedRetryCount: {remainedRetryCount}");
+            await UniTask.Delay(TimeSpan.FromSeconds(RETRY_DELAY_TIME_SECOND));
         }
+        
+        return --remainedRetryCount;
     }
 
     private bool IsValidRequest(UnityWebRequest webRequest)

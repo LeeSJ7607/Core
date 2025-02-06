@@ -1,7 +1,41 @@
-﻿using UnityEngine;
+﻿using R3;
+using UnityEngine;
 
-public class UIBase : MonoBehaviour
+public abstract class UIBase : MonoBehaviour
 {
-    public void Show() => gameObject.Show();
-    public void Hide() => gameObject.Hide();
+    protected readonly CompositeDisposable _disposable = new();
+    public bool ActiveSelf { get; private set; }
+    
+    protected virtual void OnDestroy()
+    {
+        _disposable.Dispose();
+    }
+    
+    protected virtual void Awake()
+    {
+        
+    }
+    
+    public virtual void Show()
+    {
+        if (ActiveSelf)
+        {
+            return;
+        }
+        
+        gameObject.Show();
+        ActiveSelf = true;
+    }
+    
+    public virtual void Hide()
+    {
+        if (!ActiveSelf)
+        {
+            return;
+        }
+        
+        _disposable.Clear();
+        gameObject.Hide();
+        ActiveSelf = false;
+    }
 }

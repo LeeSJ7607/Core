@@ -22,7 +22,7 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
 
     private static T CreateInstance()
     {
-        var findObjectOfType = FindObjectOfType<T>();
+        var findObjectOfType = FindAnyObjectByType<T>();
         if (findObjectOfType.IsNotNull())
         {
             return findObjectOfType;
@@ -36,5 +36,10 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
         }
         
         return obj.AddComponent<T>();
+    }
+
+    protected virtual void Update()
+    {
+        
     }
 }

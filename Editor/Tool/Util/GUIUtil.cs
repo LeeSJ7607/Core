@@ -15,7 +15,7 @@ public static class GUIUtil
         return new GUIStyle(GUI.skin.label)
         {
             alignment = textAnchor,
-            normal = GUI.skin.button.normal
+            normal = GUI.skin.button.normal,
         };
     }
     
@@ -74,10 +74,13 @@ public static class GUIUtil
         EditorGUILayout.EndVertical();
     }
     
-    public static void Desc(string desc)
+    public static void Desc(string desc, Color color = default)
     {
+        var labelStyle = LabelStyle(TextAnchor.MiddleLeft);
+        labelStyle.normal.textColor = color != default ? color : Color.white;
+        
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField(desc, LabelStyle(TextAnchor.MiddleLeft));
+        EditorGUILayout.LabelField(desc, labelStyle);
         EditorGUILayout.EndHorizontal();
     }
     

@@ -14,7 +14,7 @@ internal sealed class UIContainer
     {
         if (_uiBaseMap.TryGetValue(typeof(TBase).GetHashCode(), out var uiBase))
         {
-            return uiBase as TBase;
+            return (TBase)uiBase;
         }
 
         return Create<TBase>(root);
@@ -32,7 +32,7 @@ internal sealed class UIContainer
         }
         
         Debug.LogError($"Resource: {res}, UIBase Component Confirm Required");
-        return null;
+        return default;
     }
     
     private string GetFileName<TBase>() where TBase : UIBase
