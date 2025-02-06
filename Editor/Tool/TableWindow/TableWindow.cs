@@ -4,24 +4,29 @@ using UnityEngine;
 internal sealed class TableWindow : EditorWindow
 {
     public const string TABLE_EXTENSION = ".csv";
-    private static readonly string KEY_EXCEL_FOLDER_PATH = $"{typeof(TableWindow)}_{KEY_EXCEL_FOLDER_PATH}";
-    private static readonly string KEY_OUTPUT_FOLDER_PATH = $"{typeof(TableWindow)}_{KEY_OUTPUT_FOLDER_PATH}";
+    private const float BTN_WIDTH = 200;
+    private static readonly string KEY_TABLE_FOLDER_PATH = $"{typeof(TableWindow)}_{KEY_TABLE_FOLDER_PATH}";
+    private static readonly string KEY_SO_CREATION_PATH = $"{typeof(TableWindow)}_{KEY_SO_CREATION_PATH}";
+    private static readonly string KEY_SCRIPT_CREATION_PATH = $"{typeof(TableWindow)}_{KEY_SCRIPT_CREATION_PATH}";
     
+    private readonly TableCodeGenerator _tableCodeGenerator = new();
     private readonly TableWindowLogic _tableWindowLogic = new();
     private (bool toggle, TableWindowLogic.TableInfo tableInfo)[] _checkToggleTables;
     private string _searchedTableName;
     private Vector2 _tableListScrollPos;
-    private string _selectedOutputFolderPath;
-    public static string SelectedExcelFolderPath;
+    private string _selectedTableFolderPath;
+    private string _selectedSOCreationPath;
+    private string _selectedScriptCreationPath;
     
     [MenuItem("Custom/Window/TableWindow")]
     public static void Open()
     {
         var tool = GetWindow<TableWindow>();
-        tool._selectedOutputFolderPath = EditorPrefs.GetString(KEY_OUTPUT_FOLDER_PATH);
-        SelectedExcelFolderPath = EditorPrefs.GetString(KEY_EXCEL_FOLDER_PATH);
+        tool._selectedTableFolderPath = EditorPrefs.GetString(KEY_TABLE_FOLDER_PATH);
+        tool._selectedSOCreationPath = EditorPrefs.GetString(KEY_SO_CREATION_PATH);
+        tool._selectedScriptCreationPath = EditorPrefs.GetString(KEY_SCRIPT_CREATION_PATH);
         
-        if (!SelectedExcelFolderPath.IsNullOrEmpty())
+        if (!tool._selectedTableFolderPath.IsNullOrEmpty())
         {
             tool.CreateTableWindowLogic();
         }
@@ -29,7 +34,12 @@ internal sealed class TableWindow : EditorWindow
     
     private void CreateTableWindowLogic()
     {
-        if (!_tableWindowLogic.Initialize(SelectedExcelFolderPath, _selectedOutputFolderPath))
+        if (_selectedTableFolderPath.IsNullOrEmpty() || _selectedSOCreationPath.IsNullOrEmpty())
+        {
+            return;
+        }
+        
+        if (!_tableWindowLogic.Initialize(_selectedTableFolderPath, _selectedSOCreationPath))
         {
             _checkToggleTables = null;
             return;
@@ -46,18 +56,17 @@ internal sealed class TableWindow : EditorWindow
 
     private void OnGUI()
     {
-        DrawOutputFolderPath();
-        DrawExcelFolderPath();
-        
-        if (_checkToggleTables.IsNullOrEmpty())
+        DrawTableFolderPath();
+        DrawSOCreationPath();
+        DrawScriptCreationPath();
+
+        if (!_checkToggleTables.IsNullOrEmpty())
         {
-            return;
+            EditorGUILayout.BeginHorizontal();
+            DrawTableList();
+            DrawSelectedTableInfo();
+            EditorGUILayout.EndHorizontal();
         }
-        
-        EditorGUILayout.BeginHorizontal();
-        DrawTableList();
-        DrawSelectedTableInfo();
-        EditorGUILayout.EndHorizontal();
     }
 
     private void DrawSelectedTableInfo()
@@ -88,43 +97,70 @@ internal sealed class TableWindow : EditorWindow
         EditorGUILayout.EndVertical();
     }
     
-    private void DrawOutputFolderPath()
+    private void DrawTableFolderPath()
     {
+        const string title = "Table Directory Path";
+        
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-        GUIUtil.Btn("Output Folder Path", 140, () =>
+        GUIUtil.Btn(title, BTN_WIDTH, () =>
         {
-            var outputFolderPath = EditorUtility.OpenFolderPanel("Specify the folder path", _selectedOutputFolderPath, "");
+            var tableFolderPath = EditorUtility.OpenFolderPanel(title, _selectedTableFolderPath, "");
+            if (tableFolderPath.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            _selectedTableFolderPath = tableFolderPath;
+            CreateTableWindowLogic();
+            PlayerPrefs.SetString(KEY_TABLE_FOLDER_PATH, _selectedTableFolderPath);
+        });
+        
+        GUILayout.Label(_selectedTableFolderPath);
+        GUIUtil.Btn("Refresh", 70, CreateTableWindowLogic);
+        EditorGUILayout.EndHorizontal();
+    }
+    
+    private void DrawSOCreationPath()
+    {
+        const string title = "ScriptableObject Creation Path";
+        
+        EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+        GUIUtil.Btn(title, BTN_WIDTH, () =>
+        {
+            var outputFolderPath = EditorUtility.OpenFolderPanel(title, _selectedSOCreationPath, "");
             if (outputFolderPath.IsNullOrEmpty())
             {
                 return;
             }
 
-            _selectedOutputFolderPath = outputFolderPath.Replace(Application.dataPath, "Assets");
+            _selectedSOCreationPath = outputFolderPath.Replace(Application.dataPath, "Assets");
             CreateTableWindowLogic();
-            PlayerPrefs.SetString(KEY_OUTPUT_FOLDER_PATH, _selectedOutputFolderPath);
+            PlayerPrefs.SetString(KEY_SO_CREATION_PATH, _selectedSOCreationPath);
         });
         
-        GUILayout.Label(_selectedOutputFolderPath);
+        GUILayout.Label(_selectedSOCreationPath);
         EditorGUILayout.EndHorizontal();
     }
     
-    private void DrawExcelFolderPath()
+    private void DrawScriptCreationPath()
     {
+        const string title = "Script Creation Path";
+        
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-        GUIUtil.Btn("Excel Folder Path", 140, () =>
+        GUIUtil.Btn(title, BTN_WIDTH, () =>
         {
-            var excelFolderPath = EditorUtility.OpenFolderPanel("Specify the folder path", SelectedExcelFolderPath, "");
-            if (excelFolderPath.IsNullOrEmpty())
+            var outputFolderPath = EditorUtility.OpenFolderPanel(title, _selectedScriptCreationPath, "");
+            if (outputFolderPath.IsNullOrEmpty())
             {
                 return;
             }
 
-            SelectedExcelFolderPath = excelFolderPath;
+            _selectedScriptCreationPath = outputFolderPath.Replace(Application.dataPath, "Assets");
             CreateTableWindowLogic();
-            PlayerPrefs.SetString(KEY_EXCEL_FOLDER_PATH, SelectedExcelFolderPath);
+            PlayerPrefs.SetString(KEY_SCRIPT_CREATION_PATH, _selectedScriptCreationPath);
         });
         
-        GUILayout.Label(SelectedExcelFolderPath);
+        GUILayout.Label(_selectedScriptCreationPath);
         EditorGUILayout.EndHorizontal();
     }
 
@@ -138,6 +174,7 @@ internal sealed class TableWindow : EditorWindow
         EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(300));
         _searchedTableName = GUILayout.TextField(_searchedTableName);
         DrawToggleTables();
+        DrawCodeGenerator();
         DrawBakeSelectedAndBakeAll();
         DrawSelectAndDeSelectBtn();
         EditorGUILayout.EndVertical();
@@ -174,15 +211,57 @@ internal sealed class TableWindow : EditorWindow
         return tableNameLower.Contains(searchedTableNameLower);
     }
     
+    private void DrawCodeGenerator()
+    {
+        EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+        
+        GUIUtil.Btn("Code Generator Selected", () =>
+        {
+            if (_selectedTableFolderPath.IsNullOrEmpty())
+            {
+                Debug.LogError("Table directory path is empty.");
+                return;
+            }
+
+            if (_selectedScriptCreationPath.IsNullOrEmpty())
+            {
+                Debug.LogError("Script output directory path is empty.");
+                return;
+            }
+            
+            _tableCodeGenerator.Execute(_selectedTableFolderPath, _selectedScriptCreationPath, _checkToggleTables);
+        });
+        
+        GUIUtil.Btn("Code Generator All", () =>
+        {
+            if (_selectedTableFolderPath.IsNullOrEmpty())
+            {
+                Debug.LogError("Table directory path is empty.");
+                return;
+            }
+
+            if (_selectedScriptCreationPath.IsNullOrEmpty())
+            {
+                Debug.LogError("Script output directory path is empty.");
+                return;
+            }
+            
+            SetCheckToggleTables(true);
+            _tableCodeGenerator.Execute(_selectedTableFolderPath, _selectedScriptCreationPath, _checkToggleTables);
+        });
+        
+        EditorGUILayout.EndHorizontal();
+    }
+    
     private void DrawBakeSelectedAndBakeAll()
     {
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
         
-        GUIUtil.Btn("Bake Selected", () =>
+        GUIUtil.Btn("SO Generator Selected", () =>
         {
             _tableWindowLogic.BakeTable(_checkToggleTables);
         });
-        GUIUtil.Btn("Bake All", () =>
+        GUIUtil.Btn("SO Generator  All", () =>
         {
             SetCheckToggleTables(true);
             _tableWindowLogic.BakeTable(_checkToggleTables);

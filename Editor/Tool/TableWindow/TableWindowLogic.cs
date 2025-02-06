@@ -13,16 +13,20 @@ internal sealed class TableWindowLogic
 {
     internal sealed class TableInfo
     {
-        public Type TableType { get; }
-        public string TableName => TableType.Name;
-        private string KeyBakeTime => $"{nameof(TableInfo)}_{TableName}";
+        private Type _tableType;
+        public Type TableType => GetTableType();
+        public string TableName { get; }
         public string BakeTimeStr { get; private set; }
-        public bool HasTableFile { get; set; }
+        public bool HasTableFile { get; }
+        private string KeyBakeTime => $"{nameof(TableInfo)}_{TableName}";
 
-        public TableInfo(Type type)
+        public TableInfo(string tableFile, string selectedTableFolderPath)
         {
-            TableType = type;
+            TableName = Path.GetFileNameWithoutExtension(tableFile);;
             BakeTimeStr = EditorPrefs.GetString(KeyBakeTime, null);
+            
+            var tablePath = $"{selectedTableFolderPath}/{TableName}{TableWindow.TABLE_EXTENSION}";
+            HasTableFile = File.Exists(tablePath);
         }
 
         public void SetBakeTime()
@@ -30,57 +34,52 @@ internal sealed class TableWindowLogic
             BakeTimeStr = DateTime.Now.ToString();
             EditorPrefs.SetString(KeyBakeTime, BakeTimeStr);
         }
+
+        private Type GetTableType()
+        {
+            return _tableType ?? (_tableType = typeof(IBaseTable).Assembly
+                                                                 .GetExportedTypes()
+                                                                 .Where(_ => _.IsInterface == false && _.IsAbstract == false)
+                                                                 .Where(_ => typeof(IBaseTable).IsAssignableFrom(_))
+                                                                 .FirstOrDefault(_ => _.Name.Equals(TableName)));
+        }
     }
     
     public TableInfo[] TableInfos { get; private set; }
-    private string _selectedExcelFolderPath;
-    private string _selectedOutputFolderPath;
+    private string _selectedTableFolderPath;
+    private string _selectedSOCreationPath;
     
-    public bool Initialize(string selectedExcelFolderPath, string selectedOutputFolderPath)
+    public bool Initialize(string selectedTableFolderPath, string selectedSOCreationPath)
     {
-        _selectedOutputFolderPath = selectedOutputFolderPath;
-        return TrySetExcelFolderPath(selectedExcelFolderPath) && CreateTables();
+        _selectedSOCreationPath = selectedSOCreationPath;
+        return TrySetTableFolderPath(selectedTableFolderPath) && CreateTables();
     }
 
-    private bool TrySetExcelFolderPath(string excelFolderPath)
+    private bool TrySetTableFolderPath(string tableFolderPath)
     {
-        if (excelFolderPath.IsNullOrEmpty())
+        if (tableFolderPath.IsNullOrEmpty())
         {
             return false;
         }
         
-        if (!DirectoryUtil.HasFile(excelFolderPath, $"*{TableWindow.TABLE_EXTENSION}"))
+        if (!DirectoryUtil.HasFile(tableFolderPath, $"*{TableWindow.TABLE_EXTENSION}"))
         {
             Debug.LogError("No Table files found in the directory.");
             return false;
         }
         
-        _selectedExcelFolderPath = excelFolderPath;
+        _selectedTableFolderPath = tableFolderPath;
         return true;
     }
 
     private bool CreateTables()
     {
-        var types = typeof(IBaseTable).Assembly
-                                     .GetExportedTypes()
-                                     .Where(_ => _.IsInterface == false && _.IsAbstract == false)
-                                     .Where(_ => typeof(IBaseTable).IsAssignableFrom(_))
-                                     .ToArray();
-
-        if (types.IsNullOrEmpty())
+        var tableFiles = Directory.GetFiles(_selectedTableFolderPath);
+        TableInfos = new TableInfo[tableFiles.Length];
+        
+        for (var i = 0; i < tableFiles.Length; i++)
         {
-            Debug.LogError("No table classes defined.");
-            return false;
-        }
-
-        TableInfos = new TableInfo[types.Length];
-        for (var i = 0; i < types.Length; i++)
-        {
-            TableInfos[i] = new TableInfo(types[i]);
-            var tableInfo = TableInfos[i];
-            
-            var tablePath = $"{_selectedExcelFolderPath}/{tableInfo.TableName}{TableWindow.TABLE_EXTENSION}";
-            tableInfo.HasTableFile = File.Exists(tablePath);
+            TableInfos[i] = new TableInfo(tableFiles[i], _selectedTableFolderPath);
         }
 
         return true;
@@ -101,28 +100,33 @@ internal sealed class TableWindowLogic
                 continue;
             }
 
-            var tablePath = $"{_selectedExcelFolderPath}/{tableInfo.TableName}{TableWindow.TABLE_EXTENSION}";
+            var tablePath = $"{_selectedTableFolderPath}/{tableInfo.TableName}{TableWindow.TABLE_EXTENSION}";
             if (!File.Exists(tablePath))
             {
                 Debug.LogError("Table file not found.");
                 continue;
             }
         
-            var tableFileLines = File.ReadAllLines(tablePath, Encoding.UTF8);
-            if (tableFileLines.IsNullOrEmpty())
+            var tableLines = File.ReadAllLines(tablePath, Encoding.UTF8);
+            if (tableLines.IsNullOrEmpty())
             {
                 Debug.LogError("Table file is empty.");
                 continue;
             }
 
-            if (tableFileLines[1].IsNullOrEmpty())
+            if (tableLines[1].IsNullOrEmpty())
             {
                 Debug.LogError("Table file first row is empty.");
                 continue;
             }
 
-            var rows = ConvertTable(tableFileLines);
-            var createTable = GetOrCreateTable(tableInfo.TableType);
+            var rows = ConvertTable(tableLines);
+            if (!TryGetOrCreateTable(tableInfo.TableType, out var createTable))
+            {
+                Debug.LogError($"{tableInfo.TableName}.cs is not found.");
+                continue;
+            }
+            
             if (!createTable.TryParse(rows))
             {
                 continue;
@@ -144,7 +148,9 @@ internal sealed class TableWindowLogic
             var rowData = new Dictionary<string, string>();
             for (var i = 0; i < columns.Length; i++)
             {
-                rowData.Add(columns[i], rawRow[i]);
+                var column = columns[i];
+                var row = rawRow[i];
+                rowData.Add(column, row);
             }
             
             rows.Add(rowData);
@@ -153,18 +159,25 @@ internal sealed class TableWindowLogic
         return rows;
     }
     
-    private IBaseTable GetOrCreateTable(Type type)
+    private bool TryGetOrCreateTable(Type tableType, out IBaseTable refBaseTable)
     {
-        var assetPath = $"{_selectedOutputFolderPath}/{type.Name}.asset";
+        if (tableType == null)
+        {
+            refBaseTable = null;
+            return false;
+        }
+        
+        var assetPath = $"{_selectedSOCreationPath}/{tableType.Name}.asset";
         
         if (!File.Exists(assetPath))
         {
-            var instance = ScriptableObject.CreateInstance(type);
+            var instance = ScriptableObject.CreateInstance(tableType);
             AssetDatabase.CreateAsset(instance, assetPath);
         }
 
         AddAddressTable(assetPath);
-        return (IBaseTable)AssetDatabase.LoadAssetAtPath(assetPath, type);
+        refBaseTable = (IBaseTable)AssetDatabase.LoadAssetAtPath(assetPath, tableType);
+        return true;
     }
 
     private void AddAddressTable(string assetPath)

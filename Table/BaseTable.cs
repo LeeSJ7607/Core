@@ -16,7 +16,7 @@ public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
         
         try
         {
-            OnParse(JsonConvert.DeserializeObject<List<TRow>>(ser));
+            OnParse(JsonConvert.DeserializeObject<List<TRow>>(ser, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore}));
         }
         catch (Exception e)
         {
