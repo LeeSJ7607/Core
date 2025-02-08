@@ -5,9 +5,9 @@ internal sealed class TableWindow : EditorWindow
 {
     public const string TABLE_EXTENSION = ".csv";
     private const float BTN_WIDTH = 200;
-    private static readonly string KEY_TABLE_FOLDER_PATH = $"{typeof(TableWindow)}_{KEY_TABLE_FOLDER_PATH}";
-    private static readonly string KEY_SO_CREATION_PATH = $"{typeof(TableWindow)}_{KEY_SO_CREATION_PATH}";
-    private static readonly string KEY_SCRIPT_CREATION_PATH = $"{typeof(TableWindow)}_{KEY_SCRIPT_CREATION_PATH}";
+    private static readonly string KEY_TABLE_FOLDER_PATH = $"{typeof(TableWindow)}_KEY_TABLE_FOLDER_PATH";
+    private static readonly string KEY_SO_CREATION_PATH = $"{typeof(TableWindow)}_KEY_SO_CREATION_PATH";
+    private static readonly string KEY_SCRIPT_CREATION_PATH = $"{typeof(TableWindow)}_KEY_SCRIPT_CREATION_PATH";
     
     private readonly TableCodeGenerator _tableCodeGenerator = new();
     private readonly TableWindowLogic _tableWindowLogic = new();
@@ -20,6 +20,11 @@ internal sealed class TableWindow : EditorWindow
     
     [MenuItem("Custom/Window/TableWindow")]
     public static void Open()
+    {
+        Initialize();
+    }
+
+    private static void Initialize()
     {
         var tool = GetWindow<TableWindow>();
         tool._selectedTableFolderPath = EditorPrefs.GetString(KEY_TABLE_FOLDER_PATH);
@@ -112,11 +117,11 @@ internal sealed class TableWindow : EditorWindow
 
             _selectedTableFolderPath = tableFolderPath;
             CreateTableWindowLogic();
-            PlayerPrefs.SetString(KEY_TABLE_FOLDER_PATH, _selectedTableFolderPath);
+            EditorPrefs.SetString(KEY_TABLE_FOLDER_PATH, _selectedTableFolderPath);
         });
         
         GUILayout.Label(_selectedTableFolderPath);
-        GUIUtil.Btn("Refresh", 70, CreateTableWindowLogic);
+        GUIUtil.Btn("Refresh", 70, Initialize); 
         EditorGUILayout.EndHorizontal();
     }
     
@@ -135,7 +140,7 @@ internal sealed class TableWindow : EditorWindow
 
             _selectedSOCreationPath = outputFolderPath.Replace(Application.dataPath, "Assets");
             CreateTableWindowLogic();
-            PlayerPrefs.SetString(KEY_SO_CREATION_PATH, _selectedSOCreationPath);
+            EditorPrefs.SetString(KEY_SO_CREATION_PATH, _selectedSOCreationPath);
         });
         
         GUILayout.Label(_selectedSOCreationPath);
@@ -157,7 +162,7 @@ internal sealed class TableWindow : EditorWindow
 
             _selectedScriptCreationPath = outputFolderPath.Replace(Application.dataPath, "Assets");
             CreateTableWindowLogic();
-            PlayerPrefs.SetString(KEY_SCRIPT_CREATION_PATH, _selectedScriptCreationPath);
+            EditorPrefs.SetString(KEY_SCRIPT_CREATION_PATH, _selectedScriptCreationPath);
         });
         
         GUILayout.Label(_selectedScriptCreationPath);
