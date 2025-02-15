@@ -37,7 +37,7 @@ internal sealed class UIContainer
     
     private string GetFileName<TBase>() where TBase : UIBase
     {
-        var uiPathTable = AddressableManager.Instance.Get<UIPathTable>(nameof(UIPathTable));
-        return uiPathTable.GetFileName(typeof(TBase).Name);
+        var uiPathSO = AddressableManager.Instance.Get<UIPathSO>(nameof(UIPathSO));
+        return uiPathSO.GetFileName(typeof(TBase).Name);
     }
 }

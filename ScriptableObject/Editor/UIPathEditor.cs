@@ -2,18 +2,18 @@
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(UIPathTable))]
-internal sealed class EditorUIPathTable : Editor
+[CustomEditor(typeof(UIPathSO))]
+internal sealed class UIPathEditor : Editor
 {
-    private const string KEY_SELECTED_FILE_PATH = "EditorUIPathTable_SELECTED_FILE_PATH";
+    private static readonly string KEY_SELECTED_FILE_PATH = $"{typeof(UIPathEditor)}_KEY_SELECTED_FILE_PATH";
     private string _selectedFolderPath;
 
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
         
-        var pathTable = (UIPathTable)target;
-        if (pathTable == null)
+        var uiPathSo = (UIPathSO)target;
+        if (uiPathSo == null)
         {
             return;
         }
@@ -41,7 +41,7 @@ internal sealed class EditorUIPathTable : Editor
 
             if (GUILayout.Button("Clear", btnStyle))
             {
-                pathTable.Clear();
+                uiPathSo.Clear();
             }
 
             if (GUILayout.Button("Refresh", btnStyle))
@@ -55,13 +55,13 @@ internal sealed class EditorUIPathTable : Editor
 
     private void Refresh()
     {
-        var pathTable = (UIPathTable)target;
-        if (pathTable == null)
+        var uiPathSo = (UIPathSO)target;
+        if (uiPathSo == null)
         {
             return;
         }
         
-        pathTable.Clear();
+        uiPathSo.Clear();
         
         var guids = AssetDatabase.FindAssets("t:prefab", new [] { _selectedFolderPath });
         foreach (var guid in guids)
@@ -74,7 +74,7 @@ internal sealed class EditorUIPathTable : Editor
                 continue;
             }
 
-            pathTable.Add(uiBase.GetType().Name, Path.GetFileNameWithoutExtension(path));
+            uiPathSo.Add(uiBase.GetType().Name, Path.GetFileNameWithoutExtension(path));
         }
         
         EditorUtility.SetDirty(target);
