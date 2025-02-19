@@ -6,6 +6,7 @@ public enum EScene
     OutGame,
     InGame,
     Loading,
+    End,
 }
 
 internal sealed class SceneLoader

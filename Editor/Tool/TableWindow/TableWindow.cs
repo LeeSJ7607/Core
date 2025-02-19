@@ -1,8 +1,11 @@
+using System.IO;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 internal sealed class TableWindow : EditorWindow
 {
+    public const string DIRECTORY_NAME = "Table"; 
     public const string TABLE_EXTENSION = ".csv";
     private const float BTN_WIDTH = 200;
     private static readonly string KEY_TABLE_FOLDER_PATH = $"{typeof(TableWindow)}_KEY_TABLE_FOLDER_PATH";
@@ -138,13 +141,85 @@ internal sealed class TableWindow : EditorWindow
                 return;
             }
 
+            if (!outputFolderPath.Contains(DIRECTORY_NAME))
+            {
+                EditorUtility.DisplayDialog("Error", "The directory must contain the word 'Table'", "OK");
+                return;
+            }
+
+            if (!IsValidSOCreationPath(outputFolderPath))
+            {
+                EditorUtility.DisplayDialog("Invalid folder path", GetSOCreationPathExamples(), "OK");
+                return;
+            }
+            
             _selectedSOCreationPath = outputFolderPath.Replace(Application.dataPath, "Assets");
             CreateTableWindowLogic();
             EditorPrefs.SetString(KEY_SO_CREATION_PATH, _selectedSOCreationPath);
         });
         
         GUILayout.Label(_selectedSOCreationPath);
+        GUIUtil.Btn("Create Table Directory", 150, CreateTableDirectory);
         EditorGUILayout.EndHorizontal();
+    }
+    
+    private IReadOnlyList<string> GetTableDirectoryPaths()
+    {
+        var paths = new List<string>();
+        
+        for (var type = EScene.Login; type < EScene.End; type++)
+        {
+            var path = $"Assets/{DIRECTORY_NAME}/{type.ToString()}";
+            paths.Add(path);
+        }
+
+        return paths;
+    }
+
+    private void CreateTableDirectory()
+    {
+        var tableDirectoryPaths = GetTableDirectoryPaths();
+
+        foreach (var path in tableDirectoryPaths)
+        {
+            if (AssetDatabase.IsValidFolder(path))
+            {
+                continue;
+            }
+            
+            var parentFolder = Path.GetDirectoryName(path);
+            var newFolderName = Path.GetFileName(path);
+            AssetDatabase.CreateFolder(parentFolder, newFolderName);
+        }
+    }
+
+    private bool IsValidSOCreationPath(string outputFolderPath)
+    {
+        var tableDirectoryPaths = GetTableDirectoryPaths();
+
+        foreach (var path in tableDirectoryPaths)
+        {
+            if (outputFolderPath.Contains(path))
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    private string GetSOCreationPathExamples()
+    {
+        var msg = string.Empty;
+        
+        var tableDirectoryPaths = GetTableDirectoryPaths();
+
+        foreach (var path in tableDirectoryPaths)
+        {
+            msg += $"ex: {path}\n";
+        }
+
+        return msg;
     }
     
     private void DrawScriptCreationPath()
@@ -224,13 +299,13 @@ internal sealed class TableWindow : EditorWindow
         {
             if (_selectedTableFolderPath.IsNullOrEmpty())
             {
-                Debug.LogError("Table directory path is empty.");
+                EditorUtility.DisplayDialog("Error", "Table directory path is empty.", "OK");
                 return;
             }
 
             if (_selectedScriptCreationPath.IsNullOrEmpty())
             {
-                Debug.LogError("Script output directory path is empty.");
+                EditorUtility.DisplayDialog("Error", "Script output directory path is empty.", "OK");
                 return;
             }
             
@@ -241,13 +316,13 @@ internal sealed class TableWindow : EditorWindow
         {
             if (_selectedTableFolderPath.IsNullOrEmpty())
             {
-                Debug.LogError("Table directory path is empty.");
+                EditorUtility.DisplayDialog("Error", "Table directory path is empty.", "OK");
                 return;
             }
 
             if (_selectedScriptCreationPath.IsNullOrEmpty())
             {
-                Debug.LogError("Script output directory path is empty.");
+                EditorUtility.DisplayDialog("Error", "Script output directory path is empty.", "OK");
                 return;
             }
             
@@ -266,7 +341,7 @@ internal sealed class TableWindow : EditorWindow
         {
             _tableWindowLogic.BakeTable(_checkToggleTables);
         });
-        GUIUtil.Btn("SO Generator  All", () =>
+        GUIUtil.Btn("SO Generator All", () =>
         {
             SetCheckToggleTables(true);
             _tableWindowLogic.BakeTable(_checkToggleTables);

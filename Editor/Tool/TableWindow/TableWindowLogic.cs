@@ -166,35 +166,40 @@ internal sealed class TableWindowLogic
             refBaseTable = null;
             return false;
         }
+
+        DeleteExistingTableAsset(tableType);
         
         var assetPath = $"{_selectedSOCreationPath}/{tableType.Name}.asset";
-        
-        if (!File.Exists(assetPath))
-        {
-            var instance = ScriptableObject.CreateInstance(tableType);
-            AssetDatabase.CreateAsset(instance, assetPath);
-        }
-
+        AssetDatabase.CreateAsset(ScriptableObject.CreateInstance(tableType), assetPath);
         AddAddressTable(assetPath);
         refBaseTable = (IBaseTable)AssetDatabase.LoadAssetAtPath(assetPath, tableType);
         return true;
     }
 
+    private void DeleteExistingTableAsset(Type tableType)
+    {
+        var guids = AssetDatabase.FindAssets($"t:ScriptableObject {tableType.Name}");
+        
+        foreach (var guid in guids)
+        {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            AssetDatabase.DeleteAsset(path);
+        }
+    }
+
     private void AddAddressTable(string assetPath)
     {
         var settings = AddressableAssetSettingsDefaultObject.Settings;
-        var group = GetOrCreateGroup();
-        var entry = settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(assetPath), group, false, false);
-        var fileName = Path.GetFileNameWithoutExtension(assetPath);
-        
-        entry.SetAddress(fileName);
+        var addressableAssetGroup = GetOrCreateAddressAssetGroup();
+        var entry = settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(assetPath), addressableAssetGroup, false, false);
+        entry.SetLabel(Path.GetFileName(_selectedSOCreationPath), true, true);
+        entry.SetAddress(Path.GetFileNameWithoutExtension(assetPath));
         settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, entry, true);
     }
 
-    private AddressableAssetGroup GetOrCreateGroup()
+    private AddressableAssetGroup GetOrCreateAddressAssetGroup()
     {
-        const string groupName = "Table";
-        var groupPath = $"Assets/AddressableAssetsData/AssetGroups/{groupName}.asset";
+        var groupPath = $"Assets/AddressableAssetsData/AssetGroups/{TableWindow.DIRECTORY_NAME}.asset";
         
         if (File.Exists(groupPath))
         {
@@ -202,7 +207,7 @@ internal sealed class TableWindowLogic
         }
 
         var group = ScriptableObject.CreateInstance<AddressableAssetGroup>();
-        group.Name = groupName;
+        group.Name = TableWindow.DIRECTORY_NAME;
         group.AddSchema<BundledAssetGroupSchema>();
         group.AddSchema<ContentUpdateGroupSchema>();
         AssetDatabase.CreateAsset(group, groupPath);
