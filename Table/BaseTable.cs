@@ -5,11 +5,14 @@ using UnityEngine;
 
 public interface IBaseTable
 {
+    bool IsReleaseAble { get; set; }
     bool TryParse(IReadOnlyList<Dictionary<string, string>> rows);
 }
 
 public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
 {
+    bool IBaseTable.IsReleaseAble { get; set; }
+
     public bool TryParse(IReadOnlyList<Dictionary<string, string>> rows)
     {
         var ser = JsonConvert.SerializeObject(rows);

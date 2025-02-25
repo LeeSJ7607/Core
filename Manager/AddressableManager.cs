@@ -42,6 +42,7 @@ internal sealed class AddressableManager : Singleton<AddressableManager>
             _resMap.TryAdd(obj.name, obj);
         }
         
+        //TODO: 바로 해제 하는 게 맞나? 어드레서블 프로파일러 확인 필요.
         Addressables.Release(handle);
     }
 }

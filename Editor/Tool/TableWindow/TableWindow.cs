@@ -5,7 +5,7 @@ using UnityEngine;
 
 internal sealed class TableWindow : EditorWindow
 {
-    public const string DIRECTORY_NAME = "Table"; 
+    public const string ASSET_GROUP_NAME = "Table";
     public const string TABLE_EXTENSION = ".csv";
     private const float BTN_WIDTH = 200;
     private static readonly string KEY_TABLE_FOLDER_PATH = $"{typeof(TableWindow)}_KEY_TABLE_FOLDER_PATH";
@@ -141,7 +141,7 @@ internal sealed class TableWindow : EditorWindow
                 return;
             }
 
-            if (!outputFolderPath.Contains(DIRECTORY_NAME))
+            if (!outputFolderPath.Contains(ASSET_GROUP_NAME))
             {
                 EditorUtility.DisplayDialog("Error", "The directory must contain the word 'Table'", "OK");
                 return;
@@ -165,14 +165,18 @@ internal sealed class TableWindow : EditorWindow
     
     private IReadOnlyList<string> GetTableDirectoryPaths()
     {
-        var paths = new List<string>();
-        
+        var rootPath = $"Assets/{ASSET_GROUP_NAME}";
+        var paths = new List<string>
+        {
+            $"{rootPath}/{AddressConst.COMMON_GROUP_NAME}"
+        };
+
         for (var type = EScene.Login; type < EScene.End; type++)
         {
-            var path = $"Assets/{DIRECTORY_NAME}/{type.ToString()}";
+            var path = $"{rootPath}/{type.ToString()}";
             paths.Add(path);
         }
-
+        
         return paths;
     }
 

@@ -173,6 +173,10 @@ internal sealed class TableWindowLogic
         AssetDatabase.CreateAsset(ScriptableObject.CreateInstance(tableType), assetPath);
         AddAddressTable(assetPath);
         refBaseTable = (IBaseTable)AssetDatabase.LoadAssetAtPath(assetPath, tableType);
+
+        var tableDirectoryName = Path.GetFileName(_selectedSOCreationPath);
+        refBaseTable.IsReleaseAble = !tableDirectoryName.Equals(AddressConst.COMMON_GROUP_NAME);
+        
         return true;
     }
 
@@ -194,12 +198,12 @@ internal sealed class TableWindowLogic
         var entry = settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(assetPath), addressableAssetGroup, false, false);
         entry.SetLabel(Path.GetFileName(_selectedSOCreationPath), true, true);
         entry.SetAddress(Path.GetFileNameWithoutExtension(assetPath));
-        settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, entry, true);
+        settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryAdded, entry, true);
     }
 
     private AddressableAssetGroup GetOrCreateAddressAssetGroup()
     {
-        var groupPath = $"Assets/AddressableAssetsData/AssetGroups/{TableWindow.DIRECTORY_NAME}.asset";
+        var groupPath = $"Assets/AddressableAssetsData/AssetGroups/{TableWindow.ASSET_GROUP_NAME}.asset";
         
         if (File.Exists(groupPath))
         {
@@ -207,7 +211,7 @@ internal sealed class TableWindowLogic
         }
 
         var group = ScriptableObject.CreateInstance<AddressableAssetGroup>();
-        group.Name = TableWindow.DIRECTORY_NAME;
+        group.Name = TableWindow.ASSET_GROUP_NAME;
         group.AddSchema<BundledAssetGroupSchema>();
         group.AddSchema<ContentUpdateGroupSchema>();
         AssetDatabase.CreateAsset(group, groupPath);
