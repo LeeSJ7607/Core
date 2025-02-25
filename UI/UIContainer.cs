@@ -32,7 +32,7 @@ internal sealed class UIContainer
         }
         
         Debug.LogError($"Resource: {res}, UIBase Component Confirm Required");
-        return default;
+        return null;
     }
     
     private string GetFileName<TBase>() where TBase : UIBase
