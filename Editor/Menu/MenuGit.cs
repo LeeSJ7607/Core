@@ -2,14 +2,14 @@
 using System.Diagnostics;
 using UnityEditor;
 
-public sealed class MenuGit
+internal sealed class MenuGit
 {
     private const string SSH_CORE_GIT = "git@github.com:LeeSJ7607/Core.git";
     private const string HTTPS_CORE_GIT = "https://github.com/LeeSJ7607/Core.git";
     private const string CORE_FOLDER_PATH = "Assets/Scripts/Core";
     
     [MenuItem("Custom/Menu/Git/Clone Core")]
-    public static void CloneCore()
+    private static void CloneCore()
     {
         if (!TryCloneCore())
         {
