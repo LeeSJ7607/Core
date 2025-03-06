@@ -1,41 +1,51 @@
+using UnityEngine;
+
 internal class BTSelector : BTComposite
 {
+    private EBTStatus? _curStatus;
     protected int _curTaskIdx;
-    
-    protected virtual void ResetTaskIdx()
+
+    protected virtual void Reset()
     {
+        _curStatus = null;
         _curTaskIdx = 0;
     }
-    
+
     protected virtual void MoveToNextTask()
     {
         ++_curTaskIdx;
     }
     
-    public override Status Update()
+    public override EBTStatus OnUpdate(BTBoard board)
     {
-        ResetTaskIdx();
-
+        Reset();
+        
         while (_curTaskIdx < _nodes.Count)
         {
             var curTask = _nodes[_curTaskIdx];
-            var status = curTask.Update();
-
-            if (status == Status.Running)
+            Debug.Log($"Selector: {curTask.GetType().Name}");
+            
+            if (_curStatus == null)
             {
-                continue;
+                curTask.OnBegin(board);
+            }
+            
+            _curStatus = curTask.OnUpdate(board);
+
+            if (_curStatus == EBTStatus.Running)
+            {
+                return EBTStatus.Running;
             }
 
-            if (status == Status.Success)
-            {
-                ResetTaskIdx();
-                return Status.Success;
-            }
-
-            curTask.End();
+            curTask.OnEnd(board);
             MoveToNextTask();
+
+            if (_curStatus.Value == EBTStatus.Success)
+            {
+                return EBTStatus.Success;
+            }
         }
 
-        return Status.Failure;
+        return EBTStatus.Failure;
     }
 }

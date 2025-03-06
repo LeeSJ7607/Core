@@ -1,7 +1,21 @@
 internal sealed class BTAction_Attack : BTNode
 {
-    public override Status Update()
+    public override EBTStatus OnUpdate(BTBoard board)
     {
-        return Status.Running;
+        var target = board.TargetController.Target;
+        if (target == null || target.IsDead)
+        {
+            return EBTStatus.Success;
+        }
+
+        var attackController = board.AttackController;
+        if (!attackController.IsTargetInRange(target.transform.position))
+        {
+            return EBTStatus.Failure;
+        }
+
+        board.AnimatorController.SetState(EAnimState.Attack);
+        attackController.Attack(target);
+        return EBTStatus.Running;
     }
 }

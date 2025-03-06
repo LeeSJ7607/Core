@@ -3,24 +3,26 @@ using System.Collections.Generic;
 internal interface IBTComposite
 {
     IBTComposite AddNode(BTNode node);
-    void Execute();
+    EBTStatus? Update(BTBoard board);
 }
 
 internal abstract class BTComposite : BTNode, IBTComposite
 {
     protected readonly List<BTNode> _nodes = new();
-    
+
     IBTComposite IBTComposite.AddNode(BTNode node)
     {
         _nodes.Add(node);
         return this;
     }
 
-    void IBTComposite.Execute()
+    EBTStatus? IBTComposite.Update(BTBoard board)
     {
-        if (!_nodes.IsNullOrEmpty())
+        if (_nodes.IsNullOrEmpty())
         {
-            Update();
+            return null;
         }
+        
+        return OnUpdate(board);
     }
 }

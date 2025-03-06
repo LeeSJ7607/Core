@@ -3,7 +3,7 @@ using UnityEngine;
 
 internal sealed class MathUtil
 {
-    public static Vector3 CalcRandomPos(Vector3 pos, float radius)
+    public static Vector3 GetRandomPositionInRadius(Vector3 pos, float radius)
     {
         var dist = Random.insideUnitCircle * radius;
         return pos + new Vector3(dist.x, 0, dist.y);

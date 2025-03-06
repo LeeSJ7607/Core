@@ -3,9 +3,10 @@ using System.Collections.Generic;
 internal sealed class BTRandomSelector : BTSelector
 {
     private readonly HashSet<int> _taskIdxList = new();
-    
-    protected override void ResetTaskIdx()
+
+    protected override void Reset()
     {
+        base.Reset();
         _taskIdxList.Clear();
         _curTaskIdx = RandomTaskIdx();
     }

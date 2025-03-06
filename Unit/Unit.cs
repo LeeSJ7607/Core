@@ -1,16 +1,44 @@
 using UnityEngine;
+using UnityEngine.AI;
 
-public abstract class Unit : MonoBehaviour
+public interface IAttacker
 {
-    private IBTComposite _btRoot;
-    
+    bool IsAttackable { get; set; }
+}
+
+public interface IDefender
+{
+    void Hit(int damage);
+}
+
+[RequireComponent(typeof(NavMeshAgent))]
+public abstract class Unit : MonoBehaviour,
+    IAttacker,
+    IDefender
+{
+    bool IAttacker.IsAttackable { get; set; }
+    public bool IsDead => true;
+    public AnimatorController AnimatorController { get; private set; }
+    private UnitAIController _unitAIController;
+
     protected virtual void Awake()
     {
-        //TODO: 툴에서 제작한 BT를 가져와 설정을 해야함.
-        _btRoot = new BTSelector();
-        _btRoot.AddNode(new BTAction_Attack())
-               .AddNode(new BTAction_Chase());
-        
-        _btRoot.Execute();
+        _unitAIController = new UnitAIController(this);
+        AnimatorController = new AnimatorController(GetComponent<Animator>());
+    }
+
+    private void Update()
+    {
+        OnUpdate();
+    }
+
+    protected virtual void OnUpdate()
+    {
+        _unitAIController.OnUpdate();
+    }
+
+    void IDefender.Hit(int damage)
+    {
+        AnimatorController.SetState(EAnimState.Hit);
     }
 }

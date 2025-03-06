@@ -1,12 +1,6 @@
 public abstract class BTNode
 {
-    public enum Status
-    {
-        Success,
-        Failure,
-        Running
-    }
-    
-    public abstract Status Update();
-    public virtual void End() { }
+    public virtual void OnBegin(BTBoard board) { }
+    public abstract EBTStatus OnUpdate(BTBoard board);
+    public virtual void OnEnd(BTBoard board) { }
 }
