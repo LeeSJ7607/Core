@@ -13,8 +13,7 @@ internal sealed class BTAction_Attack : BTNode
         {
             return EBTStatus.Failure;
         }
-
-        board.AnimatorController.SetState(EAnimState.Attack);
+        
         attackController.Attack(target);
         return EBTStatus.Running;
     }

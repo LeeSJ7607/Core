@@ -1,3 +1,10 @@
+public enum EBTStatus
+{
+    Success,
+    Failure,
+    Running
+}
+
 public abstract class BTNode
 {
     public virtual void OnBegin(BTBoard board) { }
