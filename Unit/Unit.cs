@@ -21,12 +21,15 @@ public abstract class Unit : MonoBehaviour,
     bool IAttacker.IsAttackable { get; set; }
     int IAttacker.Damage => 100;
     Transform IDefender.Tm => transform;
-    public bool IsDead => true;
-    public AnimatorController AnimatorController { get; private set; } //TODO: 한 군데에서만 처리하고 싶은데.. public 으로 해야하나..
+    public bool IsDead => _stat[EStat.HP] <= 0;
+    private EFaction _factionType;
+    private Stat _stat;
     private UnitAIController _unitAIController;
-
+    public AnimatorController AnimatorController { get; private set; } //TODO: 한 군데에서만 처리하고 싶은데.. public 으로 해야하나..
+    
     protected virtual void Awake()
     {
+        _stat = new Stat(this);
         _unitAIController = new UnitAIController(this);
         AnimatorController = new AnimatorController(GetComponent<Animator>());
     }
@@ -41,8 +44,26 @@ public abstract class Unit : MonoBehaviour,
         _unitAIController.OnUpdate();
     }
 
+    public void Initialize(EFaction factionType)
+    {
+        _factionType = factionType;
+    }
+
     void IDefender.Hit(int damage)
     {
-        AnimatorController.SetState(EAnimState.Hit);
+        _stat[EStat.HP] -= damage;
+        //_uiUnit.HPAndDamage(_stat, damage_);
+        AnimatorController.SetState(IsDead ? EAnimState.Die : EAnimState.Hit);
+        
+        // if (IsDead)
+        // {
+        //     SpawnedUnitContainer.Instance.Remove(this);
+        // }
+    }
+    
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        GizmosUtil.DrawFOV(transform, 5f, 30f);
     }
 }

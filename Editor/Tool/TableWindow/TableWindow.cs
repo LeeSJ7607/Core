@@ -182,8 +182,13 @@ internal sealed class TableWindow : EditorWindow
 
     private void CreateTableDirectory()
     {
+        var rootPath = $"Assets/{ASSET_GROUP_NAME}";
+        if (!AssetDatabase.IsValidFolder(rootPath))
+        {
+            AssetDatabase.CreateFolder("Assets", ASSET_GROUP_NAME);
+        }
+        
         var tableDirectoryPaths = GetTableDirectoryPaths();
-
         foreach (var path in tableDirectoryPaths)
         {
             if (AssetDatabase.IsValidFolder(path))

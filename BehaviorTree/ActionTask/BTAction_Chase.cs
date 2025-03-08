@@ -3,7 +3,7 @@ internal sealed class BTAction_Chase : BTNode
     public override EBTStatus OnUpdate(BTBoard board)
     {
         var target = board.TargetController.Target;
-        if (target == null || target.IsDead)
+        if (target.IsDead)
         {
             return EBTStatus.Failure;
         }

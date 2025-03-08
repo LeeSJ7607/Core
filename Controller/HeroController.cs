@@ -3,11 +3,13 @@
 public sealed class HeroController
 {
     private readonly Unit _hero;
+    private readonly MoveController _moveController;
     private readonly Camera _mainCam;
     
     public HeroController(Unit hero)
     {
         _hero = hero;
+        _moveController = new MoveController(hero);
         _mainCam = Camera.main ?? throw new System.NullReferenceException("Main camera is missing.");
     }
 
@@ -32,6 +34,8 @@ public sealed class HeroController
         {
             return;
         }
+        
+        _moveController.MoveTo(pos);
     }
 
     private bool TryGetHitPoint(out Vector3 pos)

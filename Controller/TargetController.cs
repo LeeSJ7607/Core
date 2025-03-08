@@ -1,7 +1,7 @@
 ﻿public sealed class TargetController
 {
     public Unit Target { get; private set; }
-    private readonly SeekImpl _seekImpl = new();
+    private readonly Seeker _seeker = new();
     private readonly Unit _owner;
     
     public TargetController(Unit owner)
@@ -11,7 +11,7 @@
     
     public bool TryFindTarget(ESeekRule seekRule = ESeekRule.NearestEnemy)
     {
-        var targets = _seekImpl[seekRule].Seek(_owner);
+        var targets = _seeker[seekRule].Seek(_owner);
         if (targets == null)
         {
             return false;

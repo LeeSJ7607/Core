@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public sealed class SeekImpl
+public sealed class Seeker
 {
     private readonly ISeeker[] _seekers = new ISeeker[(int)ESeekRule.End]
     {
