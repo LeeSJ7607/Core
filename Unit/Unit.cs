@@ -25,13 +25,21 @@ public abstract class Unit : MonoBehaviour,
     private EFaction _factionType;
     private Stat _stat;
     private UnitAIController _unitAIController;
+    private DeadController _deadController;
     public AnimatorController AnimatorController { get; private set; } //TODO: 한 군데에서만 처리하고 싶은데.. public 으로 해야하나..
     
     protected virtual void Awake()
     {
         _stat = new Stat(this);
         _unitAIController = new UnitAIController(this);
+        _deadController = new DeadController(this);
         AnimatorController = new AnimatorController(GetComponent<Animator>());
+    }
+
+    private void OnDisable()
+    {
+        _deadController.Release();
+        AnimatorController.Release();
     }
 
     private void Update()
@@ -42,11 +50,15 @@ public abstract class Unit : MonoBehaviour,
     protected virtual void OnUpdate()
     {
         _unitAIController.OnUpdate();
+        AnimatorController.OnUpdate();
     }
 
     public void Initialize(EFaction factionType)
     {
         _factionType = factionType;
+        _unitAIController.Initialize();
+        _deadController.Initialize();
+        AnimatorController.Initialize();
     }
 
     void IDefender.Hit(int damage)

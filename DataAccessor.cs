@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-public static class DataAccessor
+﻿public static class DataAccessor
 {
     public static T GetModel<T>() where T : IModel
     {

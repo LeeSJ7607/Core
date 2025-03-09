@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using R3;
+using UnityEngine;
 
 public enum EAnimState
 {
@@ -13,32 +14,39 @@ public enum EAnimState
 
 public sealed class AnimatorController
 {
+    public Observable<EAnimState> OnAnimStateExit => _onAnimStateExit;
+    private readonly ReactiveCommand<EAnimState> _onAnimStateExit = new();
     private readonly int[] _stateHash = new int[(int)EAnimState.End];
     private readonly Animator _animator;
-    //private EAnimState _curAnimState;
     
     public AnimatorController(Animator animator)
     {
         _animator = animator;
         _animator.AddComponent<AnimationEventReceiver>();
+    }
+
+    public void Release()
+    {
+        _onAnimStateExit.Dispose(); 
+    }
+
+    public void Initialize()
+    {
         InitStateHash();
     }
-    
-    // public void OnUpdate()
-    // {
-    //     if (_curAnimState != EAnimatorState.Die)
-    //     {
-    //         return;
-    //     }
-    //     
-    //     if (_animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
-    //     {
-    //         return;
-    //     }
-    //
-    //     _onStateExit.Execute(_curAnimState);
-    // }
 
+    public void OnUpdate()
+    {
+        var stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.normalizedTime < 1f)
+        {
+            return;
+        }
+
+        var animState = GetStateFromHash(stateInfo.shortNameHash);
+        _onAnimStateExit.Execute(animState);
+    }
+    
     private void InitStateHash()
     {
         var i = 0;
@@ -49,10 +57,23 @@ public sealed class AnimatorController
             i++;
         }
     }
+
+    private EAnimState GetStateFromHash(int hash)
+    {
+        for (var i = 0; i < _stateHash.Length; i++)
+        {
+            if (_stateHash[i] == hash)
+            {
+                return (EAnimState)i;
+            }
+        }
+        
+        Debug.LogError($"Not found state hash: {hash}");
+        return EAnimState.End;
+    }
     
     public void SetState(EAnimState state, float value = 0f)
     {
-        //_curAnimState = state;
         var stateHash = _stateHash[(int)state];
 
         if (state == EAnimState.Walk)
