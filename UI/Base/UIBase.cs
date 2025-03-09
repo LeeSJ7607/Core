@@ -3,8 +3,8 @@ using UnityEngine;
 
 public abstract class UIBase : MonoBehaviour
 {
-    protected readonly CompositeDisposable _disposable = new();
     public bool ActiveSelf { get; private set; }
+    protected readonly CompositeDisposable _disposable = new();
     
     protected virtual void OnDestroy()
     {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 internal sealed class ModelManager : Singleton<ModelManager>
 {
-    private readonly Dictionary<Type, IReadOnlyModel> _modelMap = new()
+    private readonly Dictionary<Type, IModel> _modelMap = new()
     {
         { typeof(CMUser), new CMUser() },
         { typeof(CMRanking), new CMRanking() },
@@ -46,9 +46,9 @@ internal sealed class ModelManager : Singleton<ModelManager>
         }
     }
     
-    private IReadOnlyDictionary<Type, IReadOnlyModel> CalcLoadModels()
+    private IReadOnlyDictionary<Type, IModel> CalcLoadModels()
     {
-        var dic = new Dictionary<Type, IReadOnlyModel>();
+        var dic = new Dictionary<Type, IModel>();
         
         foreach (var (type, model) in _modelMap)
         {
@@ -69,14 +69,14 @@ internal sealed class ModelManager : Singleton<ModelManager>
         }
     }
 
-    public TModel Get<TModel>() where TModel : Model
+    public TModel Get<TModel>() where TModel : IModel
     {
         if (_modelMap.TryGetValue(typeof(TModel), out var model))
         {
-            return model as TModel;
+            return (TModel)model;
         }
 
         Debug.LogError($"Not Found Model: {typeof(TModel)}");
-        return null;
+        return default;
     }
 }

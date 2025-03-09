@@ -37,10 +37,10 @@ internal sealed class TableWindowLogic
 
         private Type GetTableType()
         {
-            return _tableType ?? (_tableType = typeof(IBaseTable).Assembly
+            return _tableType ?? (_tableType = typeof(ITable).Assembly
                                                                  .GetExportedTypes()
                                                                  .Where(_ => _.IsInterface == false && _.IsAbstract == false)
-                                                                 .Where(_ => typeof(IBaseTable).IsAssignableFrom(_))
+                                                                 .Where(_ => typeof(ITable).IsAssignableFrom(_))
                                                                  .FirstOrDefault(_ => _.Name.Equals(TableName)));
         }
     }
@@ -159,11 +159,11 @@ internal sealed class TableWindowLogic
         return rows;
     }
     
-    private bool TryGetOrCreateTable(Type tableType, out IBaseTable refBaseTable)
+    private bool TryGetOrCreateTable(Type tableType, out ITable refTable)
     {
         if (tableType == null)
         {
-            refBaseTable = null;
+            refTable = null;
             return false;
         }
 
@@ -172,10 +172,10 @@ internal sealed class TableWindowLogic
         var assetPath = $"{_selectedSOCreationPath}/{tableType.Name}.asset";
         AssetDatabase.CreateAsset(ScriptableObject.CreateInstance(tableType), assetPath);
         AddAddressTable(assetPath);
-        refBaseTable = (IBaseTable)AssetDatabase.LoadAssetAtPath(assetPath, tableType);
+        refTable = (ITable)AssetDatabase.LoadAssetAtPath(assetPath, tableType);
 
         var tableDirectoryName = Path.GetFileName(_selectedSOCreationPath);
-        refBaseTable.IsReleaseAble = !tableDirectoryName.Equals(AddressConst.COMMON_GROUP_NAME);
+        refTable.IsReleaseAble = !tableDirectoryName.Equals(AddressConst.COMMON_GROUP_NAME);
         
         return true;
     }

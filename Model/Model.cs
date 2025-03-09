@@ -1,36 +1,36 @@
 ﻿using UnityEngine;
 
-internal interface IReadOnlyModel
+public interface IModel
 {
     void Release();
     void Initialize();
     void Update();
     void Save();
-    bool TryLoad(out IReadOnlyModel refModel);
+    bool TryLoad(out IModel refModel);
 }
 
-public abstract class Model : IReadOnlyModel
+public abstract class Model : IModel
 {
     private bool _canSave;
     
     protected abstract void OnRelease();
     
-    void IReadOnlyModel.Release()
+    void IModel.Release()
     {
         OnRelease();
     }
 
-    void IReadOnlyModel.Initialize()
+    void IModel.Initialize()
     {
         OnInitialize();
     }
     
-    void IReadOnlyModel.Update()
+    void IModel.Update()
     {
         OnUpdate();
     }
     
-    void IReadOnlyModel.Save()
+    void IModel.Save()
     {
         if (_canSave)
         {
@@ -38,11 +38,11 @@ public abstract class Model : IReadOnlyModel
         }
     }
 
-    bool IReadOnlyModel.TryLoad(out IReadOnlyModel refModel)
+    bool IModel.TryLoad(out IModel refModel)
     {
         var type = GetType();
         var filePath = $"{CalcSavePath()}/{type.Name}";
-        var model = (IReadOnlyModel)FileUtil.LoadFromJson(filePath, type);
+        var model = (IModel)FileUtil.LoadFromJson(filePath, type);
 
         refModel = model;
         return model != null;

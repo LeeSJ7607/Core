@@ -5,7 +5,7 @@ using UnityEngine;
 
 internal sealed class TableManager : Singleton<TableManager> 
 {
-    private readonly Dictionary<Type, IBaseTable> _tableMap = new();
+    private readonly Dictionary<Type, ITable> _tableMap = new();
 
     public void Release()
     {
@@ -19,7 +19,7 @@ internal sealed class TableManager : Singleton<TableManager>
         }
     }
 
-    public T Get<T>() where T : IBaseTable
+    public T Get<T>() where T : ITable
     {
         var type = typeof(T);
 
@@ -31,10 +31,10 @@ internal sealed class TableManager : Singleton<TableManager>
         return Create<T>();
     }
 
-    private T Create<T>() where T : IBaseTable
+    private T Create<T>() where T : ITable
     {
         var type = typeof(T);
-        var res = (IBaseTable)AddressableManager.Instance.Get<ScriptableObject>(type.Name);
+        var res = (ITable)AddressableManager.Instance.Get<ScriptableObject>(type.Name);
         _tableMap.Add(type, res);
 
         return (T)res;

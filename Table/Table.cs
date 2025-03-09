@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 
-public interface IBaseTable
+public interface ITable
 {
     bool IsReleaseAble { get; set; }
     bool TryParse(IReadOnlyList<Dictionary<string, string>> rows);
 }
 
-public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
+public abstract class Table<TRow> : ScriptableObject, ITable
 {
-    bool IBaseTable.IsReleaseAble { get; set; }
+    bool ITable.IsReleaseAble { get; set; }
 
     public bool TryParse(IReadOnlyList<Dictionary<string, string>> rows)
     {
@@ -29,6 +29,6 @@ public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
 
         return true;
     }
-
+    
     protected abstract void OnParse(List<TRow> rows);
 }

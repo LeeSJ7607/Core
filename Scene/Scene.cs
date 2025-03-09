@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-internal abstract class BaseScene : MonoBehaviour
+internal abstract class Scene : MonoBehaviour
 {
     protected readonly SceneLoader _sceneLoader = new();
     

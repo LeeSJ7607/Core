@@ -2,7 +2,7 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-internal sealed class LoadingScene : BaseScene
+internal sealed class LoadingScene : Scene
 {
     protected override async UniTask Start()
     {
