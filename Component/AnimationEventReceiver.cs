@@ -1,16 +1,19 @@
-﻿using UnityEngine;
+﻿using R3;
+using UnityEngine;
 
+//TODO: 구조 한번 생각해봐야함.
 public sealed class AnimationEventReceiver : MonoBehaviour
 {
-    private IAttacker _attacker;
+    public Observable<AnimationEvent> OnAttack => _onAttack;
+    private readonly ReactiveCommand<AnimationEvent> _onAttack = new();
 
-    private void Awake()
+    private void OnDisable()
     {
-        _attacker = GetComponent<IAttacker>();
+        _onAttack.Dispose();
     }
 
     private void Attack(AnimationEvent animationEvent)
     {
-        _attacker.IsAttackable = true;
+        _onAttack.Execute(animationEvent);
     }
 }
