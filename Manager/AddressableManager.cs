@@ -13,14 +13,16 @@ internal sealed class AddressableManager : Singleton<AddressableManager>
         _resMap.Clear();
     }
 
-    public TObject Get<TObject>(string name) where TObject : UnityEngine.Object
+    public TObject Get<TObject>(string name = null) where TObject : UnityEngine.Object
     {
-        if (_resMap.TryGetValue(name, out var obj))
+        var key = name ?? typeof(TObject).Name;
+        
+        if (_resMap.TryGetValue(key, out var obj))
         {
             return obj as TObject;
         }
         
-        Debug.LogError($"{name} is Not Found Resource");
+        Debug.LogError($"{key} is Not Found Resource");
         return null;
     }
 
