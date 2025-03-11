@@ -2,19 +2,18 @@
 
 public sealed class DeadController
 {
-    private readonly Unit _unit;
+    private readonly Unit _owner;
     private readonly AnimatorController _animatorController;
     private readonly CompositeDisposable _disposable = new();
     
-    public DeadController(Unit unit)
+    public DeadController(Unit owner)
     {
-        _unit = unit;
-        _animatorController = unit.AnimatorController;
-    }
-    
-    public void Release()
-    {
-        _disposable.Dispose();
+        _owner = owner;
+        _animatorController = owner.AnimatorController;
+        
+        owner.OnRelease
+             .Subscribe(_ => _disposable.Dispose())
+             .AddTo(_disposable);
     }
     
     public void Initialize()

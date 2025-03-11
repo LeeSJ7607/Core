@@ -18,15 +18,20 @@ public sealed class AnimatorController
     private readonly ReactiveCommand<EAnimState> _onAnimStateExit = new();
     private readonly int[] _stateHash = new int[(int)EAnimState.End];
     private readonly Animator _animator;
+    private readonly CompositeDisposable _disposable = new();
     
-    public AnimatorController(Animator animator)
+    public AnimatorController(Unit owner)
     {
-        _animator = animator;
-        _animator.AddComponent<AnimationEventReceiver>();
+        _animator = owner.GetComponent<Animator>();
+        
+        owner.OnRelease
+             .Subscribe(_ => Release())
+             .AddTo(_disposable);
     }
 
-    public void Release()
+    private void Release()
     {
+        _disposable.Dispose();
         _onAnimStateExit.Dispose(); 
     }
 
