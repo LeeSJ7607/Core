@@ -41,6 +41,12 @@ public sealed class ObjectPool<T> : MonoBehaviour
     private int _maxHidePoolCount;
     private Transform _root;
 
+    private void OnDestroy()
+    {
+        _tokenSource.Cancel();
+        _tokenSource.Dispose();
+    }
+
     private void OnDisable()
     {
         _tokenSource.Cancel();
