@@ -17,6 +17,7 @@ public sealed class UnitUI
     public void Initialize()
     {
         _unitHealthUI.Initialize();
+        _unitDamageUI.Initialize();
     }
 
     public void OnUpdate()
