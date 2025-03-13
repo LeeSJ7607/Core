@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-internal sealed class BTAction_Roaming : BTNode
+internal sealed class BTAction_Patrol : BTNode
 {
     private const float _radius = 3f; //TODO: 외부에서 값을 받아와야함.
     private Vector3 _originPos;
@@ -19,13 +19,6 @@ internal sealed class BTAction_Roaming : BTNode
             SetTargetPos();
         }
 
-        var targetController = board.TargetController;
-        if (!targetController.TryFindTarget())
-        {
-            return EBTStatus.Running;
-        }
-
-        board.MoveController.MoveTo(targetController.Target.transform.position);
         return EBTStatus.Success;
 
     }

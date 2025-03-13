@@ -6,6 +6,7 @@ public sealed class BTBoard
     public TargetController TargetController { get; }
     public AttackController AttackController { get; }
     public Vector3 OwnerPos { get; }
+    public Unit Target => TargetController.Target;
 
     public BTBoard(Unit unit)
     {

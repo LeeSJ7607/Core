@@ -9,12 +9,12 @@ internal sealed class BTAction_Attack : BTNode
         }
 
         var attackController = board.AttackController;
-        if (!attackController.IsTargetInRange(target.transform.position))
+        if (attackController.IsTargetInRange(target.transform.position))
         {
-            return EBTStatus.Failure;
+            attackController.Attack(target);
+            return EBTStatus.Running;
         }
         
-        attackController.Attack(target);
-        return EBTStatus.Running;
+        return EBTStatus.Failure;
     }
 }
