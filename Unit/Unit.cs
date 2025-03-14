@@ -14,7 +14,7 @@ public interface IDefender
     void Hit(int damage);
 }
 
-[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(NavMeshAgent), typeof(AnchorNode))]
 public abstract class Unit : MonoBehaviour,
     IAttacker, //TODO: 이 인터페이스를 잘 활용해보자. 필요한지 부터.
     IDefender  //TODO: 이 인터페이스를 잘 활용해보자. 필요한지 부터.

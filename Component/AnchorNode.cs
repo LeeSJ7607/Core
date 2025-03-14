@@ -9,7 +9,9 @@ public sealed class AnchorNode : MonoBehaviour
     
     private void Awake()
     {
-        foreach (var obj in transform)
+        var root = transform.Find(nameof(AnchorNode));
+        
+        foreach (var obj in root)
         {
             var tm = (Transform)obj;
 
