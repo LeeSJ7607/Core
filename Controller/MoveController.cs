@@ -41,6 +41,7 @@ public sealed class MoveController
 
         var isWalk = _navMeshAgent.remainingDistance < 2f; //TODO: MonsterTable.
         var speed = isWalk ? 1f : 3f; //TODO: MonsterTable.
-        _animatorController.SetState(EAnimState.Walk, speed);
+        _navMeshAgent.speed = speed;
+        _animatorController.SetState(EAnimState.Walk, _navMeshAgent.velocity.magnitude);
     }
 }

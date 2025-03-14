@@ -47,9 +47,8 @@ public sealed class HeroController
             return false;
         }
         
-        const float maxDistance = 1000f;
         var ray = _mainCam.ScreenPointToRay(Input.mousePosition);
-        if (!Physics.Raycast(ray, out var hit, maxDistance))
+        if (!Physics.Raycast(ray, out var hit))
         {
             return false;
         }
