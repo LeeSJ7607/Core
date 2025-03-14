@@ -9,8 +9,7 @@ public interface IObjectPool
     float LifeTime { get; }
 }
 
-public sealed class ObjectPool<T> : MonoBehaviour 
-    where T : MonoBehaviour, IObjectPool
+public sealed class ObjectPool<T> where T : MonoBehaviour, IObjectPool
 {
     private sealed class PoolData
     {
@@ -35,31 +34,32 @@ public sealed class ObjectPool<T> : MonoBehaviour
         }
     }
 
-    private readonly CancellationTokenSource _tokenSource = new();
+    private const float UPDATE_INTERVAL = 0.1f;
+    private float _lastUpdateTime;
     private readonly List<PoolData> _showPool = new();
     private readonly List<PoolData> _hidePool = new();
     private int _maxHidePoolCount;
     private Transform _root;
-
-    private void OnDestroy()
-    {
-        _tokenSource.Cancel();
-        _tokenSource.Dispose();
-    }
-
-    private void OnDisable()
-    {
-        _tokenSource.Cancel();
-        _tokenSource.Dispose();
-    }
-
+    
     public void Initialize(int createCount = 4, int maxHidePoolCount = 0, Transform root = null)
     {
         _showPool.Capacity = _hidePool.Capacity = createCount;
         _maxHidePoolCount = maxHidePoolCount;
         _root = root ?? UIManager.Instance.transform;
+        _lastUpdateTime = Time.realtimeSinceStartup;
         AddHidePool(createCount);
-        OnUpdate().Forget();
+    }
+    
+    public void OnUpdate()
+    {
+        if (Time.realtimeSinceStartup - _lastUpdateTime < UPDATE_INTERVAL)
+        {
+            return;
+        }
+
+        _lastUpdateTime = Time.realtimeSinceStartup;
+        TryHidePool();
+        TrimPool();
     }
     
     public T Get()
@@ -75,16 +75,6 @@ public sealed class ObjectPool<T> : MonoBehaviour
         for (var i = 0; i < createCount; i++)
         {
             _hidePool.Add(CreatePoolData());
-        }
-    }
-    
-    private async UniTaskVoid OnUpdate()
-    {
-        while (!_tokenSource.Token.IsCancellationRequested)
-        {
-            await UniTask.Delay(TimeSpan.FromSeconds(0.1f), cancellationToken: _tokenSource.Token);
-            TryHidePool();
-            TrimPool();
         }
     }
 
@@ -114,7 +104,7 @@ public sealed class ObjectPool<T> : MonoBehaviour
         while (_hidePool.Count > _maxHidePoolCount)
         {
             var obj = _hidePool[0].Obj;
-            Destroy(obj.gameObject);
+            UnityEngine.Object.Destroy(obj.gameObject);
             _hidePool.RemoveAt(0);
         }
     }
@@ -135,7 +125,7 @@ public sealed class ObjectPool<T> : MonoBehaviour
     private PoolData CreatePoolData()
     {
         var res = AddressableManager.Instance.Get<T>();
-        var obj = Instantiate(res, _root);
+        var obj = UnityEngine.Object.Instantiate(res, _root);
         return new PoolData(obj);
     }
 }

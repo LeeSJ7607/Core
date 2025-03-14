@@ -23,6 +23,7 @@ public sealed class UnitUI
     public void OnUpdate()
     {
         _unitHealthUI.OnUpdate();
+        _unitDamageUI.OnUpdate();
     }
 
     public void SetHPAndDamage(Stat stat, int damage)
