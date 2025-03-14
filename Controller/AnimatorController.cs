@@ -42,6 +42,11 @@ public sealed class AnimatorController
 
     public void OnUpdate()
     {
+        if (_stateHash[0] == 0)
+        {
+            return;
+        }
+        
         var stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.normalizedTime < 1f)
         {
