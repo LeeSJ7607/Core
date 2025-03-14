@@ -8,7 +8,7 @@ public sealed class UnitUI
 
     public UnitUI(Unit owner)
     {
-        var anchorNode = owner.GetComponent<AnchorNode>();
+        var anchorNode = owner.GetComponentInChildren<AnchorNode>(true);
         _unitHealthUI = new UnitHealthUI(anchorNode[EAnchorNode.HP]);
         _unitDamageUI = new UnitDamageUI(anchorNode[EAnchorNode.Hit]);
         _mainCam = Camera.main ?? throw new System.NullReferenceException("Main camera is missing.");

@@ -41,6 +41,11 @@ public sealed class UnitHealthUI
 
     private void UpdateHPPos()
     {
+        if (_sldHP == null)
+        {
+            return;
+        }
+        
         _sldHP.transform.position = _anchorNodePos;
         UnitUI.Billboard();
     }
