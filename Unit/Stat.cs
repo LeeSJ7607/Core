@@ -12,9 +12,9 @@ public sealed class Stat
     
     public Stat(IReadOnlyUnit owner)
     {
-        //TODO: 테이블 화.
-        Sum(EStat.Max_HP, 1000);
-        Sum(EStat.HP, 1000);
+        var unitTable = owner.UnitTable;
+        Sum(EStat.Max_HP, unitTable.Max_HP);
+        Sum(EStat.HP, unitTable.Max_HP);
     }
 
     public int this[EStat type]

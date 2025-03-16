@@ -15,10 +15,12 @@ public interface IDefender
 
 public interface IReadOnlyUnit : IAttacker, IDefender
 {
-    Observable<R3.Unit> OnRelease { get; }
-    Vector3 Pos { get; }
-    bool IsDead { get; }
+    int UnitId { get; }
+    UnitTable.Row UnitTable { get; }
     EFaction FactionType { get; }
+    bool IsDead { get; }
+    Vector3 Pos { get; }
+    Observable<R3.Unit> OnRelease { get; }
     AnimatorController AnimatorController { get; }
 }
 
@@ -39,10 +41,12 @@ public abstract class Unit : MonoBehaviour, IReadOnlyUnit
 #endregion
 
 #region IReadOnlyUnit
-    Observable<R3.Unit> IReadOnlyUnit.OnRelease => _onRelease;
-    Vector3 IReadOnlyUnit.Pos => transform.position;
-    public bool IsDead => _stat[EStat.HP] <= 0;
+    public int UnitId { get; private set; }
+    UnitTable.Row IReadOnlyUnit.UnitTable => DataAccessor.GetTable<UnitTable>().GetRow(UnitId);
     public EFaction FactionType { get; private set; }
+    public bool IsDead => _stat[EStat.HP] <= 0;
+    Vector3 IReadOnlyUnit.Pos => transform.position;
+    Observable<R3.Unit> IReadOnlyUnit.OnRelease => _onRelease;
     public AnimatorController AnimatorController { get; private set; } //TODO: 한 군데에서만 처리하고 싶은데.. public 으로 해야하나..
 #endregion
 
@@ -71,10 +75,11 @@ public abstract class Unit : MonoBehaviour, IReadOnlyUnit
         AnimatorController.OnUpdate();
     }
 
-    public void Initialize(BattleEnvironment battleEnvironment, EFaction factionType)
+    public void Initialize(int unitId, EFaction factionType, BattleEnvironment battleEnvironment)
     {
-        _battleEnvironment = battleEnvironment;
+        UnitId = unitId;
         FactionType = factionType;
+        _battleEnvironment = battleEnvironment;
         _unitUI.Initialize();
         _unitAIController.Initialize(this, battleEnvironment.Units);
         _deadController.Initialize();
