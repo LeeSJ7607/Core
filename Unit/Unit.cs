@@ -48,11 +48,16 @@ public abstract class Unit : MonoBehaviour,
     {
         _stat = new Stat(this);
         _unitUI = new UnitUI(this);
-        _unitAIController = new UnitAIController(this);
-        _deadController = new DeadController(this);
         AnimatorController = new AnimatorController(this);
+        _deadController = new DeadController(this);
+        _unitAIController = new UnitAIController(this);
+        
+        //TODO: 임시.
+        _unitAIController.Initialize();
+        _deadController.Initialize();
+        AnimatorController.Initialize();
     }
-
+    
     private void Update()
     {
         OnUpdate();

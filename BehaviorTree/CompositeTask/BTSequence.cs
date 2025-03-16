@@ -39,7 +39,8 @@ internal sealed class BTSequence : BTComposite
                 return EBTStatus.Failure;
             }
         }
-
+        
+        Reset();
         return EBTStatus.Success;
     }
 }
