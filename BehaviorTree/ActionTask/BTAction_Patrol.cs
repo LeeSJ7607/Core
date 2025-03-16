@@ -2,7 +2,7 @@
 
 internal sealed class BTAction_Patrol : BTNode
 {
-    private const float _radius = 3f; //TODO: 외부에서 값을 받아와야함.
+    private const float _radius = 7f; //TODO: 외부에서 값을 받아와야함.
     private Vector3 _originPos;
     private Vector3 _targetPos;
 
@@ -18,9 +18,10 @@ internal sealed class BTAction_Patrol : BTNode
         {
             SetTargetPos();
         }
-
-        return EBTStatus.Success;
-
+        
+        return board.TargetController.TryFindTarget() 
+            ? EBTStatus.Success 
+            : EBTStatus.Running;
     }
 
     private void SetTargetPos()
