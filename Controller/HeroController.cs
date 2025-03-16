@@ -2,14 +2,14 @@
 
 public sealed class HeroController
 {
-    private readonly Unit _hero;
+    private readonly IReadOnlyUnit _owner;
     private readonly MoveController _moveController;
     private readonly Camera _mainCam;
     
-    public HeroController(Unit hero)
+    public HeroController(IReadOnlyUnit owner)
     {
-        _hero = hero;
-        _moveController = new MoveController(hero);
+        _owner = owner;
+        _moveController = new MoveController(owner);
         _mainCam = Camera.main ?? throw new System.NullReferenceException("Main camera is missing.");
     }
 
@@ -21,7 +21,7 @@ public sealed class HeroController
 
     private void UpdateCameraPos()
     {
-        var pos = _hero.transform.position;
+        var pos = _owner.Pos;
         // pos.y = 10f;
         // pos.z -= 5f;
         
@@ -54,7 +54,7 @@ public sealed class HeroController
         }
 
         pos = hit.point;
-        pos.y = _hero.transform.position.y;
+        pos.y = _owner.Pos.y;
         return true;
     }
 }

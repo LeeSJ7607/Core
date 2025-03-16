@@ -10,7 +10,7 @@ public sealed class Stat
 {
     private readonly Dictionary<EStat, int> _statMap = new();
     
-    public Stat(Unit owner)
+    public Stat(IReadOnlyUnit owner)
     {
         //TODO: 테이블 화.
         Sum(EStat.Max_HP, 1000);

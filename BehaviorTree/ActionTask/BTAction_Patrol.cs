@@ -19,7 +19,7 @@ internal sealed class BTAction_Patrol : BTNode
             SetTargetPos();
         }
         
-        return board.TargetController.TryFindTarget() 
+        return board.TargetController.TryFindTarget(board.Units) 
             ? EBTStatus.Success 
             : EBTStatus.Running;
     }

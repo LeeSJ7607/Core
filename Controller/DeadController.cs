@@ -2,11 +2,11 @@
 
 public sealed class DeadController
 {
-    private readonly Unit _owner;
+    private readonly IReadOnlyUnit _owner;
     private readonly AnimatorController _animatorController;
     private readonly CompositeDisposable _disposable = new();
     
-    public DeadController(Unit owner)
+    public DeadController(IReadOnlyUnit owner)
     {
         _owner = owner;
         _animatorController = owner.AnimatorController;
@@ -31,7 +31,7 @@ public sealed class DeadController
         }
         
         // var fx = Object.Instantiate(ResourceManager.Instance.Get<GameObject>("Fx_Unit_Die"));
-        // fx.transform.position = _owner.transform.position;
+        // fx.transform.position = _owner.Pos;
         //
         // Object.Destroy(_owner.gameObject);
     }

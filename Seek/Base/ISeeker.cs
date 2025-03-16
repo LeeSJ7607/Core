@@ -18,5 +18,5 @@ public enum ESeekRule
 
 public interface ISeeker
 {
-    IReadOnlyList<Unit> Seek(Unit owner);
+    IReadOnlyList<IReadOnlyUnit> Seek(IEnumerable<IReadOnlyUnit> units, IReadOnlyUnit owner);
 }

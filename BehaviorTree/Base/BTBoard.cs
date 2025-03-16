@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public sealed class BTBoard
 {
@@ -6,13 +7,15 @@ public sealed class BTBoard
     public TargetController TargetController { get; }
     public AttackController AttackController { get; }
     public Vector3 OwnerPos { get; }
-    public Unit Target => TargetController.Target;
+    public IEnumerable<IReadOnlyUnit> Units { get; }
+    public IReadOnlyUnit Target => TargetController.Target;
 
-    public BTBoard(Unit unit)
+    public BTBoard(IReadOnlyUnit owner, IEnumerable<IReadOnlyUnit> units)
     {
-        MoveController = new MoveController(unit);
-        TargetController = new TargetController(unit);
-        AttackController = new AttackController(unit);
-        OwnerPos = unit.transform.position;
+        MoveController = new MoveController(owner);
+        TargetController = new TargetController(owner);
+        AttackController = new AttackController(owner);
+        OwnerPos = owner.Pos;
+        Units = units;
     }
 }

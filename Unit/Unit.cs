@@ -4,7 +4,6 @@ using UnityEngine.AI;
 
 public interface IAttacker
 {
-    bool IsAttackable { get; set; }
     int Damage { get; }
 }
 
@@ -14,23 +13,24 @@ public interface IDefender
     void Hit(int damage);
 }
 
-[RequireComponent(typeof(NavMeshAgent), typeof(AnchorNode))]
-public abstract class Unit : MonoBehaviour,
-    IAttacker, //TODO: 이 인터페이스를 잘 활용해보자. 필요한지 부터.
-    IDefender  //TODO: 이 인터페이스를 잘 활용해보자. 필요한지 부터.
+public interface IReadOnlyUnit : IAttacker, IDefender
 {
-    public bool IsDead => _stat[EStat.HP] <= 0;
+    Observable<R3.Unit> OnRelease { get; }
+    Vector3 Pos { get; }
+    bool IsDead { get; }
+    EFaction FactionType { get; }
+    AnimatorController AnimatorController { get; }
+}
+
+[RequireComponent(typeof(NavMeshAgent), typeof(AnchorNode))]
+public abstract class Unit : MonoBehaviour, IReadOnlyUnit
+{
     private Stat _stat;
     private UnitUI _unitUI;
-    private EFaction _factionType;
-    
-#region R3
-    public Observable<R3.Unit> OnRelease => _onRelease;
+    private BattleEnvironment _battleEnvironment;
     private readonly ReactiveCommand _onRelease = new();
-#endregion
 
 #region Attacker
-    bool IAttacker.IsAttackable { get; set; }
     int IAttacker.Damage => 100;
 #endregion
 
@@ -38,10 +38,17 @@ public abstract class Unit : MonoBehaviour,
     Transform IDefender.Tm => transform;
 #endregion
 
-#region Controller
-    private UnitAIController _unitAIController;
-    private DeadController _deadController;
+#region IReadOnlyUnit
+    Observable<R3.Unit> IReadOnlyUnit.OnRelease => _onRelease;
+    Vector3 IReadOnlyUnit.Pos => transform.position;
+    public bool IsDead => _stat[EStat.HP] <= 0;
+    public EFaction FactionType { get; private set; }
     public AnimatorController AnimatorController { get; private set; } //TODO: 한 군데에서만 처리하고 싶은데.. public 으로 해야하나..
+#endregion
+
+#region Controller
+    private readonly UnitAIController _unitAIController = new();
+    private DeadController _deadController;
 #endregion
     
     protected virtual void Awake()
@@ -50,12 +57,6 @@ public abstract class Unit : MonoBehaviour,
         _unitUI = new UnitUI(this);
         AnimatorController = new AnimatorController(this);
         _deadController = new DeadController(this);
-        _unitAIController = new UnitAIController(this);
-        
-        //TODO: 임시.
-        _unitAIController.Initialize();
-        _deadController.Initialize();
-        AnimatorController.Initialize();
     }
     
     private void Update()
@@ -70,11 +71,12 @@ public abstract class Unit : MonoBehaviour,
         AnimatorController.OnUpdate();
     }
 
-    public void Initialize(EFaction factionType)
+    public void Initialize(BattleEnvironment battleEnvironment, EFaction factionType)
     {
-        _factionType = factionType;
+        _battleEnvironment = battleEnvironment;
+        FactionType = factionType;
         _unitUI.Initialize();
-        _unitAIController.Initialize();
+        _unitAIController.Initialize(this, battleEnvironment.Units);
         _deadController.Initialize();
         AnimatorController.Initialize();
     }
@@ -82,13 +84,13 @@ public abstract class Unit : MonoBehaviour,
     void IDefender.Hit(int damage)
     {
         _stat[EStat.HP] -= damage;
-        //_uiUnit.HPAndDamage(_stat, damage_);
+        _unitUI.SetHPAndDamage(_stat, damage);
         AnimatorController.SetState(IsDead ? EAnimState.Die : EAnimState.Hit);
         
-        // if (IsDead)
-        // {
-        //     SpawnedUnitContainer.Instance.Remove(this);
-        // }
+        if (IsDead)
+        {
+            _battleEnvironment.RemoveUnit(this);
+        }
     }
     
     private void OnDrawGizmos()

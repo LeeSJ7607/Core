@@ -20,9 +20,9 @@ public sealed class AnimatorController
     private readonly Animator _animator;
     private readonly CompositeDisposable _disposable = new();
     
-    public AnimatorController(Unit owner)
+    public AnimatorController(IReadOnlyUnit owner)
     {
-        _animator = owner.GetComponent<Animator>();
+        _animator = owner.Tm.GetComponent<Animator>();
         
         owner.OnRelease
              .Subscribe(_ => Release())

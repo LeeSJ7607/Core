@@ -12,10 +12,10 @@ public sealed class MoveController
     private readonly NavMeshAgent _navMeshAgent; //TODO: rcdtcs
     private readonly AnimatorController _animatorController;
     
-    public MoveController(Unit unit)
+    public MoveController(IReadOnlyUnit owner)
     {
-        _navMeshAgent = unit.GetComponent<NavMeshAgent>();
-        _animatorController = unit.AnimatorController;
+        _navMeshAgent = owner.Tm.GetComponent<NavMeshAgent>();
+        _animatorController = owner.AnimatorController;
     }
 
     public EMoveState MoveTo(Vector3 targetPos)
