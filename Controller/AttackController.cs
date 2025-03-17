@@ -11,7 +11,7 @@ public sealed class AttackController
     
     public AttackController(IReadOnlyUnit owner)
     {
-        _owner = owner;
+        _owner = (IAttacker)owner;
         _ownerTm = owner.Tm;
         _animatorController = owner.AnimatorController;
         
@@ -48,7 +48,7 @@ public sealed class AttackController
 
     private void LookAtTarget(IDefender target)
     {
-        var dir = (target.Tm.position - _ownerTm.position).normalized;
+        var dir = (target.Pos - _ownerTm.position).normalized;
         _ownerTm.rotation = Quaternion.LookRotation(dir);
     }
 }

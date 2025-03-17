@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public sealed class HeroSpawner : MonoBehaviour, ISpawner
 {
@@ -13,8 +12,8 @@ public sealed class HeroSpawner : MonoBehaviour, ISpawner
     
     void ISpawner.Spawn()
     {
-        var unit = _unitController.CreateUnit(_unitId);
-        unit.Initialize(_unitController, _unitId, EFaction.Ally, transform.position, transform.rotation);
+        var unit = _unitController.CreateUnit(_unitId, transform.position, transform.rotation);
+        unit.Initialize(_unitId, EFaction.Ally, _unitController);
     }
     
     private void OnDrawGizmos()

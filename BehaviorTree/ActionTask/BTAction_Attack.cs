@@ -4,9 +4,9 @@ internal sealed class BTAction_Attack : BTNode
     {
         var target = board.TargetController.Target;
         var attackController = board.AttackController;
-        attackController.Attack(target);
+        attackController.Attack((IDefender)target);
         
-        if (!attackController.IsTargetInRange(target.Pos))
+        if (!attackController.IsTargetInRange(target.Tm.position))
         {
             return EBTStatus.Failure;
         }

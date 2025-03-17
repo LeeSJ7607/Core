@@ -7,7 +7,7 @@ internal sealed class BTAction_Chase : BTNode
     public override EBTStatus OnUpdate(BTBoard board)
     {
         var target = board.Target;
-        var targetPos = target.Pos;
+        var targetPos = target.Tm.position;
         board.MoveController.MoveTo(targetPos);
 
         if (target.IsDead())

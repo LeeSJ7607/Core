@@ -15,7 +15,7 @@ public sealed class BTBoard
         MoveController = new MoveController(owner);
         TargetController = new TargetController(owner);
         AttackController = new AttackController(owner);
-        OwnerPos = owner.Pos;
+        OwnerPos = owner.Tm.position;
         Units = units;
     }
 }

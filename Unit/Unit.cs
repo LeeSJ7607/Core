@@ -9,30 +9,32 @@ public interface IAttacker
 
 public interface IDefender
 {
-    Transform Tm { get; }
+    Vector3 Pos { get; }
     void Hit(int damage);
 }
 
-public interface IReadOnlyUnit : IAttacker, IDefender
+public interface IReadOnlyUnit
 {
     int UnitId { get; }
     UnitTable.Row UnitTable { get; }
     EFaction FactionType { get; }
     bool IsDead { get; }
-    Vector3 Pos { get; }
+    Transform Tm { get; }
     Observable<R3.Unit> OnRelease { get; }
     AnimatorController AnimatorController { get; }
 }
 
 public interface IUnitInitializer
 {
-    void Initialize(IUnitController unitController, int unitId, EFaction factionType, Vector3 pos, Quaternion rot);
+    void Initialize(int unitId, EFaction factionType, IUnitController unitController);
 }
 
 [RequireComponent(typeof(NavMeshAgent), typeof(AnchorNode))]
-public abstract class Unit : MonoBehaviour, 
+public abstract class Unit : MonoBehaviour,
+    IUnitInitializer,
     IReadOnlyUnit, 
-    IUnitInitializer
+    IAttacker,
+    IDefender
 {
     private Stat _stat;
     private UnitUI _unitUI;
@@ -44,15 +46,15 @@ public abstract class Unit : MonoBehaviour,
 #endregion
 
 #region Defender
-    Transform IDefender.Tm => transform;
+    Vector3 IDefender.Pos => transform.position;
 #endregion
-
+    
 #region IReadOnlyUnit
     public int UnitId { get; private set; }
     UnitTable.Row IReadOnlyUnit.UnitTable => DataAccessor.GetTable<UnitTable>().GetRow(UnitId);
     public EFaction FactionType { get; private set; }
     public bool IsDead => _stat[EStat.HP] <= 0;
-    Vector3 IReadOnlyUnit.Pos => transform.position;
+    Transform IReadOnlyUnit.Tm => transform;
     Observable<R3.Unit> IReadOnlyUnit.OnRelease => _onRelease;
     public AnimatorController AnimatorController { get; private set; } //TODO: 한 군데에서만 처리하고 싶은데.. public 으로 해야하나..
 #endregion
@@ -88,12 +90,11 @@ public abstract class Unit : MonoBehaviour,
         AnimatorController.OnUpdate();
     }
 
-    void IUnitInitializer.Initialize(IUnitController unitController, int unitId, EFaction factionType, Vector3 pos, Quaternion rot)
+    void IUnitInitializer.Initialize(int unitId, EFaction factionType, IUnitController unitController)
     {
-        _unitController = unitController;
         UnitId = unitId;
         FactionType = factionType;
-        transform.SetPositionAndRotation(pos, rot);
+        _unitController = unitController;
         _unitUI.Initialize();
         _unitAIController.Initialize(this, unitController.Units);
         _deadController.Initialize();

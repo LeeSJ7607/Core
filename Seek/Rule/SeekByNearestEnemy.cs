@@ -17,7 +17,7 @@ public sealed class SeekByNearestEnemy : ISeeker
                 continue;
             }
             
-            var dis = Vector3.Distance(owner.Pos, unit.Pos);
+            var dis = Vector3.Distance(owner.Tm.position, unit.Tm.position);
             if (dis >= nearestDistance)
             {
                 continue;

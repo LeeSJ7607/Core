@@ -21,7 +21,7 @@ public sealed class HeroController
 
     private void UpdateCameraPos()
     {
-        var pos = _owner.Pos;
+        var pos = _owner.Tm.position;
         // pos.y = 10f;
         // pos.z -= 5f;
         
@@ -54,7 +54,7 @@ public sealed class HeroController
         }
 
         pos = hit.point;
-        pos.y = _owner.Pos.y;
+        pos.y = _owner.Tm.position.y;
         return true;
     }
 }
