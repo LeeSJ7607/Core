@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 internal sealed class UIContainer
 {
-    private readonly Dictionary<int, UIBase> _uiBaseMap = new();
+    private readonly Dictionary<Type, UIBase> _uiBaseMap = new();
 
     public void Release()
     {
@@ -12,7 +13,7 @@ internal sealed class UIContainer
 
     public TBase GetOrCreate<TBase>(Transform root) where TBase : UIBase
     {
-        if (_uiBaseMap.TryGetValue(typeof(TBase).GetHashCode(), out var uiBase))
+        if (_uiBaseMap.TryGetValue(typeof(TBase), out var uiBase))
         {
             return (TBase)uiBase;
         }
@@ -27,7 +28,7 @@ internal sealed class UIContainer
 
         if (UnityEngine.Object.Instantiate(res, root).TryGetComponent<TBase>(out var uiBase))
         {
-            _uiBaseMap.Add(typeof(TBase).GetHashCode(), uiBase);
+            _uiBaseMap.Add(typeof(TBase), uiBase);
             return uiBase;
         }
         

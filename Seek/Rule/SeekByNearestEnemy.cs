@@ -8,14 +8,10 @@ public sealed class SeekByNearestEnemy : ISeeker
     {
         IReadOnlyUnit target = null;
         var nearestDistance = float.MaxValue;
-        
-        foreach (var unit in units)
-        {
-            if (unit == owner)
-            {
-                continue;
-            }
 
+        var filteredUnits = units.FilterByFaction(EFaction.Enemy);
+        foreach (var unit in filteredUnits)
+        {
             if (unit.FactionType == owner.FactionType)
             {
                 continue;
