@@ -10,7 +10,7 @@ public enum EMoveState
 public sealed class MoveController
 {
     private readonly NavMeshAgent _navMeshAgent; //TODO: rcdtcs
-    private readonly AnimatorController _animatorController;
+    private readonly IAnimatorController _animatorController;
     
     public MoveController(IReadOnlyUnit owner)
     {

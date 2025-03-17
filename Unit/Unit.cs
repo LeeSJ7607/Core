@@ -15,13 +15,12 @@ public interface IDefender
 
 public interface IReadOnlyUnit
 {
-    int UnitId { get; }
     UnitTable.Row UnitTable { get; }
     EFaction FactionType { get; }
     bool IsDead { get; }
     Transform Tm { get; }
     Observable<R3.Unit> OnRelease { get; }
-    AnimatorController AnimatorController { get; }
+    IAnimatorController AnimatorController { get; }
 }
 
 public interface IUnitInitializer
@@ -36,6 +35,7 @@ public abstract class Unit : MonoBehaviour,
     IAttacker,
     IDefender
 {
+    private int _unitId;
     private Stat _stat;
     private UnitUI _unitUI;
     private IUnitController _unitController;
@@ -50,17 +50,17 @@ public abstract class Unit : MonoBehaviour,
 #endregion
     
 #region IReadOnlyUnit
-    public int UnitId { get; private set; }
-    UnitTable.Row IReadOnlyUnit.UnitTable => DataAccessor.GetTable<UnitTable>().GetRow(UnitId);
+    UnitTable.Row IReadOnlyUnit.UnitTable => DataAccessor.GetTable<UnitTable>().GetRow(_unitId);
     public EFaction FactionType { get; private set; }
     public bool IsDead => _stat[EStat.HP] <= 0;
     Transform IReadOnlyUnit.Tm => transform;
     Observable<R3.Unit> IReadOnlyUnit.OnRelease => _onRelease;
-    public AnimatorController AnimatorController { get; private set; } //TODO: 한 군데에서만 처리하고 싶은데.. public 으로 해야하나..
+    public IAnimatorController AnimatorController => _animatorController; //TODO: 한 군데에서만 처리하고 싶은데.. public 으로 해야하나..
 #endregion
 
 #region Controller
     private readonly UnitAIController _unitAIController = new();
+    private AnimatorController _animatorController;
     private DeadController _deadController;
 #endregion
 
@@ -74,7 +74,7 @@ public abstract class Unit : MonoBehaviour,
     {
         _stat = new Stat(this);
         _unitUI = new UnitUI(this);
-        AnimatorController = new AnimatorController(this);
+        _animatorController = new AnimatorController(this);
         _deadController = new DeadController(this);
     }
     
@@ -87,18 +87,18 @@ public abstract class Unit : MonoBehaviour,
     {
         _unitUI.OnUpdate();
         _unitAIController.OnUpdate();
-        AnimatorController.OnUpdate();
+        _animatorController.OnUpdate();
     }
 
     void IUnitInitializer.Initialize(int unitId, EFaction factionType, IUnitController unitController)
     {
-        UnitId = unitId;
+        _unitId = unitId;
         FactionType = factionType;
         _unitController = unitController;
         _unitUI.Initialize();
         _unitAIController.Initialize(this, unitController.Units);
         _deadController.Initialize();
-        AnimatorController.Initialize();
+        _animatorController.Initialize();
     }
 
     void IDefender.Hit(int damage)

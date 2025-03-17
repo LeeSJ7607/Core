@@ -3,7 +3,7 @@
 public sealed class DeadController
 {
     private readonly IReadOnlyUnit _owner;
-    private readonly AnimatorController _animatorController;
+    private readonly IAnimatorController _animatorController;
     private readonly CompositeDisposable _disposable = new();
     
     public DeadController(IReadOnlyUnit owner)

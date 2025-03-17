@@ -12,9 +12,15 @@ public enum EAnimState
     End,
 }
 
-public sealed class AnimatorController
+public interface IAnimatorController
 {
-    public Observable<EAnimState> OnAnimStateExit => _onAnimStateExit;
+    Observable<EAnimState> OnAnimStateExit { get; }
+    void SetState(EAnimState state, float value = 0f);
+}
+
+public sealed class AnimatorController : IAnimatorController
+{
+    Observable<EAnimState> IAnimatorController.OnAnimStateExit => _onAnimStateExit;
     private readonly ReactiveCommand<EAnimState> _onAnimStateExit = new();
     private readonly int[] _stateHash = new int[(int)EAnimState.End];
     private readonly Animator _animator;
@@ -82,7 +88,7 @@ public sealed class AnimatorController
         return EAnimState.End;
     }
     
-    public void SetState(EAnimState state, float value = 0f)
+    void IAnimatorController.SetState(EAnimState state, float value)
     {
         var stateHash = _stateHash[(int)state];
 

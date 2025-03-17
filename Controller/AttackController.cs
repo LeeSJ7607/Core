@@ -6,7 +6,7 @@ public sealed class AttackController
     private IDefender _target;
     private readonly IAttacker _owner;
     private readonly Transform _ownerTm;
-    private readonly AnimatorController _animatorController;
+    private readonly IAnimatorController _animatorController;
     private readonly CompositeDisposable _disposable = new();
     
     public AttackController(IReadOnlyUnit owner)
