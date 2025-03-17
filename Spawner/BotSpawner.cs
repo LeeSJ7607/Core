@@ -47,7 +47,7 @@ public sealed class BotSpawner : MonoBehaviour, ISpawner
             {
                 var unit = _unitController.CreateUnit(unitId);
                 var pos = MathUtil.GetRandomPositionInRadius(transform.position, _spawnSetting.Radius);
-                unit.Initialize(unitId, EFaction.Enemy, _unitController, pos, transform.rotation);
+                unit.Initialize(_unitController, unitId, EFaction.Enemy, pos, transform.rotation);
             }
         }
     }

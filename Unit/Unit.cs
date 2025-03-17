@@ -24,12 +24,19 @@ public interface IReadOnlyUnit : IAttacker, IDefender
     AnimatorController AnimatorController { get; }
 }
 
+public interface IUnitInitializer
+{
+    void Initialize(IUnitController unitController, int unitId, EFaction factionType, Vector3 pos, Quaternion rot);
+}
+
 [RequireComponent(typeof(NavMeshAgent), typeof(AnchorNode))]
-public abstract class Unit : MonoBehaviour, IReadOnlyUnit
+public abstract class Unit : MonoBehaviour, 
+    IReadOnlyUnit, 
+    IUnitInitializer
 {
     private Stat _stat;
     private UnitUI _unitUI;
-    private BattleEnvironment _battleEnvironment;
+    private IUnitController _unitController;
     private readonly ReactiveCommand _onRelease = new();
 
 #region Attacker
@@ -54,7 +61,13 @@ public abstract class Unit : MonoBehaviour, IReadOnlyUnit
     private readonly UnitAIController _unitAIController = new();
     private DeadController _deadController;
 #endregion
-    
+
+    private void OnDisable()
+    {
+        _onRelease.Execute(R3.Unit.Default);
+        _onRelease.Dispose();
+    }
+
     protected virtual void Awake()
     {
         _stat = new Stat(this);
@@ -75,13 +88,14 @@ public abstract class Unit : MonoBehaviour, IReadOnlyUnit
         AnimatorController.OnUpdate();
     }
 
-    public void Initialize(int unitId, EFaction factionType, BattleEnvironment battleEnvironment)
+    void IUnitInitializer.Initialize(IUnitController unitController, int unitId, EFaction factionType, Vector3 pos, Quaternion rot)
     {
+        _unitController = unitController;
         UnitId = unitId;
         FactionType = factionType;
-        _battleEnvironment = battleEnvironment;
+        transform.SetPositionAndRotation(pos, rot);
         _unitUI.Initialize();
-        _unitAIController.Initialize(this, battleEnvironment.Units);
+        _unitAIController.Initialize(this, unitController.Units);
         _deadController.Initialize();
         AnimatorController.Initialize();
     }
@@ -94,7 +108,7 @@ public abstract class Unit : MonoBehaviour, IReadOnlyUnit
         
         if (IsDead)
         {
-            _battleEnvironment.RemoveUnit(this);
+            _unitController.RemoveUnit(this);
         }
     }
     
