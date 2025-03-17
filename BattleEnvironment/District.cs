@@ -1,6 +1,17 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public sealed class District : MonoBehaviour
+public interface IDistrict
 {
-    private ISpawner[] _spawners;
+    bool IsActive { get; set; }
+}
+
+public sealed class District : MonoBehaviour, IDistrict
+{
+    bool IDistrict.IsActive { get; set; }
+
+    private void Awake()
+    {
+        
+    }
 }
