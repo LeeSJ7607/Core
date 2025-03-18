@@ -5,14 +5,14 @@ using UnityEngine;
 
 internal sealed class BehaviorTreeWindow : EditorWindow
 {
-    private readonly BTNode[] _nodes;
+    private readonly BehaviorTree[] _nodes;
     
     public BehaviorTreeWindow()
     {
-        _nodes = typeof(BTNode).Assembly.GetExportedTypes()
+        _nodes = typeof(BehaviorTree).Assembly.GetExportedTypes()
                                .Where(_ => _.IsInterface == false && _.IsAbstract == false)
-                               .Where(_ => typeof(BTNode).IsAssignableFrom(_))
-                               .Select(_ => (BTNode)Activator.CreateInstance(_))
+                               .Where(_ => typeof(BehaviorTree).IsAssignableFrom(_))
+                               .Select(_ => (BehaviorTree)Activator.CreateInstance(_))
                                .ToArray();
     }
     

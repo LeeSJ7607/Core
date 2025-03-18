@@ -3,12 +3,12 @@
 internal sealed class UnitAIController
 {
     private readonly IBTComposite _btRoot = new BTSequence();
-    private BTBoard _board;
+    private BlackBoard _board;
     private bool _isActive;
 
     public void Initialize(IReadOnlyUnit owner, IEnumerable<IReadOnlyUnit> units)
     {
-        _board ??= new BTBoard(owner, units);
+        _board ??= new BlackBoard(owner, units);
         
         //TODO: 툴에서 제작한 BT를 가져와 설정을 해야함.
         _btRoot.AddNode(new BTAction_Patrol());

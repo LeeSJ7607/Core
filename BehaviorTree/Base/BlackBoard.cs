@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class BTBoard
+public sealed class BlackBoard
 {
     public MoveController MoveController { get; }
     public TargetController TargetController { get; }
@@ -10,7 +10,7 @@ public sealed class BTBoard
     public IEnumerable<IReadOnlyUnit> Units { get; }
     public IReadOnlyUnit Target => TargetController.Target;
 
-    public BTBoard(IReadOnlyUnit owner, IEnumerable<IReadOnlyUnit> units)
+    public BlackBoard(IReadOnlyUnit owner, IEnumerable<IReadOnlyUnit> units)
     {
         MoveController = new MoveController(owner);
         TargetController = new TargetController(owner);

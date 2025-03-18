@@ -11,7 +11,7 @@ internal sealed class BTSequence : BTComposite
         _curTaskIdx = 0;
     }
     
-    public override EBTStatus OnUpdate(BTBoard board)
+    public override EBTStatus OnUpdate(BlackBoard board)
     {
         while (_curTaskIdx < _nodes.Count)
         {

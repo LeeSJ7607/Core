@@ -1,10 +1,10 @@
 using UnityEngine;
 
-internal sealed class BTAction_Chase : BTNode
+internal sealed class BTAction_Chase : BehaviorTree
 {
     private const float _maxChaseDistance = 5f;
     
-    public override EBTStatus OnUpdate(BTBoard board)
+    public override EBTStatus OnUpdate(BlackBoard board)
     {
         var target = board.Target;
         var targetPos = target.Tm.position;

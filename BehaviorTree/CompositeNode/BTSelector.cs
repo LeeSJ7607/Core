@@ -16,7 +16,7 @@ internal class BTSelector : BTComposite
         ++_curTaskIdx;
     }
     
-    public override EBTStatus OnUpdate(BTBoard board)
+    public override EBTStatus OnUpdate(BlackBoard board)
     {
         Reset();
         
