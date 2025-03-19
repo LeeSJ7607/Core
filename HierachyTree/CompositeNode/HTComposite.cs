@@ -6,6 +6,7 @@ public interface IHTComposite
     EBTStatus Update();
 }
 
+[RequireComponent(typeof(HTRoot))]
 public abstract class HTComposite : HierachyTree, IHTComposite
 {
     protected readonly List<HierachyTree> _nodes = new();

@@ -8,6 +8,7 @@ internal sealed class BTAction_Patrol : BehaviorTree
 
     public override void OnBegin(BlackBoard board)
     {
+        base.OnBegin(board);
         _originPos = board.OwnerPos;
         SetTargetPos();
     }

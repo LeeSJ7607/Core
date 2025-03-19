@@ -4,6 +4,21 @@ using UnityEngine.Events;
 
 public static class UnityExtension
 {
+    public static void SetActive(this MonoBehaviour obj, bool active)
+    {
+        if (obj.IsNull())
+        {
+            return;
+        }
+
+        if (obj.gameObject.activeSelf == active)
+        {
+            return;
+        }
+        
+        obj.SetActive(active);
+    }
+    
     public static void Show(this GameObject obj)
     {
         if (obj.IsNull() || obj.activeSelf)
