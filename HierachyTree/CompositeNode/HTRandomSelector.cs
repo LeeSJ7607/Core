@@ -1,0 +1,35 @@
+﻿using System.Collections.Generic;
+
+public sealed class HTRandomSelector : HTSelector
+{
+    private readonly HashSet<int> _taskIdxList = new();
+
+    protected override void Reset()
+    {
+        base.Reset();
+        _taskIdxList.Clear();
+        _curTaskIdx = RandomTaskIdx();
+    }
+
+    protected override void MoveToNextTask()
+    {
+        if (_taskIdxList.Count == _nodes.Count)
+        {
+            return;
+        }
+        
+        var selectedTaskIdx = RandomTaskIdx();
+        while (_taskIdxList.Contains(selectedTaskIdx))
+        {
+            selectedTaskIdx = RandomTaskIdx();
+        }
+
+        _curTaskIdx = selectedTaskIdx;
+        _taskIdxList.Add(selectedTaskIdx);
+    }
+    
+    private int RandomTaskIdx()
+    {
+        return UnityEngine.Random.Range(0, _nodes.Count);
+    }
+}

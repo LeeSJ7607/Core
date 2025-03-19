@@ -2,11 +2,11 @@
 
 public sealed class HTRoot : MonoBehaviour
 {
-    private HTComposite _htComposite;
+    private IHTComposite _htComposite;
 
     private void Awake()
     {
-        _htComposite = GetComponentInChildren<HTComposite>();
+        _htComposite = GetComponentInChildren<IHTComposite>();
         if (_htComposite == null)
         {
             Debug.LogError($"{nameof(HTRoot)} 자식 오브젝트에 {nameof(HTComposite)}가 컴포넌트 되어있지 않습니다.");
@@ -20,7 +20,7 @@ public sealed class HTRoot : MonoBehaviour
             return;
         }
 
-        if (_htComposite.OnUpdate() == EBTStatus.Running)
+        if (_htComposite.Update() == EBTStatus.Running)
         {
             return;
         }
