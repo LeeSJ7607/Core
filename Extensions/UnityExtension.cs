@@ -4,129 +4,139 @@ using UnityEngine.Events;
 
 public static class UnityExtension
 {
-    public static void SetActive(this MonoBehaviour obj, bool active)
+    public static void SetActive(this MonoBehaviour source, bool active)
     {
-        if (obj.IsNull())
+        if (source.IsNull())
         {
             return;
         }
 
-        if (obj.gameObject.activeSelf == active)
+        if (source.gameObject.activeSelf == active)
         {
             return;
         }
         
-        obj.SetActive(active);
+        source.SetActive(active);
     }
     
-    public static void Show(this GameObject obj)
+    public static void Show(this GameObject source)
     {
-        if (obj.IsNull() || obj.activeSelf)
+        if (source.IsNull() || source.activeSelf)
         {
             return;
         }
         
-        obj.SetActive(true);
+        source.SetActive(true);
     }
     
-    public static void Hide(this GameObject obj)
+    public static void Hide(this GameObject source)
     {
-        if (obj.IsNull() || !obj.activeSelf)
+        if (source.IsNull() || !source.activeSelf)
         {
             return;
         }
         
-        obj.SetActive(false);
+        source.SetActive(false);
     }
     
-    public static void Show(this Transform tm)
+    public static void Show(this Transform source)
     {
-        if (tm.IsNull())
+        if (source.IsNull())
         {
             return;
         }
         
-        tm.gameObject.Show();
+        source.gameObject.Show();
     }
     
-    public static void Hide(this Transform tm)
+    public static void Hide(this Transform source)
     {
-        if (tm.IsNull())
+        if (source.IsNull())
         {
             return;
         }
         
-        tm.gameObject.Hide();
+        source.gameObject.Hide();
     }
     
-    public static void Show(this MonoBehaviour mono)
+    public static void Show(this MonoBehaviour source)
     {
-        if (mono.IsNull())
+        if (source.IsNull())
         {
             return;
         }
         
-        mono.gameObject.Show();
+        source.gameObject.Show();
     }
     
-    public static void Hide(this MonoBehaviour mono)
+    public static void Hide(this MonoBehaviour source)
     {
-        if (mono.IsNull())
+        if (source.IsNull())
         {
             return;
         }
         
-        mono.gameObject.Hide();
+        source.gameObject.Hide();
+    }
+    
+    public static void SetParent(this GameObject source, GameObject root)
+    {
+        if (source.IsNull())
+        {
+            return;
+        }
+        
+        source.transform.SetParent(root.transform);
     }
 
-    public static void AddListener(this Button btn, UnityAction act)
+    public static void AddListener(this Button source, UnityAction act)
     {
-        if (btn.IsNull())
+        if (source.IsNull())
         {
             return;
         }
         
-        btn.onClick.AddListener(act);
+        source.onClick.AddListener(act);
     }
 
-    public static void RemoveAllListeners(this Button btn)
+    public static void RemoveAllListeners(this Button source)
     {
-        if (btn.IsNull())
+        if (source.IsNull())
         {
             return;
         }
         
-        btn.onClick.RemoveAllListeners();
+        source.onClick.RemoveAllListeners();
     }
 
-    public static void SetPositionAndRotation(this GameObject obj, Transform tm)
+    public static void SetPositionAndRotation(this GameObject source, Transform tm)
     {
-        if (obj.IsNull() || obj.transform.IsNull() || tm.IsNull())
+        if (source.IsNull() || source.transform.IsNull() || tm.IsNull())
         {
             return;
         }
         
-        obj.transform.SetPositionAndRotation(tm.position, tm.rotation);
+        source.transform.SetPositionAndRotation(tm.position, tm.rotation);
     }
     
-    public static void SetPositionAndRotation(this GameObject obj, Vector3 pos, Quaternion rot)
+    public static void SetPositionAndRotation(this GameObject source, Vector3 pos, Quaternion rot)
     {
-        if (obj.IsNull() || obj.transform.IsNull())
+        if (source.IsNull() || source.transform.IsNull())
         {
             return;
         }
         
-        obj.transform.SetPositionAndRotation(pos, rot);
+        source.transform.SetPositionAndRotation(pos, rot);
     }
 
-    public static T GetOrAddComponent<T>(this GameObject obj) where T : Component
+    public static T GetOrAddComponent<T>(this GameObject source) where T : Component
     {
-        var component = obj.GetComponent<T>();
-        return component != null ? component : obj.AddComponent<T>();
+        var component = source.GetComponent<T>();
+        return component != null ? component : source.AddComponent<T>();
     }
     
-    public static T AddComponent<T>(this Component component) where T : Component
+    public static T AddComponent<T>(this Component source) where T : Component
     {
-        return component.gameObject.AddComponent<T>();
+        return source.gameObject.AddComponent<T>();
     }
 }

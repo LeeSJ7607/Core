@@ -10,8 +10,8 @@
         return TableManager.Instance.Get<T>();
     }
     
-    public static bool IsDead(this IReadOnlyUnit unit)
+    public static bool IsDead(this IReadOnlyUnit source)
     {
-        return unit == null || unit.IsDead;
+        return source == null || source.IsDead;
     }
 }

@@ -2,11 +2,11 @@
 
 public static class UnitExtensions
 {
-    public static IEnumerable<IReadOnlyUnit> FilterByFaction(this IEnumerable<IReadOnlyUnit> units, EFaction faction)
+    public static IEnumerable<IReadOnlyUnit> FilterByFaction(this IEnumerable<IReadOnlyUnit> source, EFaction faction)
     {
         var result = new List<IReadOnlyUnit>();
 
-        foreach (var unit in units)
+        foreach (var unit in source)
         {
             if (unit.FactionType == faction)
             {

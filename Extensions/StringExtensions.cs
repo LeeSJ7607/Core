@@ -1,12 +1,12 @@
 ﻿public static class StringExtensions
 {
-    public static bool IsNullOrEmpty(this string str)
+    public static bool IsNullOrEmpty(this string source)
     {
-        return string.IsNullOrEmpty(str);
+        return string.IsNullOrEmpty(source);
     }
     
-    public static bool IsNullOrWhiteSpace(this string str)
+    public static bool IsNullOrWhiteSpace(this string source)
     {
-        return string.IsNullOrWhiteSpace(str);
+        return string.IsNullOrWhiteSpace(source);
     }
 }

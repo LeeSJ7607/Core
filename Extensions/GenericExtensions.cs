@@ -4,24 +4,24 @@ using System.Collections.Generic;
 
 public static class GenericExtensions
 {
-    public static bool IsNullOrEmpty<T>(this T[] param)
+    public static bool IsNullOrEmpty<T>(this T[] source)
     {
-        return param.IsNull() || param.Length == 0;
+        return source.IsNull() || source.Length == 0;
     }
 
-    public static bool IsNullOrEmpty<T>(this IEnumerable<T> param)
+    public static bool IsNullOrEmpty<T>(this IEnumerable<T> source)
     {
-        return param.IsNull() || !param.Any();
+        return source.IsNull() || !source.Any();
     }
 
-    public static void Foreach<T>(this IReadOnlyList<T> list, Action<T> act)
+    public static void Foreach<T>(this IReadOnlyList<T> source, Action<T> act)
     {
-        if (list.IsNullOrEmpty())
+        if (source.IsNullOrEmpty())
         {
             return;
         }
 
-        foreach (var element in list)
+        foreach (var element in source)
         {
             act.Invoke(element);
         }

@@ -1,7 +1,7 @@
 ﻿public static class UIExtensions
 {
-    public static string ToStringMoney(this int value)
+    public static string ToStringMoney(this int source)
     {
-        return value.ToString("N0");
+        return source.ToString("N0");
     }
 }
