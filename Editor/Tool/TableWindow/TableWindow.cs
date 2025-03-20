@@ -22,24 +22,23 @@ internal sealed class TableWindow : EditorWindow
     private string _selectedScriptCreationPath;
     
     [MenuItem("Custom/Window/TableWindow")]
-    public static void Open()
+    private static void Open()
     {
-        Initialize();
+        GetWindow<TableWindow>().Show();
     }
 
-    private static void Initialize()
+    private void OnEnable()
     {
-        var tool = GetWindow<TableWindow>();
-        tool._selectedTableFolderPath = EditorPrefs.GetString(KEY_TABLE_FOLDER_PATH);
-        tool._selectedSOCreationPath = EditorPrefs.GetString(KEY_SO_CREATION_PATH);
-        tool._selectedScriptCreationPath = EditorPrefs.GetString(KEY_SCRIPT_CREATION_PATH);
+        _selectedTableFolderPath = EditorPrefs.GetString(KEY_TABLE_FOLDER_PATH);
+        _selectedSOCreationPath = EditorPrefs.GetString(KEY_SO_CREATION_PATH);
+        _selectedScriptCreationPath = EditorPrefs.GetString(KEY_SCRIPT_CREATION_PATH);
         
-        if (!tool._selectedTableFolderPath.IsNullOrEmpty())
+        if (!_selectedTableFolderPath.IsNullOrEmpty())
         {
-            tool.CreateTableWindowLogic();
+            CreateTableWindowLogic();
         }
     }
-    
+
     private void CreateTableWindowLogic()
     {
         if (_selectedTableFolderPath.IsNullOrEmpty() || _selectedSOCreationPath.IsNullOrEmpty())
@@ -124,7 +123,6 @@ internal sealed class TableWindow : EditorWindow
         });
         
         GUILayout.Label(_selectedTableFolderPath);
-        GUIUtil.Btn("Refresh", 70, Initialize); 
         EditorGUILayout.EndHorizontal();
     }
     

@@ -17,7 +17,7 @@ internal sealed class BehaviorTreeWindow : EditorWindow
     }
     
     [MenuItem("Custom/Window/BehaviorTreeWindow")]
-    public static void Open()
+    private static void Open()
     {
         GetWindow<BehaviorTreeWindow>();
     }

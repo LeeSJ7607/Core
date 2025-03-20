@@ -22,7 +22,7 @@ internal sealed class AssetManagementGUI_Main : EditorWindow
     }
     
     [MenuItem("Custom/Window/AssetManagementWindow")]
-    public static void Open()
+    private static void Open()
     {
         var tool = GetWindow<AssetManagementGUI_Main>();
         var selectedFilePath = tool._selectedFolderPath = PlayerPrefs.GetString(KEY_SELECTED_FOLDER_PATH);
