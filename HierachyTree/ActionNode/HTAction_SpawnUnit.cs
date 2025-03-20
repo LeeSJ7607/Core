@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class HTAction_SpawnUnit : HierachyTree
+public sealed class HTAction_SpawnUnit : HTAction
 {
     private ISpawner[] _spawners;
 

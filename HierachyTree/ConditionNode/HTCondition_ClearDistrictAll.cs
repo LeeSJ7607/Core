@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class HTCondition_ClearDistrictAll : HierachyTree
+public sealed class HTCondition_ClearDistrictAll : HTCondition
 {
     private IDistrict[] _districts;
 
