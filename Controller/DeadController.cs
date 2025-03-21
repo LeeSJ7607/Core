@@ -29,7 +29,12 @@ public sealed class DeadController
         {
             return;
         }
-        
+
+        ShowDieEffect();
+    }
+
+    private void ShowDieEffect()
+    {
         // var fx = Object.Instantiate(ResourceManager.Instance.Get<GameObject>("Fx_Unit_Die"));
         // fx.transform.position = _owner.Pos;
         //

@@ -8,12 +8,16 @@ public interface IUnitController
     void RemoveUnit(IReadOnlyUnit unit);
 }
 
-//TODO: 폴더 정리 (스크립트 위치)
 public sealed class BattleEnvironment : IUnitController
 {
     IEnumerable<IReadOnlyUnit> IUnitController.Units => _units;
     private readonly HashSet<IReadOnlyUnit> _units = new();
     private readonly UnitContainer _unitContainer = new();
+
+    public void Release()
+    {
+        _unitContainer.Release();
+    }
 
     IUnitInitializer IUnitController.CreateUnit(int unitId, Vector3 pos, Quaternion rot)
     {

@@ -1,4 +1,4 @@
-﻿using UnityEngine.AddressableAssets;
+﻿using UnityEngine.SceneManagement;
 
 public enum EScene
 {
@@ -16,14 +16,11 @@ internal sealed class SceneLoader
     public void LoadScene(EScene sceneType)
     {
         CurSceneType = sceneType;
-        
-        var handle = Addressables.LoadSceneAsync(EScene.Loading.ToString());
-        Addressables.Release(handle);
+        SceneManager.LoadSceneAsync(EScene.Loading.ToString());
     }
     
     public void LoadNextScene()
     {
-        var handle = Addressables.LoadSceneAsync(CurSceneType);
-        Addressables.Release(handle);
+        SceneManager.LoadSceneAsync(CurSceneType.ToString());
     }
 }

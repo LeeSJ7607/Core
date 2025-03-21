@@ -15,11 +15,11 @@ public abstract class Table<TRow> : ScriptableObject, ITable
 
     public bool TryParse(IReadOnlyList<Dictionary<string, string>> rows)
     {
-        var ser = JsonConvert.SerializeObject(rows);
-        
         try
         {
-            OnParse(JsonConvert.DeserializeObject<List<TRow>>(ser, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore}));
+            var ser = JsonConvert.SerializeObject(rows);
+            var jsonSerializerSettings = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore};
+            OnParse(JsonConvert.DeserializeObject<List<TRow>>(ser, jsonSerializerSettings));
         }
         catch (Exception e)
         {
