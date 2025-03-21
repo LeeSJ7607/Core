@@ -16,7 +16,7 @@ public static class UnityExtension
             return;
         }
         
-        source.SetActive(active);
+        source.gameObject.SetActive(active);
     }
     
     public static void Show(this GameObject source)
@@ -88,6 +88,16 @@ public static class UnityExtension
         
         source.transform.SetParent(root.transform);
     }
+    
+    public static void SetParent(this GameObject source, Transform root)
+    {
+        if (source.IsNull())
+        {
+            return;
+        }
+        
+        source.transform.SetParent(root);
+    }
 
     public static void AddListener(this Button source, UnityAction act)
     {
@@ -138,5 +148,19 @@ public static class UnityExtension
     public static T AddComponent<T>(this Component source) where T : Component
     {
         return source.gameObject.AddComponent<T>();
+    }
+
+    public static bool TryGetChild(this MonoBehaviour source, out Transform refTm, int idx = 0)
+    {
+        refTm = null;
+        
+        var tm = source.transform;
+        if (tm.childCount == idx)
+        {
+            return false;
+        }
+
+        refTm = tm.GetChild(idx);
+        return true;
     }
 }

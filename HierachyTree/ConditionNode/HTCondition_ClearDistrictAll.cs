@@ -3,7 +3,7 @@
 [DisallowMultipleComponent]
 public sealed class HTCondition_ClearDistrictAll : HTCondition
 {
-    private IDistrict[] _districts;
+    private District[] _districts;
 
     public override void OnBegin()
     {
@@ -12,7 +12,7 @@ public sealed class HTCondition_ClearDistrictAll : HTCondition
         
         if (_districts.IsNullOrEmpty())
         {
-            Debug.LogError($"{nameof(HTCondition_ClearDistrictAll)}에 컴포넌트된 {nameof(IDistrict)}이 없습니다.");
+            Debug.LogError($"{nameof(HTCondition_ClearDistrictAll)}에 컴포넌트된 {nameof(District)}이 없습니다.");
         }
     }
 
@@ -22,7 +22,7 @@ public sealed class HTCondition_ClearDistrictAll : HTCondition
         {
             if (!district.IsCleared)
             {
-                return EBTStatus.Running;
+                return EBTStatus.Success;
             }
         }
 

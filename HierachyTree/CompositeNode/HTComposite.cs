@@ -6,7 +6,6 @@ public interface IHTComposite
     EBTStatus Update();
 }
 
-[RequireComponent(typeof(HTRoot))]
 public abstract class HTComposite : HierachyTree, IHTComposite
 {
     protected readonly List<HierachyTree> _nodes = new();
@@ -31,6 +30,11 @@ public abstract class HTComposite : HierachyTree, IHTComposite
 
     EBTStatus IHTComposite.Update()
     {
+        if (_nodes.IsNullOrEmpty())
+        {
+            return EBTStatus.Failure;
+        }
+        
         return OnUpdate();
     }
 }
