@@ -14,7 +14,7 @@ public sealed class BlackBoard
     {
         MoveController = new MoveController(owner);
         TargetController = new TargetController(owner);
-        AttackController = new AttackController(owner);
+        AttackController = new AttackController(owner as IAttacker);
         OwnerPos = owner.Tm.position;
         Units = units;
     }

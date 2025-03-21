@@ -2,25 +2,14 @@ using R3;
 using UnityEngine;
 using UnityEngine.AI;
 
-public interface IAttacker
-{
-    int Damage { get; }
-}
-
-public interface IDefender
-{
-    Vector3 Pos { get; }
-    void Hit(int damage);
-}
-
 public interface IReadOnlyUnit
 {
     UnitTable.Row UnitTable { get; }
     EFaction FactionType { get; }
     bool IsDead { get; }
     Transform Tm { get; }
-    Observable<R3.Unit> OnRelease { get; }
     IAnimatorController AnimatorController { get; }
+    Observable<R3.Unit> OnRelease { get; }
 }
 
 public interface IUnitInitializer
@@ -29,40 +18,29 @@ public interface IUnitInitializer
 }
 
 [RequireComponent(typeof(NavMeshAgent), typeof(AnchorNode))]
-public abstract class Unit : MonoBehaviour,
+public abstract partial class Unit : MonoBehaviour,
     IUnitInitializer,
     IReadOnlyUnit, 
     IAttacker,
     IDefender
 {
-    private int _unitId;
-    private Stat _stat;
-    private UnitUI _unitUI;
-    private IUnitController _unitController;
-    private readonly ReactiveCommand _onRelease = new();
-
-#region Attacker
-    int IAttacker.Damage => 100;
-#endregion
-
-#region Defender
-    Vector3 IDefender.Pos => transform.position;
-#endregion
-    
 #region IReadOnlyUnit
     UnitTable.Row IReadOnlyUnit.UnitTable => DataAccessor.GetTable<UnitTable>().GetRow(_unitId);
     public EFaction FactionType { get; private set; }
     public bool IsDead => _stat[EStat.HP] <= 0;
     Transform IReadOnlyUnit.Tm => transform;
     Observable<R3.Unit> IReadOnlyUnit.OnRelease => _onRelease;
-    public IAnimatorController AnimatorController => _animatorController; //TODO: 한 군데에서만 처리하고 싶은데.. public 으로 해야하나..
+    public IAnimatorController AnimatorController => _animatorController;
 #endregion
-
-#region Controller
-    private readonly UnitAIController _unitAIController = new();
-    private AnimatorController _animatorController;
+    
+    private int _unitId;
+    private Stat _stat;
+    private UnitUI _unitUI;
+    private IUnitController _unitController;
     private DeadController _deadController;
-#endregion
+    private AnimatorController _animatorController;
+    private readonly UnitAIController _unitAIController = new();
+    private readonly ReactiveCommand _onRelease = new();
 
     private void OnDisable()
     {
@@ -99,18 +77,6 @@ public abstract class Unit : MonoBehaviour,
         _unitAIController.Initialize(this, unitController.Units);
         _deadController.Initialize();
         _animatorController.Initialize();
-    }
-
-    void IDefender.Hit(int damage)
-    {
-        _stat[EStat.HP] -= damage;
-        _unitUI.SetHPAndDamage(_stat, damage);
-        AnimatorController.SetState(IsDead ? EAnimState.Die : EAnimState.Hit);
-        
-        if (IsDead)
-        {
-            _unitController.RemoveUnit(this);
-        }
     }
     
     private void OnDrawGizmos()
