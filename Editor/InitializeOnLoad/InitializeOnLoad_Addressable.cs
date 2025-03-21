@@ -10,7 +10,7 @@ internal static class InitializeOnLoad_Addressable
         var settings = AddressableAssetSettingsDefaultObject.Settings;
         settings.OnModification = (assetSettings, @event, obj) =>
         {
-            AssetDatabase.SaveAssets();
+            EditorApplication.ExecuteMenuItem("File/Save Project");
             Debug.Log($"Save Addressable.\nevent: {@event}, arg: {obj}");
         };
     }
