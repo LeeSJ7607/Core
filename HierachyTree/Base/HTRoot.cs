@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[DisallowMultipleComponent]
+[DisallowMultipleComponent] [RequireComponent(typeof(HTSequence))]
 public sealed class HTRoot : MonoBehaviour
 {
     private IHTComposite _htComposite;
