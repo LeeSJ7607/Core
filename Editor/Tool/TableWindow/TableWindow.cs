@@ -63,6 +63,7 @@ internal sealed class TableWindow : EditorWindow
 
     private void OnGUI()
     {
+        GUIUtil.Btn("Create Table Directory", CreateTableDirectory);
         DrawTableFolderPath();
         DrawSOCreationPath();
         DrawScriptCreationPath();
@@ -157,7 +158,6 @@ internal sealed class TableWindow : EditorWindow
         });
         
         GUILayout.Label(_selectedSOCreationPath);
-        GUIUtil.Btn("Create Table Directory", 150, CreateTableDirectory);
         EditorGUILayout.EndHorizontal();
     }
     
