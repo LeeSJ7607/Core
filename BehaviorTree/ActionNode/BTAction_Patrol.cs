@@ -20,7 +20,6 @@ internal sealed class BTAction_Patrol : BehaviorTree
             SetTargetPos();
         }
         
-        //TODO: DrawFOV 함수에 맞춰서 시야각에 타겟이 걸렸는지 체크 필요
         return board.TargetController.TryFindTarget(board.Units) 
             ? EBTStatus.Success 
             : EBTStatus.Running;

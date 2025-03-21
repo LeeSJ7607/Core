@@ -115,7 +115,13 @@ public abstract class Unit : MonoBehaviour,
     
     private void OnDrawGizmos()
     {
+        var unitTable = (this as IReadOnlyUnit).UnitTable;
+        if (unitTable == null)
+        {
+            return;
+        }
+        
         Gizmos.color = Color.red;
-        GizmosUtil.DrawFOV(transform, 5f, 30f);
+        GizmosUtil.DrawFOV(transform, unitTable.FOV_Radius, unitTable.FOV_Angle);
     }
 }

@@ -38,8 +38,8 @@ public sealed class MoveController
             return;
         }
 
-        var isWalk = _navMeshAgent.remainingDistance < 2f; //TODO: MonsterTable.
-        var speed = isWalk ? 1f : 3f; //TODO: MonsterTable.
+        var isWalk = _navMeshAgent.remainingDistance < 2f;
+        var speed = isWalk ? 1f : 3f;
         _navMeshAgent.speed = speed;
         _animatorController.SetState(EAnimState.Walk, _navMeshAgent.velocity.magnitude);
     }

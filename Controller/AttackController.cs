@@ -6,6 +6,7 @@ public sealed class AttackController
     private IDefender _target;
     private readonly IAttacker _owner;
     private readonly Transform _ownerTm;
+    private readonly UnitTable.Row _unitTable;
     private readonly IAnimatorController _animatorController;
     private readonly CompositeDisposable _disposable = new();
     
@@ -13,6 +14,7 @@ public sealed class AttackController
     {
         _owner = (IAttacker)owner;
         _ownerTm = owner.Tm;
+        _unitTable = owner.UnitTable;
         _animatorController = owner.AnimatorController;
         
         owner.OnRelease
@@ -27,7 +29,7 @@ public sealed class AttackController
 
     public bool IsTargetInRange(Vector3 targetPos)
     {
-        return Vector3.Distance(_ownerTm.position, targetPos) < 2f; //TODO: 2f 는 공격 사정거리 (테이블 필요)
+        return Vector3.Distance(_ownerTm.position, targetPos) < _unitTable.Atk_Range;
     }
     
     //TODO: 매프레임마다 SetState 을 해도 되려는지.
