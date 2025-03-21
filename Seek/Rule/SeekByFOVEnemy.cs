@@ -2,24 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class SeekByNearestEnemy : ISeeker
+public sealed class SeekByFOVEnemy : ISeeker
 {
     public IReadOnlyList<IReadOnlyUnit> Seek(IEnumerable<IReadOnlyUnit> units, IReadOnlyUnit owner)
     {
         IReadOnlyUnit target = null;
-        var nearestDistance = float.MaxValue;
-
         var filteredUnits = units.FilterByFaction(EFaction.Enemy);
+
         foreach (var unit in filteredUnits)
         {
-            var dis = Vector3.Distance(owner.Tm.position, unit.Tm.position);
-            if (dis >= nearestDistance)
+            var unitTable = unit.UnitTable;
+
+            var dir = unit.Tm.position - owner.Tm.position;
+            if (dir.magnitude > unitTable.FOV_Radius)
+            {
+                continue;
+            }
+            
+            var fovAngle = Mathf.Cos(unitTable.FOV_Angle * Mathf.Rad2Deg);
+            var dot = Vector3.Dot(owner.Tm.forward.normalized, dir.normalized);
+            if (dot < fovAngle)
             {
                 continue;
             }
 
-            nearestDistance = dis;
             target = unit;
+            break;
         }
 
         return target != null ? new [] { target } : Array.Empty<IReadOnlyUnit>();

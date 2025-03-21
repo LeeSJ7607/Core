@@ -2,10 +2,11 @@
 
 public sealed class Seeker
 {
-    private readonly ISeeker[] _seekers = new ISeeker[(int)ESeekRule.End]
+    private readonly ISeeker[] _seekers = 
     {
         new SeekBySelf(),
         new SeekByRandom(),
+        new SeekByFOVEnemy(),
         new SeekByFarthestEnemy(),
         new SeekByNearestEnemy(),
         new SeekByHPLeastEnemy(),
