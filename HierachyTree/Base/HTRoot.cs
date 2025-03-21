@@ -7,11 +7,7 @@ public sealed class HTRoot : MonoBehaviour
 
     private void Awake()
     {
-        _htComposite = GetComponentInChildren<IHTComposite>(true);
-        if (_htComposite == null)
-        {
-            Debug.LogError($"{nameof(HTRoot)} 자식 오브젝트에 {nameof(HTComposite)}가 컴포넌트 되어있지 않습니다.");
-        }
+        _htComposite = GetComponent<IHTComposite>();
     }
 
     private void Update()
