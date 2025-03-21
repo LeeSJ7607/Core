@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class HierachyTree : MonoBehaviour
+public abstract class HierarchyTree : MonoBehaviour
 {
     public virtual void OnBegin() { }
     public abstract EBTStatus OnUpdate();

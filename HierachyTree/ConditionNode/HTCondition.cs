@@ -1,4 +1,4 @@
-﻿public abstract class HTCondition : HierachyTree
+﻿public abstract class HTCondition : HierarchyTree
 {
     
 }

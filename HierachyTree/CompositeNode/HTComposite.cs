@@ -6,9 +6,9 @@ public interface IHTComposite
     EBTStatus Update();
 }
 
-public abstract class HTComposite : HierachyTree, IHTComposite
+public abstract class HTComposite : HierarchyTree, IHTComposite
 {
-    protected readonly List<HierachyTree> _nodes = new();
+    protected readonly List<HierarchyTree> _nodes = new();
 
     private void Awake()
     {
@@ -16,7 +16,7 @@ public abstract class HTComposite : HierachyTree, IHTComposite
         foreach (var obj in tm)
         {
             var child = (Transform)obj;
-            if (child.TryGetComponent<HierachyTree>(out var node))
+            if (child.TryGetComponent<HierarchyTree>(out var node))
             {
                 _nodes.Add(node);
             }
@@ -24,7 +24,7 @@ public abstract class HTComposite : HierachyTree, IHTComposite
 
         if (_nodes.IsNullOrEmpty())
         {
-            Debug.LogError($"컴포넌트된 {nameof(HierachyTree)}가 없습니다.");
+            Debug.LogError($"컴포넌트된 {nameof(HierarchyTree)}가 없습니다.");
         }
     }
 

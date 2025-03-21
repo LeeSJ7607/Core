@@ -1,4 +1,4 @@
-﻿public abstract class HTAction : HierachyTree
+﻿public abstract class HTAction : HierarchyTree
 {
     
 }

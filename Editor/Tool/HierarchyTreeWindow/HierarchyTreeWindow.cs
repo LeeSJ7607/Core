@@ -17,7 +17,7 @@ public sealed class HierarchyTreeWindow : EditorWindow
 
     private void OnEnable()
     {
-        var assembly = typeof(HierachyTree).Assembly.GetExportedTypes();
+        var assembly = typeof(HierarchyTree).Assembly.GetExportedTypes();
         _compositeTypes = assembly.Where(_ => _.IsSubclassOf(typeof(HTComposite))).ToArray();
         _conditionTypes = assembly.Where(_ => _.IsSubclassOf(typeof(HTCondition))).ToArray();
         _actionTypes = assembly.Where(_ => _.IsSubclassOf(typeof(HTAction))).ToArray();
