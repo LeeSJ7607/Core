@@ -132,8 +132,13 @@ internal sealed class TableWindowLogic
                 continue;
             }
             
+            var createTableSo = createTable as ScriptableObject;
+            {
+                Selection.activeObject = createTableSo;
+                EditorUtility.SetDirty(createTableSo);
+            }
+            
             tableInfo.SetBakeTime();
-            EditorUtility.SetDirty(createTable as ScriptableObject);
         }
     }
 
