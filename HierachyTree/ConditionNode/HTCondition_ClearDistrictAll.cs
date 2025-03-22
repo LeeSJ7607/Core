@@ -22,7 +22,7 @@ public sealed class HTCondition_ClearDistrictAll : HTCondition
         {
             if (!district.IsCleared)
             {
-                return EBTStatus.Success;
+                return EBTStatus.Running;
             }
         }
 

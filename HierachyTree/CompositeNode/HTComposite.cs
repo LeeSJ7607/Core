@@ -3,7 +3,7 @@ using UnityEngine;
 
 public interface IHTComposite
 {
-    EBTStatus Update();
+    void Update();
 }
 
 public abstract class HTComposite : HierarchyTree, IHTComposite
@@ -28,13 +28,13 @@ public abstract class HTComposite : HierarchyTree, IHTComposite
         }
     }
 
-    EBTStatus IHTComposite.Update()
+    void IHTComposite.Update()
     {
         if (_nodes.IsNullOrEmpty())
         {
-            return EBTStatus.Failure;
+            return;
         }
         
-        return OnUpdate();
+        OnUpdate();
     }
 }

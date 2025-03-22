@@ -12,16 +12,9 @@ public sealed class HTRoot : MonoBehaviour
 
     private void Update()
     {
-        if (_htComposite == null)
+        if (_htComposite != null)
         {
-            return;
+            _htComposite.Update();
         }
-
-        if (_htComposite.Update() == EBTStatus.Running)
-        {
-            return;
-        }
-        
-        gameObject.Hide();
     }
 }

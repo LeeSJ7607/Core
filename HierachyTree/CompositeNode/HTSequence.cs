@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+//TODO: _curStatus 버그
 public sealed class HTSequence : HTComposite
 {
     private EBTStatus? _curStatus;
