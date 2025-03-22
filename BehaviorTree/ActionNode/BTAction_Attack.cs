@@ -1,10 +1,14 @@
 internal sealed class BTAction_Attack : BehaviorTree
 {
+    private IDefender _target;
+    
     public override EBTStatus OnUpdate(BlackBoard board)
     {
         var target = board.TargetController.Target;
+        _target ??= (IDefender)target;
+        
         var attackController = board.AttackController;
-        attackController.Attack((IDefender)target);
+        attackController.Attack(_target);
         
         if (!attackController.IsTargetInRange(target.Tm.position))
         {
@@ -14,5 +18,11 @@ internal sealed class BTAction_Attack : BehaviorTree
         return target.IsDead()
             ? EBTStatus.Success
             : EBTStatus.Running;
+    }
+
+    public override void OnEnd(BlackBoard board)
+    {
+        _target = null;
+        base.OnEnd(board);
     }
 }

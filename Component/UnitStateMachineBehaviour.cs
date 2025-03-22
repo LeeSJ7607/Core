@@ -28,7 +28,7 @@ internal sealed class UnitStateMachineBehaviour : StateMachineBehaviour
             return;
         }
         
-        _unitStateMachineBehaviour = unit.AnimatorController as IUnitStateMachineBehaviour;
+        _unitStateMachineBehaviour = (IUnitStateMachineBehaviour)unit.AnimatorController;
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

@@ -24,13 +24,16 @@ internal sealed class NetworkManager : Singleton<NetworkManager>
         
         void IMessage.Response(object message)
         {
+            var response = (TResponse)message;
+            
             if (_act != null)
             {
-                _act.Invoke(message as TResponse);
-                return;
+                _act.Invoke(response);
             }
-
-            _tcs.TrySetResult(message as TResponse);
+            else
+            {
+                _tcs.TrySetResult(response);
+            }
         }
     }
     

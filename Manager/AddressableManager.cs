@@ -19,7 +19,7 @@ internal sealed class AddressableManager : Singleton<AddressableManager>
         
         if (_resMap.TryGetValue(key, out var obj))
         {
-            return obj as TObject;
+            return (TObject)obj;
         }
         
         Debug.LogError($"{key} is Not Found Resource");
