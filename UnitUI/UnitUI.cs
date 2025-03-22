@@ -1,23 +1,13 @@
-﻿using UnityEngine;
-
-public sealed class UnitUI
+﻿public sealed class UnitUI
 {
-    private readonly UnitHealthUI _unitHealthUI;
-    private readonly UnitDamageUI _unitDamageUI;
-    private readonly Camera _mainCam;
+    private readonly UnitHealthUI _unitHealthUI = new();
+    private readonly UnitDamageUI _unitDamageUI = new();
 
-    public UnitUI(IReadOnlyUnit owner)
+    public void Initialize(IReadOnlyUnit owner)
     {
         var anchorNode = owner.Tm.GetComponentInChildren<AnchorNode>(true);
-        _unitHealthUI = new UnitHealthUI(anchorNode[EAnchorNode.HP]);
-        _unitDamageUI = new UnitDamageUI(anchorNode[EAnchorNode.Hit]);
-        _mainCam = Camera.main ?? throw new System.NullReferenceException("Main camera is missing.");
-    }
-
-    public void Initialize()
-    {
-        _unitHealthUI.Initialize();
-        _unitDamageUI.Initialize();
+        // _unitHealthUI.Initialize(anchorNode[EAnchorNode.HP]);
+        // _unitDamageUI.Initialize(anchorNode[EAnchorNode.Hit]);
     }
 
     public void OnUpdate()

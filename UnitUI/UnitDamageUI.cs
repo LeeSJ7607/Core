@@ -3,15 +3,11 @@
 public sealed class UnitDamageUI
 {
     private readonly ObjectPool<UIDamageText> _damageTextPool = new();
-    private readonly Vector3 _anchorNodePos;
+    private Vector3 _anchorNodePos;
     
-    public UnitDamageUI(Vector3 anchorNodePos)
+    public void Initialize(Vector3 anchorNodePos)
     {
         _anchorNodePos = anchorNodePos;
-    }
-
-    public void Initialize()
-    {
         _damageTextPool.Initialize(3, 5);
     }
 
