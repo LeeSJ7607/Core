@@ -13,7 +13,7 @@ internal sealed class LoadingScene : Scene
         _sceneLoader.LoadNextScene();
     }
 
-    private async UniTask ReleaseAll()
+    public static async UniTask ReleaseAll()
     {
         GC.Collect();
         await Resources.UnloadUnusedAssets();
