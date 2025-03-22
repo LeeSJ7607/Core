@@ -10,10 +10,11 @@ public sealed class DeadController
     {
         _owner = owner;
         _animatorController = owner.AnimatorController;
-        
-        owner.OnRelease
-             .Subscribe(_ => _disposable.Dispose())
-             .AddTo(_disposable);
+    }
+
+    public void Release()
+    {
+        _disposable.Dispose();
     }
     
     public void Initialize()

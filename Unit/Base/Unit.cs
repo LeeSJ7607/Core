@@ -9,7 +9,6 @@ public interface IReadOnlyUnit
     bool IsDead { get; }
     Transform Tm { get; }
     IAnimatorController AnimatorController { get; }
-    Observable<R3.Unit> OnRelease { get; }
 }
 
 public interface IUnitInitializer
@@ -29,7 +28,6 @@ public abstract partial class Unit : MonoBehaviour,
     public EFaction FactionType { get; private set; }
     public bool IsDead => _stat[EStat.HP] <= 0;
     Transform IReadOnlyUnit.Tm => transform;
-    Observable<R3.Unit> IReadOnlyUnit.OnRelease => _onRelease;
     public IAnimatorController AnimatorController => _animatorController;
 #endregion
     
@@ -40,12 +38,12 @@ public abstract partial class Unit : MonoBehaviour,
     private DeadController _deadController;
     private AnimatorController _animatorController;
     private readonly UnitAIController _unitAIController = new();
-    private readonly ReactiveCommand _onRelease = new();
 
     private void OnDisable()
     {
-        _onRelease.Execute(R3.Unit.Default);
-        _onRelease.Dispose();
+        _deadController.Release();
+        _animatorController.Release();
+        _unitAIController.Release();
     }
 
     protected virtual void Awake()

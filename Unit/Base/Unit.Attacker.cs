@@ -8,7 +8,6 @@ public interface IAttacker
     UnitTable.Row UnitTable { get; }
     Transform Tm { get; }
     IAnimatorController AnimatorController { get; }
-    Observable<R3.Unit> OnRelease { get; }
 }
 
 public abstract partial class Unit
@@ -18,5 +17,4 @@ public abstract partial class Unit
     UnitTable.Row IAttacker.UnitTable => DataAccessor.GetTable<UnitTable>().GetRow(_unitId);
     Transform IAttacker.Tm => transform;
     IAnimatorController IAttacker.AnimatorController => _animatorController;
-    Observable<R3.Unit> IAttacker.OnRelease => _onRelease;
 }

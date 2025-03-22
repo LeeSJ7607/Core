@@ -18,4 +18,9 @@ public sealed class BlackBoard
         OwnerPos = owner.Tm.position;
         Units = units;
     }
+
+    public void Release()
+    {
+        AttackController.Release();
+    }
 }

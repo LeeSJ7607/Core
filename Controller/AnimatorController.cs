@@ -27,21 +27,14 @@ public sealed class AnimatorController :
     private readonly ReactiveCommand<EAnimState> _onAnimStateExit = new();
     private readonly int[] _stateHash = new int[(int)EAnimState.End];
     private readonly Animator _animator;
-    private readonly CompositeDisposable _disposable = new();
     
     public AnimatorController(IReadOnlyUnit owner)
     {
         _animator = owner.Tm.GetComponent<Animator>();
-        
-        //TODO: 릴리즈 방식을 다르게 해야할까?
-        owner.OnRelease
-             .Subscribe(_ => Release())
-             .AddTo(_disposable);
     }
 
-    private void Release()
+    public void Release()
     {
-        _disposable.Dispose();
         _onAnimStateExit.Dispose(); 
     }
 

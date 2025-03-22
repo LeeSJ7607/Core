@@ -6,6 +6,11 @@ internal sealed class UnitAIController
     private BlackBoard _board;
     private bool _isActive;
 
+    public void Release()
+    {
+        _board.Release();
+    }
+
     public void Initialize(IReadOnlyUnit owner, IEnumerable<IReadOnlyUnit> units)
     {
         _board ??= new BlackBoard(owner, units);

@@ -10,18 +10,20 @@ public sealed class AttackController
     public AttackController(IAttacker owner)
     {
         _owner = owner;
-        owner.OnRelease
-             .Subscribe(_ => _disposable.Dispose())
+                
+        owner.AnimatorController.OnAnimStateExit
+             .Subscribe(OnAnimStateExit)
              .AddTo(_disposable);
 
         var animationEventReceiver = owner.Tm.AddComponent<AnimationEventReceiver>(); 
         animationEventReceiver.OnAttack
                               .Subscribe(DoAttack)
                               .AddTo(_disposable);
-        
-        owner.AnimatorController.OnAnimStateExit
-                                .Subscribe(OnAnimStateExit)
-                                .AddTo(_disposable);
+    }
+
+    public void Release()
+    {
+        _disposable.Dispose();
     }
 
     public bool IsTargetInRange(Vector3 targetPos)
