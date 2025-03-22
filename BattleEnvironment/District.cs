@@ -1,18 +1,31 @@
 ﻿using UnityEngine;
 
-[DisallowMultipleComponent] [RequireComponent(typeof(HTRoot))]
+[DisallowMultipleComponent] [RequireComponent(typeof(HTSequence))]
 public sealed class District : MonoBehaviour
 {
     public bool IsCleared { get; set; }
-    private HTRoot _htRoot;
+    private IHTComposite _htComposite;
 
     private void Awake()
     {
-        _htRoot = GetComponent<HTRoot>();
+        _htComposite = GetComponent<IHTComposite>();   
     }
 
     public void Initialize(IReadOnlyBattleEnvironment battleEnvironment)
     {
-        _htRoot.Initialize(battleEnvironment);
+        var initializers = GetComponentsInChildren<IUnitControllerBinder>();
+        
+        foreach (var initializer in initializers)
+        {
+            initializer.Initialize((IUnitController)battleEnvironment);
+        }
+    }
+
+    private void Update()
+    {
+        if (_htComposite != null)
+        {
+            _htComposite.Update();
+        }
     }
 }
