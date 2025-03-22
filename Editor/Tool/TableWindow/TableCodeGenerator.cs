@@ -6,7 +6,7 @@ using UnityEngine;
 
 internal sealed class TableCodeGenerator
 {
-    public void Execute(string tableFolderPath, string scriptCreationPath, (bool toggle, TableWindowLogic.TableInfo tableInfo)[] checkToggleTables)
+    public void Execute(string tableFolderPath, string scriptCreationPath, (bool toggle, TableGenerator.TableInfo tableInfo)[] checkToggleTables)
     {
         var sb = new StringBuilder(128);
         var selectedTableNames = CalcSelectedTableNames(checkToggleTables);
@@ -43,7 +43,7 @@ internal sealed class TableCodeGenerator
         AssetDatabase.Refresh();
     }
 
-    private static IReadOnlyList<string> CalcSelectedTableNames((bool toggle, TableWindowLogic.TableInfo tableInfo)[] checkToggleTables)
+    private static IReadOnlyList<string> CalcSelectedTableNames((bool toggle, TableGenerator.TableInfo tableInfo)[] checkToggleTables)
     {
         var selectedTableNames = new List<string>();
         

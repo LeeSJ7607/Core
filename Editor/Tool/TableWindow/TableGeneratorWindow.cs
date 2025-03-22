@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-internal sealed class TableWindow : EditorWindow
+internal sealed class TableGeneratorWindow : EditorWindow
 {
     public const string ASSET_GROUP_NAME = "Table";
     public const string TABLE_EXTENSION = ".csv";
     private const float BTN_WIDTH = 200;
-    private static readonly string KEY_TABLE_FOLDER_PATH = $"{typeof(TableWindow)}_KEY_TABLE_FOLDER_PATH";
-    private static readonly string KEY_SO_CREATION_PATH = $"{typeof(TableWindow)}_KEY_SO_CREATION_PATH";
-    private static readonly string KEY_SCRIPT_CREATION_PATH = $"{typeof(TableWindow)}_KEY_SCRIPT_CREATION_PATH";
+    private static readonly string KEY_TABLE_FOLDER_PATH = $"{typeof(TableGeneratorWindow)}_KEY_TABLE_FOLDER_PATH";
+    private static readonly string KEY_SO_CREATION_PATH = $"{typeof(TableGeneratorWindow)}_KEY_SO_CREATION_PATH";
+    private static readonly string KEY_SCRIPT_CREATION_PATH = $"{typeof(TableGeneratorWindow)}_KEY_SCRIPT_CREATION_PATH";
     
     private readonly TableCodeGenerator _tableCodeGenerator = new();
-    private readonly TableWindowLogic _tableWindowLogic = new();
-    private (bool toggle, TableWindowLogic.TableInfo tableInfo)[] _checkToggleTables;
+    private readonly TableGenerator _tableGenerator = new();
+    private (bool toggle, TableGenerator.TableInfo tableInfo)[] _checkToggleTables;
     private string _searchedTableName;
     private Vector2 _tableListScrollPos;
     private string _selectedTableFolderPath;
@@ -24,7 +24,7 @@ internal sealed class TableWindow : EditorWindow
     [MenuItem("Custom/Window/TableWindow")]
     private static void Open()
     {
-        GetWindow<TableWindow>().Show();
+        GetWindow<TableGeneratorWindow>().Show();
     }
 
     private void OnEnable()
@@ -46,18 +46,18 @@ internal sealed class TableWindow : EditorWindow
             return;
         }
         
-        if (!_tableWindowLogic.Initialize(_selectedTableFolderPath, _selectedSOCreationPath))
+        if (!_tableGenerator.Initialize(_selectedTableFolderPath, _selectedSOCreationPath))
         {
             _checkToggleTables = null;
             return;
         }
 
-        _checkToggleTables = new (bool, TableWindowLogic.TableInfo)[_tableWindowLogic.TableInfos.Length];
+        _checkToggleTables = new (bool, TableGenerator.TableInfo)[_tableGenerator.TableInfos.Length];
             
         for (var i = 0; i < _checkToggleTables.Length; i++)
         {
             _checkToggleTables[i].toggle = false;
-            _checkToggleTables[i].tableInfo = _tableWindowLogic.TableInfos[i];
+            _checkToggleTables[i].tableInfo = _tableGenerator.TableInfos[i];
         }
     }
 
@@ -253,7 +253,7 @@ internal sealed class TableWindow : EditorWindow
 
     private void DrawTableList()
     {
-        if (_tableWindowLogic.TableInfos.IsNullOrEmpty())
+        if (_tableGenerator.TableInfos.IsNullOrEmpty())
         {
             return;
         }
@@ -271,9 +271,9 @@ internal sealed class TableWindow : EditorWindow
     {
         _tableListScrollPos = EditorGUILayout.BeginScrollView(_tableListScrollPos);
         
-        for (var i = 0; i < _tableWindowLogic.TableInfos.Length; i++)
+        for (var i = 0; i < _tableGenerator.TableInfos.Length; i++)
         {
-            var tableInfo = _tableWindowLogic.TableInfos[i];
+            var tableInfo = _tableGenerator.TableInfos[i];
             var tableName = tableInfo.TableName;
 
             if (FilterTableName(tableName))
@@ -346,12 +346,12 @@ internal sealed class TableWindow : EditorWindow
         
         GUIUtil.Btn("SO Generator Selected", () =>
         {
-            _tableWindowLogic.BakeTable(_checkToggleTables);
+            _tableGenerator.BakeTable(_checkToggleTables);
         });
         GUIUtil.Btn("SO Generator All", () =>
         {
             SetCheckToggleTables(true);
-            _tableWindowLogic.BakeTable(_checkToggleTables);
+            _tableGenerator.BakeTable(_checkToggleTables);
         });
         
         EditorGUILayout.EndHorizontal();

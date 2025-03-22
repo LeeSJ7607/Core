@@ -9,7 +9,7 @@ using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 
-internal sealed class TableWindowLogic
+internal sealed class TableGenerator
 {
     internal sealed class TableInfo
     {
@@ -25,7 +25,7 @@ internal sealed class TableWindowLogic
             TableName = Path.GetFileNameWithoutExtension(tableFile);;
             BakeTimeStr = EditorPrefs.GetString(KeyBakeTime, null);
             
-            var tablePath = $"{selectedTableFolderPath}/{TableName}{TableWindow.TABLE_EXTENSION}";
+            var tablePath = $"{selectedTableFolderPath}/{TableName}{TableGeneratorWindow.TABLE_EXTENSION}";
             HasTableFile = File.Exists(tablePath);
         }
 
@@ -62,7 +62,7 @@ internal sealed class TableWindowLogic
             return false;
         }
         
-        if (!DirectoryUtil.HasFile(tableFolderPath, $"*{TableWindow.TABLE_EXTENSION}"))
+        if (!DirectoryUtil.HasFile(tableFolderPath, $"*{TableGeneratorWindow.TABLE_EXTENSION}"))
         {
             Debug.LogError("No Table files found in the directory.");
             return false;
@@ -100,7 +100,7 @@ internal sealed class TableWindowLogic
                 continue;
             }
 
-            var tablePath = $"{_selectedTableFolderPath}/{tableInfo.TableName}{TableWindow.TABLE_EXTENSION}";
+            var tablePath = $"{_selectedTableFolderPath}/{tableInfo.TableName}{TableGeneratorWindow.TABLE_EXTENSION}";
             if (!File.Exists(tablePath))
             {
                 Debug.LogError("Table file not found.");
@@ -208,7 +208,7 @@ internal sealed class TableWindowLogic
 
     private AddressableAssetGroup GetOrCreateAddressAssetGroup()
     {
-        var groupPath = $"Assets/AddressableAssetsData/AssetGroups/{TableWindow.ASSET_GROUP_NAME}.asset";
+        var groupPath = $"Assets/AddressableAssetsData/AssetGroups/{TableGeneratorWindow.ASSET_GROUP_NAME}.asset";
         
         if (File.Exists(groupPath))
         {
@@ -216,7 +216,7 @@ internal sealed class TableWindowLogic
         }
 
         var group = ScriptableObject.CreateInstance<AddressableAssetGroup>();
-        group.Name = TableWindow.ASSET_GROUP_NAME;
+        group.Name = TableGeneratorWindow.ASSET_GROUP_NAME;
         group.AddSchema<BundledAssetGroupSchema>();
         group.AddSchema<ContentUpdateGroupSchema>();
         AssetDatabase.CreateAsset(group, groupPath);
