@@ -7,7 +7,9 @@ public interface ISpawner
     void Spawn();
 }
 
-public sealed class BotSpawner : MonoBehaviour, ISpawner
+public sealed class BotSpawner : MonoBehaviour, 
+    ISpawner,
+    IUnitControllerBinder
 {
     [Serializable]
     private struct SpawnSetting
@@ -26,7 +28,7 @@ public sealed class BotSpawner : MonoBehaviour, ISpawner
     [SerializeField] private List<UnitData> _unitDataList;
     private IUnitController _unitController;
 
-    public void Initialize(IUnitController unitController)
+    void IUnitControllerBinder.Initialize(IUnitController unitController)
     {
         _unitController = unitController;
     }
@@ -41,13 +43,11 @@ public sealed class BotSpawner : MonoBehaviour, ISpawner
 
         foreach (var unitData in _unitDataList)
         {
-            var unitId = unitData.Id;
-            
             for (var i = 0; i < unitData.Count; i++)
             {
                 var pos = MathUtil.GetRandomPositionInRadius(transform.position, _spawnSetting.Radius);
-                var unit = _unitController.CreateUnit(unitId, pos, transform.rotation);
-                unit.Initialize(unitId, EFaction.Enemy, _unitController);
+                var unit = _unitController.RegisterUnit(unitData.Id, pos, transform.rotation);
+                unit.Initialize(unitData.Id, EFaction.Enemy, _unitController);
             }
         }
     }

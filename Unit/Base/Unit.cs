@@ -1,4 +1,3 @@
-using R3;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -32,8 +31,8 @@ public abstract partial class Unit : MonoBehaviour,
 #endregion
     
     private int _unitId;
-    private Stat _stat;
-    private UnitUI _unitUI;
+    private readonly Stat _stat = new();
+    private readonly UnitUI _unitUI = new();
     private IUnitController _unitController;
     private DeadController _deadController;
     private AnimatorController _animatorController;
@@ -48,8 +47,6 @@ public abstract partial class Unit : MonoBehaviour,
 
     protected virtual void Awake()
     {
-        _stat = new Stat(this);
-        _unitUI = new UnitUI(this);
         _animatorController = new AnimatorController(this);
         _deadController = new DeadController(this);
     }
@@ -70,7 +67,8 @@ public abstract partial class Unit : MonoBehaviour,
         _unitId = unitId;
         FactionType = factionType;
         _unitController = unitController;
-        _unitUI.Initialize();
+        _stat.Initialize(this);
+        _unitUI.Initialize(this);
         _unitAIController.Initialize(this, unitController.Units);
         _deadController.Initialize();
         _animatorController.Initialize();

@@ -1,13 +1,20 @@
 ﻿using UnityEngine;
 
+//TODO: 리콰이어컴포넌트 필요?
 [DisallowMultipleComponent] [RequireComponent(typeof(HTSequence))]
 public sealed class HTRoot : MonoBehaviour
 {
     private IHTComposite _htComposite;
 
-    private void Awake()
+    public void Initialize(IReadOnlyBattleEnvironment battleEnvironment)
     {
         _htComposite = GetComponent<IHTComposite>();
+        var initializers = GetComponentsInChildren<IUnitControllerBinder>();
+        
+        foreach (var initializer in initializers)
+        {
+            initializer.Initialize((IUnitController)battleEnvironment);
+        }
     }
 
     private void Update()

@@ -1,10 +1,16 @@
 ﻿using UnityEngine;
 
-[DisallowMultipleComponent]
+[DisallowMultipleComponent] [RequireComponent(typeof(InGameScene))]
 public sealed class Zone : MonoBehaviour
 {
+    private readonly BattleEnvironment _battleEnvironment = new();
     private District[] _districts;
     private int _curDistrictIdx;
+
+    private void OnDestroy()
+    {
+        _battleEnvironment.Release();
+    }
 
     private void Awake()
     {
@@ -12,12 +18,16 @@ public sealed class Zone : MonoBehaviour
         if (_districts.IsNullOrEmpty())
         {
             Debug.LogError($"{nameof(District)}가 컴포넌트 되어있지 않습니다.");
-            return;
         }
-
+    }
+    
+    public void Initialize()
+    {
         for (var i = 0; i < _districts.Length; i++)
         {
-            _districts[i].SetActive(i == 0);
+            var district = _districts[i];
+            district.Initialize(_battleEnvironment);
+            district.SetActive(i == 0);
         }
     }
 }

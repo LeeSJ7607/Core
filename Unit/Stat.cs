@@ -10,13 +10,6 @@ public sealed class Stat
 {
     private readonly Dictionary<EStat, int> _statMap = new();
     
-    public Stat(IReadOnlyUnit owner)
-    {
-        var unitTable = owner.UnitTable;
-        Sum(EStat.Max_HP, unitTable.Max_HP);
-        Sum(EStat.HP, unitTable.Max_HP);
-    }
-
     public int this[EStat type]
     {
         get => _statMap.GetValueOrDefault(type, 0);
@@ -29,5 +22,12 @@ public sealed class Stat
         {
             _statMap[type] = value;
         }
+    }
+
+    public void Initialize(IReadOnlyUnit owner)
+    {
+        var unitTable = owner.UnitTable;
+        Sum(EStat.Max_HP, unitTable.Max_HP);
+        Sum(EStat.HP, unitTable.Max_HP);
     }
 }

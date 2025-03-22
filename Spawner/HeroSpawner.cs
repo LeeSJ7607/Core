@@ -1,18 +1,20 @@
 ﻿using UnityEngine;
 
-public sealed class HeroSpawner : MonoBehaviour, ISpawner
+public sealed class HeroSpawner : MonoBehaviour, 
+    ISpawner,
+    IUnitControllerBinder
 {
     [SerializeField] private int _unitId;
     private IUnitController _unitController;
 
-    public void Initialize(IUnitController unitController)
+    void IUnitControllerBinder.Initialize(IUnitController unitController)
     {
         _unitController = unitController;
     }
     
     void ISpawner.Spawn()
     {
-        var unit = _unitController.CreateUnit(_unitId, transform.position, transform.rotation);
+        var unit = _unitController.RegisterUnit(_unitId, transform.position, transform.rotation);
         unit.Initialize(_unitId, EFaction.Ally, _unitController);
     }
     

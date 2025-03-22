@@ -1,14 +1,26 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+public interface IUnitControllerBinder
+{
+    void Initialize(IUnitController unitController);
+}
+
 public interface IUnitController
 {
     IEnumerable<IReadOnlyUnit> Units { get; }
-    IUnitInitializer CreateUnit(int unitId, Vector3 pos, Quaternion rot);
+    IUnitInitializer RegisterUnit(int unitId, Vector3 pos, Quaternion rot);
     void RemoveUnit(IReadOnlyUnit unit);
 }
 
-public sealed class BattleEnvironment : IUnitController
+public interface IReadOnlyBattleEnvironment
+{
+    
+}
+
+public sealed class BattleEnvironment : 
+    IReadOnlyBattleEnvironment,
+    IUnitController
 {
     IEnumerable<IReadOnlyUnit> IUnitController.Units => _units;
     private readonly HashSet<IReadOnlyUnit> _units = new();
@@ -19,7 +31,7 @@ public sealed class BattleEnvironment : IUnitController
         _unitContainer.Release();
     }
 
-    IUnitInitializer IUnitController.CreateUnit(int unitId, Vector3 pos, Quaternion rot)
+    IUnitInitializer IUnitController.RegisterUnit(int unitId, Vector3 pos, Quaternion rot)
     {
         var unit = _unitContainer.GetOrCreate(unitId, null, pos, rot);
         _units.Add((IReadOnlyUnit)unit);
