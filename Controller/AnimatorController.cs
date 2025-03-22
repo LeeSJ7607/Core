@@ -18,7 +18,9 @@ public interface IAnimatorController
     void SetState(EAnimState state, float value = 0f);
 }
 
-public sealed class AnimatorController : IAnimatorController
+public sealed class AnimatorController : 
+    IAnimatorController,
+    IUnitStateMachineBehaviour
 {
     Observable<EAnimState> IAnimatorController.OnAnimStateExit => _onAnimStateExit;
     private readonly ReactiveCommand<EAnimState> _onAnimStateExit = new();
@@ -30,6 +32,7 @@ public sealed class AnimatorController : IAnimatorController
     {
         _animator = owner.Tm.GetComponent<Animator>();
         
+        //TODO: 릴리즈 방식을 다르게 해야할까?
         owner.OnRelease
              .Subscribe(_ => Release())
              .AddTo(_disposable);
@@ -44,23 +47,6 @@ public sealed class AnimatorController : IAnimatorController
     public void Initialize()
     {
         InitStateHash();
-    }
-
-    public void OnUpdate()
-    {
-        if (_stateHash[0] == 0)
-        {
-            return;
-        }
-        
-        var stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.normalizedTime < 1f)
-        {
-            return;
-        }
-
-        var animState = GetStateFromHash(stateInfo.shortNameHash);
-        _onAnimStateExit.Execute(animState);
     }
     
     private void InitStateHash()
@@ -100,5 +86,11 @@ public sealed class AnimatorController : IAnimatorController
         {
             _animator.SetTrigger(stateHash);
         }
+    }
+    
+    void IUnitStateMachineBehaviour.ExecuteAnimStateExit(AnimatorStateInfo stateInfo)
+    {
+        var animState = GetStateFromHash(stateInfo.shortNameHash);
+        _onAnimStateExit.Execute(animState);
     }
 }

@@ -65,7 +65,6 @@ public abstract partial class Unit : MonoBehaviour,
     {
         _unitUI.OnUpdate();
         _unitAIController.OnUpdate();
-        _animatorController.OnUpdate();
     }
 
     void IUnitInitializer.Initialize(int unitId, EFaction factionType, IUnitController unitController)
