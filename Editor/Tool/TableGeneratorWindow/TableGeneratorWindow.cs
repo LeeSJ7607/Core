@@ -21,7 +21,7 @@ internal sealed class TableGeneratorWindow : EditorWindow
     private string _selectedSOCreationPath;
     private string _selectedScriptCreationPath;
     
-    [MenuItem("Custom/Window/TableWindow")]
+    [MenuItem("Custom/Window/TableGeneratorWindow")]
     private static void Open()
     {
         GetWindow<TableGeneratorWindow>().Show();
