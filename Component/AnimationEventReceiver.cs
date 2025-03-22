@@ -1,7 +1,6 @@
 ﻿using R3;
 using UnityEngine;
 
-//TODO: 구조 한번 생각해봐야함.
 public sealed class AnimationEventReceiver : MonoBehaviour
 {
     public Observable<AnimationEvent> OnAttack => _onAttack;

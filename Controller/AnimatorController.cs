@@ -74,6 +74,7 @@ public sealed class AnimatorController :
         return EAnimState.End;
     }
     
+    //TODO: 매프레임마다 SetState 을 해도 되려는지.
     void IAnimatorController.SetState(EAnimState state, float value)
     {
         var stateHash = _stateHash[(int)state];

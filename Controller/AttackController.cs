@@ -18,6 +18,10 @@ public sealed class AttackController
         animationEventReceiver.OnAttack
                               .Subscribe(DoAttack)
                               .AddTo(_disposable);
+        
+        owner.AnimatorController.OnAnimStateExit
+                                .Subscribe(OnAnimStateExit)
+                                .AddTo(_disposable);
     }
 
     public bool IsTargetInRange(Vector3 targetPos)
@@ -25,12 +29,22 @@ public sealed class AttackController
         return Vector3.Distance(_owner.Tm.position, targetPos) < _owner.UnitTable.Atk_Range;
     }
     
-    //TODO: 매프레임마다 SetState 을 해도 되려는지.
     public void Attack(IDefender target)
     {
         _target = target;
         LookAtTarget(target);
-        _owner.AnimatorController.SetState(EAnimState.Attack);
+
+        if (_owner.IsAttackable)
+        {
+            _owner.IsAttackable = false;
+            _owner.AnimatorController.SetState(EAnimState.Attack);
+        }
+    }
+    
+    private void LookAtTarget(IDefender target)
+    {
+        var dir = (target.Pos - _owner.Tm.position).normalized;
+        _owner.Tm.rotation = Quaternion.LookRotation(dir);
     }
     
     private void DoAttack(AnimationEvent animationEvent)
@@ -40,10 +54,12 @@ public sealed class AttackController
             _target.Hit(_owner.Damage);
         }
     }
-
-    private void LookAtTarget(IDefender target)
+    
+    private void OnAnimStateExit(EAnimState animState)
     {
-        var dir = (target.Pos - _owner.Tm.position).normalized;
-        _owner.Tm.rotation = Quaternion.LookRotation(dir);
+        if (animState == EAnimState.Attack)
+        {
+            _owner.IsAttackable = true;
+        }
     }
 }
