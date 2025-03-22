@@ -28,7 +28,7 @@ internal sealed class TextMeshProUGUIEx : TextMeshProUGUI
     {
         if (localizeId == 0)
         {
-            text = $"localizeId is 0";
+            text = "The value of localizeId is 0";
             return;
         }
 
