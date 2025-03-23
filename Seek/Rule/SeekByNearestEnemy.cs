@@ -8,9 +8,9 @@ public sealed class SeekByNearestEnemy : ISeeker
     {
         IReadOnlyUnit target = null;
         var nearestDistance = float.MaxValue;
-
-        var filteredUnits = units.FilterByFaction(EFaction.Enemy);
-        foreach (var unit in filteredUnits)
+        var enemies = units.GetEnemies(owner.FactionType);
+        
+        foreach (var unit in enemies)
         {
             var dis = Vector3.Distance(owner.Tm.position, unit.Tm.position);
             if (dis >= nearestDistance)

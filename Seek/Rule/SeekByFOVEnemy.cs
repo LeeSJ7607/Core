@@ -7,9 +7,9 @@ public sealed class SeekByFOVEnemy : ISeeker
     public IReadOnlyList<IReadOnlyUnit> Seek(IEnumerable<IReadOnlyUnit> units, IReadOnlyUnit owner)
     {
         IReadOnlyUnit target = null;
-        var filteredUnits = units.FilterByFaction(EFaction.Enemy);
+        var enemies = units.GetEnemies(owner.FactionType);
 
-        foreach (var unit in filteredUnits)
+        foreach (var unit in enemies)
         {
             var unitTable = unit.UnitTable;
 
