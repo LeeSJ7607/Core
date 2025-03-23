@@ -22,8 +22,8 @@ public sealed class HeroController
     private void UpdateCameraPos()
     {
         var pos = _owner.Tm.position;
-        // pos.y = 10f;
-        // pos.z -= 5f;
+        pos.x -= 7f;
+        pos.y = 10f;
         
         _mainCam.transform.position = pos;
     }
