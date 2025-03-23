@@ -1,26 +1,22 @@
-﻿using UnityEngine;
-
-//TODO: _curStatus 버그
-public sealed class HTSequence : HTComposite
+﻿public sealed class HTSequence : HTComposite
 {
-    private EBTStatus? _curStatus;
     private int _curTaskIdx;
+    private bool _canBegin = true;
 
     public override EBTStatus OnUpdate()
     {
         while (_curTaskIdx < _nodes.Count)
         {
             var curTask = _nodes[_curTaskIdx];
-            Debug.Log($"Sequence: {curTask.GetType().Name}");
             
-            if (_curStatus == null)
+            if (_canBegin)
             {
+                _canBegin = false;
                 curTask.OnBegin();
             }
             
-            _curStatus = curTask.OnUpdate();
-
-            if (_curStatus == EBTStatus.Running)
+            var curStatus = curTask.OnUpdate();
+            if (curStatus == EBTStatus.Running)
             {
                 return EBTStatus.Running;
             }
@@ -28,7 +24,7 @@ public sealed class HTSequence : HTComposite
             curTask.OnEnd();
             ++_curTaskIdx;
 
-            if (_curStatus == EBTStatus.Failure)
+            if (curStatus == EBTStatus.Failure)
             {
                 return EBTStatus.Failure;
             }

@@ -3,12 +3,18 @@ using UnityEngine;
 
 public interface IHTComposite
 {
-    void Update();
+    void Release();
+    EBTStatus Update();
 }
 
 public abstract class HTComposite : HierarchyTree, IHTComposite
 {
     protected readonly List<HierarchyTree> _nodes = new();
+
+    void IHTComposite.Release()
+    {
+        _nodes.Clear();
+    }
 
     private void Awake()
     {
@@ -28,13 +34,13 @@ public abstract class HTComposite : HierarchyTree, IHTComposite
         }
     }
 
-    void IHTComposite.Update()
+    EBTStatus IHTComposite.Update()
     {
         if (_nodes.IsNullOrEmpty())
         {
-            return;
+            return EBTStatus.Failure;
         }
         
-        OnUpdate();
+        return OnUpdate();
     }
 }

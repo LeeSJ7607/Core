@@ -1,13 +1,10 @@
-﻿using UnityEngine;
-
-public class HTSelector : HTComposite
+﻿public class HTSelector : HTComposite
 {
-    private EBTStatus? _curStatus;
     protected int _curTaskIdx;
+    private bool _canBegin = true;
     
     protected virtual void Reset()
     {
-        _curStatus = null;
         _curTaskIdx = 0;
     }
     
@@ -23,16 +20,15 @@ public class HTSelector : HTComposite
         while (_curTaskIdx < _nodes.Count)
         {
             var curTask = _nodes[_curTaskIdx];
-            Debug.Log($"Selector: {curTask.GetType().Name}");
             
-            if (_curStatus == null)
+            if (_canBegin)
             {
+                _canBegin = false;
                 curTask.OnBegin();
             }
             
-            _curStatus = curTask.OnUpdate();
-
-            if (_curStatus == EBTStatus.Running)
+            var curStatus = curTask.OnUpdate();
+            if (curStatus == EBTStatus.Running)
             {
                 return EBTStatus.Running;
             }
@@ -40,7 +36,7 @@ public class HTSelector : HTComposite
             curTask.OnEnd();
             MoveToNextTask();
 
-            if (_curStatus.Value == EBTStatus.Success)
+            if (curStatus == EBTStatus.Success)
             {
                 return EBTStatus.Success;
             }
