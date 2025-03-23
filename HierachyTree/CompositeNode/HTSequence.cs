@@ -3,6 +3,18 @@
     private int _curTaskIdx;
     private bool _canBegin = true;
 
+    private void ResetTree()
+    {
+        _curTaskIdx = 0;
+        _canBegin = true;
+    }
+    
+    private void MoveToNextTask()
+    {
+        ++_curTaskIdx;
+        _canBegin = true;
+    }
+
     public override EBTStatus OnUpdate()
     {
         while (_curTaskIdx < _nodes.Count)
@@ -11,25 +23,32 @@
             
             if (_canBegin)
             {
-                _canBegin = false;
                 curTask.OnBegin();
+                _canBegin = false;
             }
-            
-            var curStatus = curTask.OnUpdate();
-            if (curStatus == EBTStatus.Running)
+
+            switch (curTask.OnUpdate())
             {
+            case EBTStatus.Running: 
                 return EBTStatus.Running;
-            }
 
-            curTask.OnEnd();
-            ++_curTaskIdx;
+            case EBTStatus.Success:
+                {
+                    curTask.OnEnd();
+                    MoveToNextTask();
+                }
+                break;
 
-            if (curStatus == EBTStatus.Failure)
-            {
+            case EBTStatus.Failure:
+                {
+                    curTask.OnEnd();
+                    ResetTree();
+                }
                 return EBTStatus.Failure;
             }
         }
 
+        ResetTree();
         return EBTStatus.Success;
     }
 }

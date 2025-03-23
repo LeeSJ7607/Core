@@ -4,9 +4,9 @@ public sealed class HTRandomSelector : HTSelector
 {
     private readonly HashSet<int> _taskIdxList = new();
 
-    protected override void Reset()
+    protected override void ResetTree()
     {
-        base.Reset();
+        base.ResetTree();
         _taskIdxList.Clear();
         _curTaskIdx = RandomTaskIdx();
     }

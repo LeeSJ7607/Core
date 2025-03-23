@@ -1,16 +1,18 @@
 internal class BTSelector : BTComposite
 {
     protected int _curTaskIdx;
-    private bool _canBegin = true;
+    private bool _canBegin;
 
     protected virtual void Reset()
     {
         _curTaskIdx = 0;
+        _canBegin = true;
     }
 
     protected virtual void MoveToNextTask()
     {
         ++_curTaskIdx;
+        _canBegin = true;
     }
     
     public override EBTStatus OnUpdate(BlackBoard board)
@@ -23,22 +25,28 @@ internal class BTSelector : BTComposite
             
             if (_canBegin)
             {
-                _canBegin = false;
                 curTask.OnBegin(board);
+                _canBegin = false;
             }
-            
-            var curStatus = curTask.OnUpdate(board);
-            if (curStatus == EBTStatus.Running)
+
+            switch (curTask.OnUpdate(board))
             {
+            case EBTStatus.Running: 
                 return EBTStatus.Running;
-            }
-
-            curTask.OnEnd(board);
-            MoveToNextTask();
-
-            if (curStatus == EBTStatus.Success)
-            {
+            
+            case EBTStatus.Success:
+                {
+                    curTask.OnEnd(board);
+                }
                 return EBTStatus.Success;
+                
+            case EBTStatus.Failure:
+                {
+                    curTask.OnEnd(board);
+                    MoveToNextTask();
+                    _canBegin = true;        
+                }
+                break;
             }
         }
 
