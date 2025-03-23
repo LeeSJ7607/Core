@@ -22,7 +22,7 @@ public sealed class MoveController
     {
         _navMeshAgent.SetDestination(targetPos);
         
-        var moveState = _navMeshAgent.remainingDistance > _navMeshAgent.stoppingDistance 
+        var moveState = _navMeshAgent.remainingDistance > (_navMeshAgent.stoppingDistance + 0.5f) // 0.5f는 몹끼리 부딪힐 때 계속 Moving 이라서.
             ? EMoveState.Moving 
             : EMoveState.ReachedGoal;
 
