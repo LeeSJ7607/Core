@@ -21,6 +21,6 @@ public sealed class HeroSpawner : MonoBehaviour,
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        GizmosUtil.DrawCircle(transform.position, 1f);
+        GizmosUtil.DrawCircle(transform.position, 0.1f);
     }
 }
