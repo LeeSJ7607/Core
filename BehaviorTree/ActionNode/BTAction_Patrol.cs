@@ -10,14 +10,15 @@ internal sealed class BTAction_Patrol : BehaviorTree
     {
         base.OnBegin(board);
         _originPos = board.OwnerPos;
-        SetTargetPos();
+        SetAndMoveToNextTarget(board.MoveController);
     }
 
     public override EBTStatus OnUpdate(BlackBoard board)
     {
-        if (board.MoveController.MoveTo(_targetPos) == EMoveState.ReachedGoal)
+        var moveController = board.MoveController;
+        if (moveController.GetMoveState() == EMoveState.ReachedGoal)
         {
-            SetTargetPos();
+            SetAndMoveToNextTarget(moveController);
         }
         
         return board.TargetController.TryFindTarget(board.Units) 
@@ -25,8 +26,9 @@ internal sealed class BTAction_Patrol : BehaviorTree
             : EBTStatus.Running;
     }
 
-    private void SetTargetPos()
+    private void SetAndMoveToNextTarget(MoveController moveController)
     {
         _targetPos = MathUtil.GetRandomPositionInRadius(_originPos, _radius);
+        moveController.MoveTo(_targetPos);
     }
 }

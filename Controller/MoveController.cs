@@ -18,14 +18,28 @@ public sealed class MoveController
         _animatorController = owner.AnimatorController;
     }
 
-    public EMoveState MoveTo(Vector3 targetPos)
+    public void Run()
+    {
+        if (_navMeshAgent.pathPending)
+        {
+            return;
+        }
+        
+        GetMoveState();
+    }
+
+    public void MoveTo(Vector3 targetPos)
     {
         _navMeshAgent.SetDestination(targetPos);
-        
-        var moveState = _navMeshAgent.remainingDistance > (_navMeshAgent.stoppingDistance + 0.5f) // 0.5f는 몹끼리 부딪힐 때 계속 Moving 이라서.
-            ? EMoveState.Moving 
-            : EMoveState.ReachedGoal;
+        GetMoveState();
+    }
 
+    public EMoveState GetMoveState()
+    {
+        var moveState = _navMeshAgent.remainingDistance > (_navMeshAgent.stoppingDistance + 0.5f) // 0.5f는 몹끼리 부딪힐 때 계속 Moving 이라서
+            ? EMoveState.Moving
+            : EMoveState.ReachedGoal;
+        
         SetAnimState(moveState);
         return moveState;
     }

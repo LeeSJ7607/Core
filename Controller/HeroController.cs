@@ -31,12 +31,14 @@ public sealed class HeroController
 
     private void HandleMovement()
     {
-        if (!TryGetHitPoint(out var pos))
+        if (TryGetHitPoint(out var pos))
         {
-            return;
+            _moveController.MoveTo(pos);
         }
-        
-        _moveController.MoveTo(pos);
+        else
+        {
+            _moveController.Run();
+        }
     }
 
     private bool TryGetHitPoint(out Vector3 pos)
