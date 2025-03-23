@@ -33,22 +33,33 @@ public abstract partial class Unit : MonoBehaviour,
     private int _unitId;
     private readonly Stat _stat = new();
     private readonly UnitUI _unitUI = new();
-    private IUnitController _unitController;
     private DeadController _deadController;
     private AnimatorController _animatorController;
-    private readonly UnitAIController _unitAIController = new();
+    protected IUnitController _unitController;
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         _deadController.Release();
         _animatorController.Release();
-        _unitAIController.Release();
     }
 
     protected virtual void Awake()
     {
         _animatorController = new AnimatorController(this);
         _deadController = new DeadController(this);
+    }
+    
+    protected abstract void OnInitialize();
+    void IUnitInitializer.Initialize(int unitId, EFaction factionType, IUnitController unitController)
+    {
+        _unitId = unitId;
+        FactionType = factionType;
+        _unitController = unitController;
+        _stat.Initialize(this);
+        _unitUI.Initialize(this);
+        _deadController.Initialize();
+        _animatorController.Initialize();
+        OnInitialize();
     }
     
     private void Update()
@@ -59,19 +70,6 @@ public abstract partial class Unit : MonoBehaviour,
     protected virtual void OnUpdate()
     {
         _unitUI.OnUpdate();
-        _unitAIController.OnUpdate();
-    }
-
-    void IUnitInitializer.Initialize(int unitId, EFaction factionType, IUnitController unitController)
-    {
-        _unitId = unitId;
-        FactionType = factionType;
-        _unitController = unitController;
-        _stat.Initialize(this);
-        _unitUI.Initialize(this);
-        _unitAIController.Initialize(this, unitController.Units);
-        _deadController.Initialize();
-        _animatorController.Initialize();
     }
     
     private void OnDrawGizmos()

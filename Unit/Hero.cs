@@ -2,9 +2,8 @@
 {
     private HeroController _heroController;
     
-    protected override void Awake()
+    protected override void OnInitialize()
     {
-        base.Awake();
         _heroController = new HeroController(this);
     }
 
