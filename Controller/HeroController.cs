@@ -21,6 +21,7 @@ public sealed class HeroController
 
     private void UpdateCameraPos()
     {
+        //TODO: 시네머신 카메라 사용하면 매직 넘버 사용하지 않아도 됨.
         var pos = _owner.Tm.position;
         pos.x -= 7f;
         pos.y = 10f;
