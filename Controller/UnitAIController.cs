@@ -16,9 +16,10 @@ internal sealed class UnitAIController
         _board ??= new BlackBoard(owner, units);
         
         //TODO: 툴에서 제작한 BT를 가져와 설정을 해야함.
-        _btRoot.AddNode(new BTAction_Patrol());
-        _btRoot.AddNode(new BTAction_Chase());
-        _btRoot.AddNode(new BTAction_Attack());
+        _btRoot.AddNode(new BTAction_Patrol())
+               .AddNode(new BTAction_Chase())
+               .AddNode(new BTAction_Attack());
+        
         _isActive = true;
     }
     

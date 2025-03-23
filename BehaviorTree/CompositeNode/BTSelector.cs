@@ -1,13 +1,10 @@
-using UnityEngine;
-
 internal class BTSelector : BTComposite
 {
-    private EBTStatus? _curStatus;
     protected int _curTaskIdx;
+    private bool _canBegin = true;
 
     protected virtual void Reset()
     {
-        _curStatus = null;
         _curTaskIdx = 0;
     }
 
@@ -23,16 +20,15 @@ internal class BTSelector : BTComposite
         while (_curTaskIdx < _nodes.Count)
         {
             var curTask = _nodes[_curTaskIdx];
-            Debug.Log($"Selector: {curTask.GetType().Name}");
             
-            if (_curStatus == null)
+            if (_canBegin)
             {
+                _canBegin = false;
                 curTask.OnBegin(board);
             }
             
-            _curStatus = curTask.OnUpdate(board);
-
-            if (_curStatus == EBTStatus.Running)
+            var curStatus = curTask.OnUpdate(board);
+            if (curStatus == EBTStatus.Running)
             {
                 return EBTStatus.Running;
             }
@@ -40,7 +36,7 @@ internal class BTSelector : BTComposite
             curTask.OnEnd(board);
             MoveToNextTask();
 
-            if (_curStatus.Value == EBTStatus.Success)
+            if (curStatus == EBTStatus.Success)
             {
                 return EBTStatus.Success;
             }

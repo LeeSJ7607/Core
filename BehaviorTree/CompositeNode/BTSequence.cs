@@ -1,31 +1,27 @@
-using UnityEngine;
-
 internal sealed class BTSequence : BTComposite
 {
-    private EBTStatus? _curStatus;
     private int _curTaskIdx;
+    private bool _canBegin = true;
 
     private void Reset()
     {
-        _curStatus = null;
         _curTaskIdx = 0;
     }
-    
+
     public override EBTStatus OnUpdate(BlackBoard board)
     {
         while (_curTaskIdx < _nodes.Count)
         {
             var curTask = _nodes[_curTaskIdx];
-            Debug.Log($"Sequence: {curTask.GetType().Name}");
             
-            if (_curStatus == null)
+            if (_canBegin)
             {
+                _canBegin = false;
                 curTask.OnBegin(board);
             }
             
-            _curStatus = curTask.OnUpdate(board);
-
-            if (_curStatus == EBTStatus.Running)
+            var curStatus = curTask.OnUpdate(board);
+            if (curStatus == EBTStatus.Running)
             {
                 return EBTStatus.Running;
             }
@@ -33,7 +29,7 @@ internal sealed class BTSequence : BTComposite
             curTask.OnEnd(board);
             ++_curTaskIdx;
 
-            if (_curStatus == EBTStatus.Failure)
+            if (curStatus == EBTStatus.Failure)
             {
                 Reset();
                 return EBTStatus.Failure;
