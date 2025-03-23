@@ -23,7 +23,6 @@ public sealed class AnimatorController :
     IUnitStateMachineBehaviour
 {
     Observable<EAnimState> IAnimatorController.OnAnimStateExit => _onAnimStateExit;
-    private EAnimState _curAnimStateType = EAnimState.End;
     private readonly ReactiveCommand<EAnimState> _onAnimStateExit = new();
     private readonly int[] _stateHash = new int[(int)EAnimState.End];
     private readonly Animator _animator;
@@ -70,14 +69,8 @@ public sealed class AnimatorController :
     
     void IAnimatorController.SetState(EAnimState state, float value)
     {
-        if (_curAnimStateType == state)
-        {
-            return;
-        }
-        
-        _curAnimStateType = state;
-        
         var stateHash = _stateHash[(int)state];
+        
         if (state == EAnimState.Walk)
         {
             _animator.SetFloat(stateHash, value);
@@ -92,6 +85,5 @@ public sealed class AnimatorController :
     {
         var animState = GetStateFromHash(stateInfo.shortNameHash);
         _onAnimStateExit.Execute(animState);
-        _curAnimStateType = EAnimState.End;
     }
 }
