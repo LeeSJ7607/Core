@@ -39,6 +39,6 @@ public sealed class DeadController
         // var fx = Object.Instantiate(ResourceManager.Instance.Get<GameObject>("Fx_Unit_Die"));
         // fx.transform.position = _owner.Pos;
         //
-        // Object.Destroy(_owner.gameObject);
+        _owner.Tm.Hide();
     }
 }
