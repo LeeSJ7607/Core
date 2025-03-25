@@ -24,6 +24,7 @@ public sealed class AnimatorController :
 {
     Observable<EAnimState> IAnimatorController.OnAnimStateExit => _onAnimStateExit;
     private readonly ReactiveCommand<EAnimState> _onAnimStateExit = new();
+    private EAnimState _curAnimStateType = EAnimState.End;
     private readonly int[] _stateHash = new int[(int)EAnimState.End];
     private readonly Animator _animator;
     
@@ -69,15 +70,34 @@ public sealed class AnimatorController :
     
     void IAnimatorController.SetState(EAnimState state, float value)
     {
+        if (_curAnimStateType == state)
+        {
+            return;
+        }
+
+        _curAnimStateType = state;
         var stateHash = _stateHash[(int)state];
         
-        if (state == EAnimState.Walk)
+        switch (state)
         {
-            _animator.SetFloat(stateHash, value);
-        }
-        else
-        {
-            _animator.SetTrigger(stateHash);
+        case EAnimState.Idle:
+            {
+                _animator.SetFloat(_stateHash[(int)EAnimState.Walk], 0f);
+                _animator.SetTrigger(stateHash);
+            }
+            break;
+        
+        case EAnimState.Walk:
+            {
+                _animator.SetFloat(stateHash, value);
+            }
+            return;
+
+        default:
+            {
+                _animator.SetTrigger(stateHash);   
+            }
+            break;
         }
     }
     
