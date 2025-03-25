@@ -11,21 +11,13 @@ public sealed class MoveController
 {
     private readonly NavMeshAgent _navMeshAgent; //TODO: rcdtcs
     private readonly IAnimatorController _animatorController;
+    private readonly IReadOnlyStat _stat;
     
     public MoveController(IReadOnlyUnit owner)
     {
         _navMeshAgent = owner.Tm.GetComponent<NavMeshAgent>();
         _animatorController = owner.AnimatorController;
-    }
-
-    public void Run()
-    {
-        if (_navMeshAgent.pathPending)
-        {
-            return;
-        }
-        
-        GetMoveState();
+        _stat = owner.Stat;
     }
 
     public void MoveTo(Vector3 targetPos)
@@ -36,7 +28,7 @@ public sealed class MoveController
 
     public EMoveState GetMoveState()
     {
-        var moveState = _navMeshAgent.remainingDistance > (_navMeshAgent.stoppingDistance + 0.5f) // 0.5f는 몹끼리 부딪힐 때 계속 Moving 이라서
+        var moveState = _navMeshAgent.remainingDistance > _navMeshAgent.stoppingDistance //TODO: 0.5f는 몹끼리 부딪힐 때 계속 Moving 이라서
             ? EMoveState.Moving
             : EMoveState.ReachedGoal;
         
@@ -48,13 +40,11 @@ public sealed class MoveController
     {
         if (moveState == EMoveState.ReachedGoal)
         {
-            _animatorController.SetState(EAnimState.Walk);
+            _animatorController.SetState(EAnimState.Idle);
             return;
         }
 
-        var isWalk = _navMeshAgent.remainingDistance < 2f;
-        var speed = isWalk ? 1f : 3f;
-        _navMeshAgent.speed = speed;
-        _animatorController.SetState(EAnimState.Walk, _navMeshAgent.velocity.magnitude);
+        _navMeshAgent.speed = _stat[EStat.WALK_SPEED];
+        _animatorController.SetState(EAnimState.Walk, _navMeshAgent.speed);
     }
 }
