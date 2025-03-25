@@ -37,7 +37,7 @@ public sealed class HeroController
         }
         else
         {
-            _moveController.Run();
+            _moveController.GetMoveState();
         }
     }
 
