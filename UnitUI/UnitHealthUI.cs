@@ -46,7 +46,7 @@ public sealed class UnitHealthUI
         UnitUI.Billboard();
     }
 
-    public void SetHP(int curHP, int maxHP)
+    public void SetHP(long curHP, long maxHP)
     {
         _sldHP.value = (float)curHP / maxHP;
     }

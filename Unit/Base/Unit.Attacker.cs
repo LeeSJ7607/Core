@@ -1,5 +1,4 @@
-﻿using R3;
-using UnityEngine;
+﻿using UnityEngine;
 
 public interface IAttacker
 {

@@ -4,19 +4,20 @@ public enum EStat
 {
     Max_HP,
     HP,
+    WALK_SPEED,
 }
 
 public sealed class Stat
 {
-    private readonly Dictionary<EStat, int> _statMap = new();
+    private readonly Dictionary<EStat, long> _statMap = new();
     
-    public int this[EStat type]
+    public long this[EStat type]
     {
         get => _statMap.GetValueOrDefault(type, 0);
         set => Sum(type, value);
     }
 
-    private void Sum(EStat type, int value)
+    private void Sum(EStat type, long value)
     {
         if (!_statMap.TryAdd(type, value))
         {
@@ -29,5 +30,6 @@ public sealed class Stat
         var unitTable = owner.UnitTable;
         Sum(EStat.Max_HP, unitTable.Max_HP);
         Sum(EStat.HP, unitTable.Max_HP);
+        Sum(EStat.WALK_SPEED, unitTable.Walk_Speed);
     }
 }
