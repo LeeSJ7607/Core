@@ -5,17 +5,24 @@ public sealed class AttackController
 {
     private IDefender _target;
     private readonly IAttacker _owner;
+    private readonly Transform _ownerTm;
+    private readonly float _attackRange;
+    private readonly IAnimatorController _animatorController;
     private readonly CompositeDisposable _disposable = new();
     
     public AttackController(IAttacker owner)
     {
         _owner = owner;
-                
-        owner.AnimatorController.OnAnimStateExit
-             .Subscribe(OnAnimStateExit)
-             .AddTo(_disposable);
 
-        var animationEventReceiver = owner.Tm.AddComponent<AnimationEventReceiver>(); 
+        var readOnlyUnit = (IReadOnlyUnit)owner;
+        _ownerTm = readOnlyUnit.Tm;
+        _attackRange = readOnlyUnit.UnitTable.Atk_Range;
+        _animatorController = readOnlyUnit.AnimatorController;
+        _animatorController.OnAnimStateExit
+                           .Subscribe(OnAnimStateExit)
+                           .AddTo(_disposable);
+
+        var animationEventReceiver = _ownerTm.AddComponent<AnimationEventReceiver>(); 
         animationEventReceiver.OnAttack
                               .Subscribe(DoAttack)
                               .AddTo(_disposable);
@@ -28,7 +35,7 @@ public sealed class AttackController
 
     public bool IsTargetInRange(Vector3 targetPos)
     {
-        return Vector3.Distance(_owner.Tm.position, targetPos) < _owner.UnitTable.Atk_Range;
+        return Vector3.Distance(_ownerTm.position, targetPos) < _attackRange;
     }
     
     public void Attack(IDefender target)
@@ -39,14 +46,14 @@ public sealed class AttackController
         if (_owner.IsAttackable)
         {
             _owner.IsAttackable = false;
-            _owner.AnimatorController.SetState(EAnimState.Attack);
+            _animatorController.SetState(EAnimState.Attack);
         }
     }
     
     private void LookAtTarget(IDefender target)
     {
-        var dir = (target.Pos - _owner.Tm.position).normalized;
-        _owner.Tm.rotation = Quaternion.LookRotation(dir);
+        var dir = (target.Pos - _ownerTm.position).normalized;
+        _ownerTm.rotation = Quaternion.LookRotation(dir);
     }
     
     private void DoAttack(AnimationEvent animationEvent)

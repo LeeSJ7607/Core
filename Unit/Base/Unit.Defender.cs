@@ -3,14 +3,14 @@
 public interface IDefender
 {
     Vector3 Pos { get; }
-    void Hit(int damage);
+    void Hit(long damage);
 }
 
 public abstract partial class Unit
 {
     Vector3 IDefender.Pos => transform.position;
     
-    void IDefender.Hit(int damage)
+    void IDefender.Hit(long damage)
     {
         _stat[EStat.HP] -= damage;
         _unitUI.SetHPAndDamage(_stat, damage);

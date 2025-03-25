@@ -16,7 +16,7 @@
         _unitDamageUI.OnUpdate();
     }
 
-    public void SetHPAndDamage(Stat stat, int damage)
+    public void SetHPAndDamage(Stat stat, long damage)
     {
         _unitHealthUI.SetHP(stat[EStat.HP], stat[EStat.Max_HP]);
         _unitDamageUI.SetDamage(damage);

@@ -3,8 +3,9 @@ using UnityEngine.AI;
 
 public interface IReadOnlyUnit
 {
-    UnitTable.Row UnitTable { get; }
     EFaction FactionType { get; }
+    UnitTable.Row UnitTable { get; }
+    IReadOnlyStat Stat { get; }
     bool IsDead { get; }
     Transform Tm { get; }
     IAnimatorController AnimatorController { get; }
@@ -23,8 +24,9 @@ public abstract partial class Unit : MonoBehaviour,
     IDefender
 {
 #region IReadOnlyUnit
-    UnitTable.Row IReadOnlyUnit.UnitTable => DataAccessor.GetTable<UnitTable>().GetRow(_unitId);
     public EFaction FactionType { get; private set; }
+    UnitTable.Row IReadOnlyUnit.UnitTable => DataAccessor.GetTable<UnitTable>().GetRow(_unitId);
+    IReadOnlyStat IReadOnlyUnit.Stat => _stat;
     public bool IsDead => _stat[EStat.HP] <= 0;
     Transform IReadOnlyUnit.Tm => transform;
     public IAnimatorController AnimatorController => _animatorController;

@@ -16,7 +16,7 @@ public sealed class UnitDamageUI
         _damageTextPool.OnUpdate();
     }
 
-    public void SetDamage(int damage)
+    public void SetDamage(long damage)
     {
         var damageText = _damageTextPool.Get();
         damageText.Set(damage);

@@ -4,10 +4,16 @@ public enum EStat
 {
     Max_HP,
     HP,
+    ATK,
     WALK_SPEED,
 }
 
-public sealed class Stat
+public interface IReadOnlyStat
+{
+    long this[EStat type] { get; }
+}
+
+public sealed class Stat : IReadOnlyStat
 {
     private readonly Dictionary<EStat, long> _statMap = new();
     
@@ -30,6 +36,7 @@ public sealed class Stat
         var unitTable = owner.UnitTable;
         Sum(EStat.Max_HP, unitTable.Max_HP);
         Sum(EStat.HP, unitTable.Max_HP);
+        Sum(EStat.ATK, unitTable.Atk);
         Sum(EStat.WALK_SPEED, unitTable.Walk_Speed);
     }
 }
