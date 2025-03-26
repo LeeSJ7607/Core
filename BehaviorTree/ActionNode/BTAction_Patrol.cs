@@ -6,22 +6,22 @@ internal sealed class BTAction_Patrol : BehaviorTree
     private Vector3 _originPos;
     private Vector3 _targetPos;
 
-    public override void OnBegin(BlackBoard board)
+    public override void OnBegin(BlackBoard blackBoard)
     {
-        base.OnBegin(board);
-        _originPos = board.OwnerPos;
-        SetAndMoveToNextTarget(board.MoveController);
+        base.OnBegin(blackBoard);
+        _originPos = blackBoard.OwnerPos;
+        SetAndMoveToNextTarget(blackBoard.MoveController);
     }
 
-    public override EBTStatus OnUpdate(BlackBoard board)
+    public override EBTStatus OnUpdate(BlackBoard blackBoard)
     {
-        var moveController = board.MoveController;
+        var moveController = blackBoard.MoveController;
         if (moveController.GetMoveState() == EMoveState.ReachedGoal)
         {
             SetAndMoveToNextTarget(moveController);
         }
         
-        return board.TargetController.TryFindTarget(board.Units) 
+        return blackBoard.TargetController.TryFindTarget(blackBoard.Units) 
             ? EBTStatus.Success 
             : EBTStatus.Running;
     }

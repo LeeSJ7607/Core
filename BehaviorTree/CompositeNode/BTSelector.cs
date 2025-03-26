@@ -15,7 +15,7 @@ internal class BTSelector : BTComposite
         _canBegin = true;
     }
     
-    public override EBTStatus OnUpdate(BlackBoard board)
+    public override EBTStatus OnUpdate(BlackBoard blackBoard)
     {
         Reset();
         
@@ -25,24 +25,24 @@ internal class BTSelector : BTComposite
             
             if (_canBegin)
             {
-                curTask.OnBegin(board);
+                curTask.OnBegin(blackBoard);
                 _canBegin = false;
             }
 
-            switch (curTask.OnUpdate(board))
+            switch (curTask.OnUpdate(blackBoard))
             {
             case EBTStatus.Running: 
                 return EBTStatus.Running;
             
             case EBTStatus.Success:
                 {
-                    curTask.OnEnd(board);
+                    curTask.OnEnd(blackBoard);
                 }
                 return EBTStatus.Success;
                 
             case EBTStatus.Failure:
                 {
-                    curTask.OnEnd(board);
+                    curTask.OnEnd(blackBoard);
                     MoveToNextTask();
                     _canBegin = true;        
                 }

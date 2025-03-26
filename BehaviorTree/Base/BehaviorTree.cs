@@ -7,7 +7,7 @@ public enum EBTStatus
 
 public abstract class BehaviorTree
 {
-    public virtual void OnBegin(BlackBoard board) { }
-    public abstract EBTStatus OnUpdate(BlackBoard board);
-    public virtual void OnEnd(BlackBoard board) { }
+    public virtual void OnBegin(BlackBoard blackBoard) { }
+    public abstract EBTStatus OnUpdate(BlackBoard blackBoard);
+    public virtual void OnEnd(BlackBoard blackBoard) { }
 }

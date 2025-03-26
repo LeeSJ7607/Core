@@ -2,15 +2,15 @@ internal sealed class BTAction_Attack : BehaviorTree
 {
     private IDefender _target;
     
-    public override EBTStatus OnUpdate(BlackBoard board)
+    public override EBTStatus OnUpdate(BlackBoard blackBoard)
     {
-        var target = board.TargetController.Target;
+        var target = blackBoard.TargetController.Target;
         _target ??= (IDefender)target;
         
         var targetPos = target.Tm.position;
-        board.MoveController.MoveTo(targetPos);
+        blackBoard.MoveController.MoveTo(targetPos);
         
-        var attackController = board.AttackController;
+        var attackController = blackBoard.AttackController;
         attackController.Attack(_target);
         
         if (!attackController.IsTargetInRange(targetPos))
@@ -23,9 +23,9 @@ internal sealed class BTAction_Attack : BehaviorTree
             : EBTStatus.Running;
     }
 
-    public override void OnEnd(BlackBoard board)
+    public override void OnEnd(BlackBoard blackBoard)
     {
         _target = null;
-        base.OnEnd(board);
+        base.OnEnd(blackBoard);
     }
 }
