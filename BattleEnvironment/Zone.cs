@@ -7,11 +7,6 @@ public sealed class Zone : MonoBehaviour
     private District[] _districts;
     private int _curDistrictIdx;
 
-    private void OnDestroy()
-    {
-        _battleEnvironment.Release();
-    }
-
     private void Awake()
     {
         _districts = GetComponentsInChildren<District>(true);

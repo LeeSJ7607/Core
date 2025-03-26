@@ -17,7 +17,7 @@ public sealed class District : MonoBehaviour
         var initializers = GetComponentsInChildren<IUnitControllerBinder>();
         foreach (var initializer in initializers)
         {
-            initializer.Initialize((IUnitController)battleEnvironment);
+            initializer.Initialize(battleEnvironment.UnitController);
         }
 
         _isActive = true;

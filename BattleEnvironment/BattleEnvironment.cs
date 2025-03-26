@@ -1,45 +1,9 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-
-public interface IUnitControllerBinder
+﻿public interface IReadOnlyBattleEnvironment
 {
-    void Initialize(IUnitController unitController);
+    IUnitController UnitController { get; }
 }
 
-public interface IUnitController
+public sealed class BattleEnvironment : IReadOnlyBattleEnvironment
 {
-    IEnumerable<IReadOnlyUnit> Units { get; }
-    IUnitInitializer RegisterUnit(int unitId, Vector3 pos, Quaternion rot);
-    void RemoveUnit(IReadOnlyUnit unit);
-}
-
-public interface IReadOnlyBattleEnvironment
-{
-    
-}
-
-public sealed class BattleEnvironment : 
-    IReadOnlyBattleEnvironment,
-    IUnitController
-{
-    IEnumerable<IReadOnlyUnit> IUnitController.Units => _units;
-    private readonly HashSet<IReadOnlyUnit> _units = new();
-    private readonly UnitContainer _unitContainer = new();
-
-    public void Release()
-    {
-        _unitContainer.Release();
-    }
-
-    IUnitInitializer IUnitController.RegisterUnit(int unitId, Vector3 pos, Quaternion rot)
-    {
-        var unit = _unitContainer.GetOrCreate(unitId, null, pos, rot);
-        _units.Add((IReadOnlyUnit)unit);
-        return unit;
-    }
-    
-    void IUnitController.RemoveUnit(IReadOnlyUnit unit)
-    {
-        _units.Remove(unit);
-    }
+    IUnitController IReadOnlyBattleEnvironment.UnitController { get; } = new UnitController();
 }
