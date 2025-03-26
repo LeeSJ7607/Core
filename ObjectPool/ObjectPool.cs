@@ -39,13 +39,13 @@ public sealed class ObjectPool<T> where T : MonoBehaviour, IObjectPool
     private int _maxHidePoolCount;
     private Transform _root;
     
-    public void Initialize(int createCount = 4, int maxHidePoolCount = 0, Transform root = null)
+    public void Initialize(int preloadCount = 4, int maxHidePoolCount = 0, Transform root = null)
     {
-        _showPool.Capacity = _hidePool.Capacity = createCount;
+        _showPool.Capacity = _hidePool.Capacity = preloadCount;
         _maxHidePoolCount = maxHidePoolCount;
         _root = root ?? UIManager.Instance.transform;
         _lastUpdateTime = Time.realtimeSinceStartup;
-        AddHidePool(createCount);
+        AddHidePool(preloadCount);
     }
     
     public void OnUpdate()

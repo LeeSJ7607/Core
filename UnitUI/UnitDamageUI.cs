@@ -8,7 +8,7 @@ public sealed class UnitDamageUI
     public void Initialize(Vector3 anchorNodePos)
     {
         _anchorNodePos = anchorNodePos;
-        _damageTextPool.Initialize(3, 5);
+        _damageTextPool.Initialize();
     }
 
     public void OnUpdate()
