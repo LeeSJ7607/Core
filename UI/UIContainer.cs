@@ -25,14 +25,16 @@ internal sealed class UIContainer
     {
         var fileName = GetFileName<TBase>();
         var res = AddressableManager.Instance.Get<GameObject>(fileName);
+        var obj = UnityEngine.Object.Instantiate(res, root);
 
-        if (UnityEngine.Object.Instantiate(res, root).TryGetComponent<TBase>(out var uiBase))
+        if (obj.TryGetComponent<TBase>(out var uiBase))
         {
             _uiBaseMap.Add(typeof(TBase), uiBase);
             return uiBase;
         }
         
         Debug.LogError($"Resource: {res}, UIBase Component Confirm Required");
+        UnityEngine.Object.Destroy(obj);
         return null;
     }
     
