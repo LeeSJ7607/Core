@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public interface IObjectPool
@@ -24,13 +21,14 @@ public sealed class ObjectPool<T> where T : MonoBehaviour, IObjectPool
 
         public bool CanHide()
         {
-            if (_createdTime == 0f)
+            var lifeTime = Obj.LifeTime;
+            if (lifeTime == 0f)
             {
                 return false;
             }
             
             var time = Time.realtimeSinceStartup - _createdTime;
-            return time >= Obj.LifeTime;
+            return time >= lifeTime;
         }
     }
 
