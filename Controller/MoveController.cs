@@ -9,15 +9,17 @@ public enum EMoveState
 
 public sealed class MoveController
 {
-    private readonly NavMeshAgent _navMeshAgent; //TODO: rcdtcs
-    private readonly IAnimatorController _animatorController;
     private readonly IReadOnlyStat _stat;
+    private readonly IAnimatorController _animatorController;
+    private readonly NavMeshAgent _navMeshAgent; //TODO: rcdtcs
+    private readonly float _navMeshAgentRadius;
     
     public MoveController(IReadOnlyUnit owner)
     {
-        _navMeshAgent = owner.Tm.GetComponent<NavMeshAgent>();
-        _animatorController = owner.AnimatorController;
         _stat = owner.Stat;
+        _animatorController = owner.AnimatorController;
+        _navMeshAgent = owner.Tm.GetComponent<NavMeshAgent>();
+        _navMeshAgentRadius = _navMeshAgent.radius;
     }
 
     public void MoveTo(Vector3 targetPos)
@@ -28,7 +30,8 @@ public sealed class MoveController
 
     public EMoveState GetMoveState()
     {
-        var moveState = _navMeshAgent.remainingDistance > _navMeshAgent.stoppingDistance //TODO: 0.5f는 몹끼리 부딪힐 때 계속 Moving 이라서
+        var stoppingDistance = _navMeshAgent.stoppingDistance + _navMeshAgentRadius;
+        var moveState = _navMeshAgent.remainingDistance > stoppingDistance
             ? EMoveState.Moving
             : EMoveState.ReachedGoal;
         
