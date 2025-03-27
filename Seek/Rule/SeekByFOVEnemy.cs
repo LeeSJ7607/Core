@@ -19,7 +19,7 @@ public sealed class SeekByFOVEnemy : ISeeker
                 continue;
             }
             
-            var fovAngle = Mathf.Cos(unitTable.FOV_Angle * Mathf.Rad2Deg);
+            var fovAngle = Mathf.Cos(unitTable.FOV_Angle * Mathf.Deg2Rad);
             var dot = Vector3.Dot(owner.Tm.forward.normalized, dir.normalized);
             if (dot < fovAngle)
             {
