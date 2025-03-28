@@ -30,7 +30,7 @@ internal static class EditorInitializer
         settings.OnModification = (_, modificationEvent, obj) =>
         {
             EditorApplication.ExecuteMenuItem("File/Save Project");
-            Debug.Log($"Save Addressable.\nevent: {modificationEvent}, arg: {obj}");
+            Debug.Log($"OnModificationAddressable: {modificationEvent}, arg: {obj}");
         };
     }
 }
