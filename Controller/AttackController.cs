@@ -54,7 +54,7 @@ public sealed class AttackController
     private void LookAtTarget(IDefender target)
     {
         var dir = (target.Pos - _ownerTm.position).normalized;
-        _ownerTm.rotation = Quaternion.LookRotation(dir);
+        _ownerTm.rotation = Quaternion.Slerp(_ownerTm.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 10f);
     }
     
     private void DoAttack(AnimationEvent animationEvent)
