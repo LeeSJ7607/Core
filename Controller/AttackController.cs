@@ -35,7 +35,8 @@ public sealed class AttackController
 
     public bool IsTargetInRange(Vector3 targetPos)
     {
-        return Vector3.Distance(_ownerTm.position, targetPos) < _attackRange;
+        var sqr = (targetPos - _ownerTm.position).sqrMagnitude;
+        return sqr < _attackRange * _attackRange;
     }
     
     public void Attack(IDefender target)
@@ -45,8 +46,8 @@ public sealed class AttackController
 
         if (_owner.IsAttackable)
         {
-            _owner.IsAttackable = false;
             _animatorController.SetState(EAnimState.Attack);
+            _owner.IsAttackable = false;
         }
     }
     
