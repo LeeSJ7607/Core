@@ -1,18 +1,17 @@
-﻿using R3;
+﻿using System;
 using UnityEngine;
 
 public sealed class AnimationEventReceiver : MonoBehaviour
 {
-    public Observable<AnimationEvent> OnAttack => _onAttack;
-    private readonly ReactiveCommand<AnimationEvent> _onAttack = new();
+    public Action<AnimationEvent> OnAttack { get; set; }
 
     private void OnDestroy()
     {
-        _onAttack.Dispose();
+        OnAttack = null;
     }
 
     private void Attack(AnimationEvent animationEvent)
     {
-        _onAttack.Execute(animationEvent);
+        OnAttack?.Invoke(animationEvent);
     }
 }

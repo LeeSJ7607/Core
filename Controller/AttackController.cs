@@ -22,10 +22,7 @@ public sealed class AttackController
                            .Subscribe(OnAnimStateExit)
                            .AddTo(_disposable);
 
-        var animationEventReceiver = _ownerTm.AddComponent<AnimationEventReceiver>(); 
-        animationEventReceiver.OnAttack
-                              .Subscribe(DoAttack)
-                              .AddTo(_disposable);
+        _ownerTm.AddComponent<AnimationEventReceiver>().OnAttack = DoAttack;
     }
 
     public void Release()
