@@ -6,7 +6,7 @@ public sealed class AnimationEventReceiver : MonoBehaviour
     public Observable<AnimationEvent> OnAttack => _onAttack;
     private readonly ReactiveCommand<AnimationEvent> _onAttack = new();
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         _onAttack.Dispose();
     }
