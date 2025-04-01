@@ -38,12 +38,14 @@ public sealed class ObjectPool<T> where T : MonoBehaviour, IObjectPool
     private readonly List<PoolData> _hidePool = new();
     private int _maxHidePoolCount;
     private Transform _root;
+    private string _addressKey;
     
     public void Initialize(int preloadCount = 4, int maxHidePoolCount = 0, Transform root = null)
     {
         _showPool.Capacity = _hidePool.Capacity = preloadCount;
         _maxHidePoolCount = maxHidePoolCount;
-        _root = root ?? UIManager.Instance.transform;
+        _root = root ?? UIManager.Instance.CanvasTm;
+        _addressKey = typeof(T).Name;
         _lastUpdateTime = Time.realtimeSinceStartup;
         AddHidePool(preloadCount);
     }
@@ -72,7 +74,9 @@ public sealed class ObjectPool<T> where T : MonoBehaviour, IObjectPool
     {
         for (var i = 0; i < createCount; i++)
         {
-            _hidePool.Add(CreatePoolData());
+            var poolData = CreatePoolData();
+            poolData.Obj.Hide();
+            _hidePool.Add(poolData);
         }
     }
 
@@ -122,8 +126,8 @@ public sealed class ObjectPool<T> where T : MonoBehaviour, IObjectPool
 
     private PoolData CreatePoolData()
     {
-        var res = AddressableManager.Instance.Get<T>();
+        var res = AddressableManager.Instance.Get<GameObject>(_addressKey);
         var obj = UnityEngine.Object.Instantiate(res, _root);
-        return new PoolData(obj);
+        return new PoolData(obj.GetComponent<T>());
     }
 }
