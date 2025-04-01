@@ -3,7 +3,6 @@
 [DisallowMultipleComponent] [RequireComponent(typeof(InGameScene))]
 public sealed class Zone : MonoBehaviour
 {
-    private readonly BattleEnvironment _battleEnvironment = new();
     private District[] _districts;
     private int _curDistrictIdx;
 
@@ -16,12 +15,12 @@ public sealed class Zone : MonoBehaviour
         }
     }
     
-    public void Initialize()
+    public void Initialize(IReadOnlyBattleEnvironment battleEnvironment)
     {
         for (var i = 0; i < _districts.Length; i++)
         {
             var district = _districts[i];
-            district.Initialize(_battleEnvironment);
+            district.Initialize(battleEnvironment);
             district.SetActive(i == 0);
         }
     }
