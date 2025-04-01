@@ -50,8 +50,10 @@ public sealed class HeroController
             return false;
         }
         
+        var mask = LayerMask.GetMask("Floor");
         var ray = _mainCam.ScreenPointToRay(Input.mousePosition);
-        if (!Physics.Raycast(ray, out var hit))
+        
+        if (!Physics.Raycast(ray, out var hit, Mathf.Infinity, mask))
         {
             return false;
         }
