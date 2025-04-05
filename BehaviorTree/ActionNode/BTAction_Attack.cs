@@ -7,13 +7,10 @@ internal sealed class BTAction_Attack : BehaviorTree
         var target = blackBoard.TargetController.Target;
         _target ??= (IDefender)target;
         
-        var targetPos = target.Tm.position;
-        blackBoard.MoveController.MoveTo(targetPos);
-        
         var attackController = blackBoard.AttackController;
         attackController.Attack(_target);
         
-        if (!attackController.IsTargetInRange(targetPos))
+        if (!attackController.IsTargetInRange(target.Tm.position))
         {
             return EBTStatus.Failure;
         }
