@@ -11,9 +11,9 @@ public sealed class TargetController
         _owner = owner;
     }
     
-    public bool TryFindTarget(IEnumerable<IReadOnlyUnit> units, ESeekRule seekRule = ESeekRule.FOVEnemy)
+    public bool TryFindTarget(IEnumerable<IReadOnlyUnit> units)
     {
-        var targets = _seeker[seekRule].Seek(units, _owner);
+        var targets = _seeker[_owner.UnitTable.SeekRuleType].Seek(units, _owner);
         if (targets.IsNullOrEmpty())
         {
             return false;
