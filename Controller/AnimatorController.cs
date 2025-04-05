@@ -80,13 +80,6 @@ public sealed class AnimatorController :
         
         switch (state)
         {
-        case EAnimState.Idle:
-            {
-                _animator.SetFloat(_stateHash[(int)EAnimState.Walk], 0f);
-                _animator.SetTrigger(stateHash);
-            }
-            break;
-        
         case EAnimState.Walk:
             {
                 _animator.SetFloat(stateHash, value);
@@ -95,7 +88,8 @@ public sealed class AnimatorController :
 
         default:
             {
-                _animator.SetTrigger(stateHash);   
+                _animator.SetTrigger(stateHash);
+                _animator.SetFloat(_stateHash[(int)EAnimState.Walk], 0f);
             }
             break;
         }
@@ -105,5 +99,6 @@ public sealed class AnimatorController :
     {
         var animState = GetStateFromHash(stateInfo.shortNameHash);
         _onAnimStateExit.Execute(animState);
+        _curAnimStateType = EAnimState.End;
     }
 }
