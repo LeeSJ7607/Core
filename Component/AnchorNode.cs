@@ -4,7 +4,7 @@ using UnityEngine;
 
 public sealed class AnchorNode : MonoBehaviour
 {
-    public Vector3 this[EAnchorNode type] => _anchorNodes[type].position;
+    public Transform this[EAnchorNode type] => _anchorNodes[type];
     private readonly Dictionary<EAnchorNode, Transform> _anchorNodes = new();
     
     private void Awake()

@@ -7,8 +7,6 @@
 public enum EAnchorNode
 {
     HP,
-    Hit,
+    Damage,
     Projectile,
-    
-    End,
 }

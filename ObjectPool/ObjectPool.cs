@@ -11,12 +11,17 @@ public sealed class ObjectPool<T> where T : MonoBehaviour, IObjectPool
     private sealed class PoolData
     {
         public T Obj { get; }
-        private readonly float _createdTime;
+        private float _createdTime;
 
         public PoolData(T obj)
         {
             Obj = obj;
+        }
+
+        public void Show()
+        {
             _createdTime = Time.realtimeSinceStartup;
+            Obj.Show();
         }
 
         public bool CanHide()
@@ -65,7 +70,7 @@ public sealed class ObjectPool<T> where T : MonoBehaviour, IObjectPool
     public T Get()
     {
         var poolData = GetFromPoolData();
-        poolData.Obj.Show();
+        poolData.Show();
         _showPool.Add(poolData);
         return poolData.Obj;
     }

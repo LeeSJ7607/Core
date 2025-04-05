@@ -3,16 +3,14 @@ using UnityEngine.UI;
 
 public sealed class UnitHealthUI
 {
-    private Slider _sldHP;
-    private Vector3 _anchorNodePos;
+    private Image _hpBar;
     
-    public void Initialize(Vector3 anchorNodePos)
+    public void Initialize(Transform anchorNode)
     {
-        _anchorNodePos = anchorNodePos;
-        CreateHP();
+        CreateHP(anchorNode);
     }
 
-    private void CreateHP()
+    private void CreateHP(Transform anchorNode)
     {
         var res = AddressableManager.Instance.Get<GameObject>(nameof(UnitHealthUI));
         if (res == null)
@@ -20,34 +18,18 @@ public sealed class UnitHealthUI
             return;
         }
 
-        var obj = Object.Instantiate(res, UIManager.Instance.transform);
-        if (!obj.TryGetComponent<Slider>(out var sldHP))
+        var obj = Object.Instantiate(res, anchorNode);
+        if (!obj.TryGetComponent<Image>(out var hpBar))
         {
             Debug.LogError("Failed to get a component of the type Slider.");
             return;
         }
         
-        _sldHP = sldHP;
+        _hpBar = hpBar;
     }
     
-    public void OnUpdate()
-    {
-        UpdateHPPos();
-    }
-
-    private void UpdateHPPos()
-    {
-        if (_sldHP == null)
-        {
-            return;
-        }
-        
-        _sldHP.transform.position = _anchorNodePos;
-        UnitUI.Billboard();
-    }
-
     public void SetHP(long curHP, long maxHP)
     {
-        _sldHP.value = (float)curHP / maxHP;
+        _hpBar.fillAmount = (float)curHP / maxHP;
     }
 }
