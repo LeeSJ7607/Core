@@ -32,8 +32,7 @@ public sealed class AttackController
 
     public bool IsTargetInRange(Vector3 targetPos)
     {
-        var sqr = (targetPos - _ownerTm.position).sqrMagnitude;
-        return sqr < _attackRange * _attackRange;
+        return targetPos.SqrDistance(_ownerTm.position) < _attackRange.Sqr();
     }
     
     public void Attack(IDefender target)

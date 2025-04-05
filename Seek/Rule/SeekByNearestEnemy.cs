@@ -12,13 +12,18 @@ public sealed class SeekByNearestEnemy : ISeeker
         
         foreach (var unit in enemies)
         {
-            var dis = Vector3.Distance(owner.Tm.position, unit.Tm.position);
-            if (dis >= nearestDistance)
+            var sqrMagnitude = unit.Tm.position.SqrDistance(owner.Tm.position);
+            if (sqrMagnitude > unit.UnitTable.FOV_Radius.Sqr())
+            {
+                continue;
+            }
+         
+            if (sqrMagnitude >= nearestDistance)
             {
                 continue;
             }
 
-            nearestDistance = dis;
+            nearestDistance = sqrMagnitude;
             target = unit;
         }
 

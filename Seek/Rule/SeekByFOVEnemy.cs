@@ -12,15 +12,15 @@ public sealed class SeekByFOVEnemy : ISeeker
         foreach (var unit in enemies)
         {
             var unitTable = unit.UnitTable;
-
-            var dir = unit.Tm.position - owner.Tm.position;
-            if (dir.magnitude > unitTable.FOV_Radius)
+            if (unit.Tm.position.SqrDistance(owner.Tm.position) > unitTable.FOV_Radius.Sqr())
             {
                 continue;
             }
             
-            var fovAngle = Mathf.Cos(unitTable.FOV_Angle * Mathf.Deg2Rad);
+            var dir = unit.Tm.position - owner.Tm.position;
             var dot = Vector3.Dot(owner.Tm.forward.normalized, dir.normalized);
+            var fovAngle = Mathf.Cos(unitTable.FOV_Angle * Mathf.Deg2Rad);
+            
             if (dot < fovAngle)
             {
                 continue;

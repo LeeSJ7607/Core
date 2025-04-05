@@ -27,7 +27,6 @@ internal sealed class BTAction_Chase : BehaviorTree
 
     private bool IsTargetTooFar(Vector3 ownerPos, Vector3 targetPos)
     {
-        var sqr = (targetPos - ownerPos).sqrMagnitude;
-        return sqr > _maxChaseDistance * _maxChaseDistance;
+        return targetPos.SqrDistance(ownerPos) > _maxChaseDistance.Sqr();
     }
 }
