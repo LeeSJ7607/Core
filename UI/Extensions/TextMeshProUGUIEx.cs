@@ -17,12 +17,6 @@ internal sealed class TextMeshProUGUIEx : TextMeshProUGUI
         _disposable.Clear();
         base.OnDisable();
     }
-    
-    public override string text
-    {
-        get => base.text;
-        set => base.text = value;
-    }
 
     public void SetLocalizedText(int localizeId)
     {
@@ -32,7 +26,7 @@ internal sealed class TextMeshProUGUIEx : TextMeshProUGUI
             return;
         }
 
-        _cmOption ??= ModelManager.Instance.Get<CMOption>();
+        _cmOption ??= DataAccessor.GetModel<CMOption>();
         _cmOption.LanguageChanged
                  .Subscribe(_ => text = LocalizeUtil.GetText(localizeId))
                  .AddTo(_disposable);

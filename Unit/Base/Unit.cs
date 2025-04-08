@@ -82,7 +82,15 @@ public abstract partial class Unit : MonoBehaviour,
         }
         
         var unitTable = (this as IReadOnlyUnit).UnitTable;
-        GizmosUtil.DrawFOV(transform, unitTable.FOV_Radius, unitTable.FOV_Angle);
+        if (unitTable.SeekRuleType == ESeekRule.FOVEnemy)
+        {
+            GizmosUtil.DrawFOV(transform, unitTable.FOV_Radius, unitTable.FOV_Angle);
+        }
+        else
+        {
+            GizmosUtil.DrawCircle(transform.position, unitTable.FOV_Radius);
+        }
+
         Gizmos.color = Color.red;
     }
 }

@@ -9,6 +9,7 @@ public interface IModel
     bool TryLoad(out IModel refModel);
 }
 
+//TODO: 테이블이 새로운 로우가 추가되거나, 변경이 되었을 경우 기존에 저장한 로컬 테이블 데이터와 싱크를 맞춰봐야함
 public abstract class Model : IModel
 {
     private bool _canSave;
@@ -50,7 +51,7 @@ public abstract class Model : IModel
     
     private string CalcSavePath()
     {
-        var cmUser = ModelManager.Instance.Get<CMUser>();
+        var cmUser = DataAccessor.GetModel<CMUser>();
         return $"{Application.persistentDataPath}{cmUser.UserId}/Model";
     }
 
