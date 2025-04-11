@@ -1,26 +1,47 @@
-﻿using UnityEngine.Purchasing;
+﻿using System;
+using Cysharp.Threading.Tasks;
+using Unity.Services.Core;
+using Unity.Services.Core.Environments;
+using UnityEngine;
+using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Extension;
 
-internal interface IInAppPlatform
+internal interface IIAPHandler
 {
-    
+    void Initialize(ConfigurationBuilder builder);
 }
 
 internal sealed class IAPManager : Singleton<IAPManager>, IDetailedStoreListener
 {
-    private IInAppPlatform _iapPlatform;
+    private IIAPHandler _iapHandler;
 
-    public void Initialize()
+    public async UniTaskVoid Initialize()
+    {
+        try 
+        { 
+            var option = new InitializationOptions().SetEnvironmentName("production");
+            await UnityServices.InitializeAsync(option);
+            
+            _iapHandler = CreateIAPHandler();
+            _iapHandler.Initialize(ConfigurationBuilder.Instance(StandardPurchasingModule.Instance()));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Unity Services Initialization failed: {e.Message}");
+        }
+    }
+
+    private IIAPHandler CreateIAPHandler()
     {
 #if UNITY_ANDROID
-        _iapPlatform = new AndroidInAppImpl();
+        return new AndroidIAPHandler();
 #elif UNITY_IOS
-        _iapPlatform = new iOSInAppImpl();
+        return new iOSIAPHandler();
 #else
-        _iapPlatform = new PcInAppImpl();
+        return new PCIAPHandler();
 #endif
     }
-    
+
     public void OnInitializeFailed(InitializationFailureReason error)
     {
         throw new System.NotImplementedException();
