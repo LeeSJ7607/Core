@@ -21,7 +21,7 @@ internal sealed class AndroidInAppImpl : IInAppImpl
 
             builder.AddProduct(productId, ProductType.Consumable, new IDs()
             {
-                productId, storeName
+                { productId, storeName }
             });
         }
 
