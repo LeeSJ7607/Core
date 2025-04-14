@@ -2,9 +2,9 @@
 using UnityEngine.Purchasing;
 using UnityEngine;
 
-internal sealed class AndroidIAPHandler : IIAPHandler
+internal sealed class AndroidInAppImpl : IInAppImpl
 {
-    void IIAPHandler.Initialize(ConfigurationBuilder builder)
+    void IInAppImpl.Initialize(ConfigurationBuilder builder)
     {
         AddProudct(builder, GooglePlay.Name, null);
     }
