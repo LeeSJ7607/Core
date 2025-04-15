@@ -1,30 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using UnityEngine.Purchasing;
-using UnityEngine;
 
 internal sealed class AndroidInAppImpl : IInAppImpl
 {
-    void IInAppImpl.Initialize(ConfigurationBuilder builder)
+    private IGooglePlayStoreExtensions _googlePlayStoreExtensions;
+    
+    void IInAppImpl.Initialize(IExtensionProvider extensionProvider)
     {
-        AddProudct(builder, GooglePlay.Name, null);
+        _googlePlayStoreExtensions = extensionProvider.GetExtension<IGooglePlayStoreExtensions>();
     }
 
-    public static void AddProudct(ConfigurationBuilder builder, string storeName, IReadOnlyList<string> productIds)
+    void IInAppImpl.RestoreTransactions(Action<bool, string> act)
     {
-        foreach (var productId in productIds)
-        {
-            if (productId.IsNullOrWhiteSpace())
-            {
-                Debug.LogError("Product ID is null or empty.");
-                continue;
-            }
-
-            builder.AddProduct(productId, ProductType.Consumable, new IDs()
-            {
-                { productId, storeName }
-            });
-        }
-
-        UnityPurchasing.Initialize(IAPManager.Instance, builder);
+        _googlePlayStoreExtensions.RestoreTransactions(act);
     }
 }
