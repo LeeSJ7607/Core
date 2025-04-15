@@ -14,6 +14,8 @@ internal interface IInAppImpl
     void RestoreTransactions(Action<bool, string> act);
 }
 
+//TODO: 인앱 결제는 마켓에서 구매 완료 후, 게임 보상이 지급 되지 않았을 경우에 대한 예외처리가 많이 필요함.
+//TODO: 예를 들면, 마켓에서 구매 완료 후 게임을 강제 종료해서 게임 보상 지급이 되지 않았을 경우와 마켓에서 구매 완료 후 네트워크가 끊겨서 게임 보상 지급이 되지 않았을 경우. 
 internal sealed class IAPManager : Singleton<IAPManager>, IDetailedStoreListener
 {
     private IStoreController _storeController;
