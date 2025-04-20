@@ -163,4 +163,24 @@ public static class UnityExtension
         refTm = tm.GetChild(idx);
         return true;
     }
+
+    public static void DestroyImmediate(this GameObject obj)
+    {
+        if (obj == null)
+        {
+            return;
+        }
+        
+        Object.DestroyImmediate(obj);
+    }
+    
+    public static void Destroy(this GameObject obj)
+    {
+        if (obj == null)
+        {
+            return;
+        }
+        
+        Object.Destroy(obj);
+    }
 }
