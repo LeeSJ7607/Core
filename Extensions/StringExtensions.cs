@@ -9,4 +9,14 @@
     {
         return string.IsNullOrWhiteSpace(source);
     }
+
+    public static bool IsEquals(this string source, string target)
+    {
+        if (source == null)
+        {
+            return false;
+        }
+        
+        return source.Equals(target);
+    }
 }
