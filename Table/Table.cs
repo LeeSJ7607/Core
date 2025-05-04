@@ -17,13 +17,21 @@ public abstract class Table<TRow> : ScriptableObject, ITable
     {
         try
         {
-            var ser = JsonConvert.SerializeObject(rows);
-            var jsonSerializerSettings = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore};
-            OnParse(JsonConvert.DeserializeObject<List<TRow>>(ser, jsonSerializerSettings));
+            var json = JsonConvert.SerializeObject(rows);
+            var jsonSerializerSettings = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore };
+            var parsedRows = JsonConvert.DeserializeObject<List<TRow>>(json, jsonSerializerSettings);
+            
+            if (parsedRows == null)
+            {
+                Debug.LogError("JsonConvert.DeserializeObject returned null.");
+                return false;
+            }
+            
+            OnParse(parsedRows);
         }
         catch (Exception e)
         {
-            Debug.LogError(e.Message);
+            Debug.LogError($"{GetType().Name} Parse failed: {e}");
             return false;
         }
 
