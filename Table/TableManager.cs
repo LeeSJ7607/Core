@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-internal sealed class TableManager : Singleton<TableManager> 
+internal sealed class TableManager : MonoSingleton<TableManager> 
 {
     private readonly Dictionary<Type, IBaseTable> _tableMap = new();
 
