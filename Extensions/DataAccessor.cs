@@ -5,7 +5,7 @@
         return ModelManager.Instance.Get<T>();
     }
 
-    public static T GetTable<T>() where T : ITable
+    public static T GetTable<T>() where T : IBaseTable
     {
         return TableManager.Instance.Get<T>();
     }
