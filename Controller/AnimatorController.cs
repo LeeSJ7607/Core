@@ -45,12 +45,9 @@ public sealed class AnimatorController :
     
     private void InitStateHash()
     {
-        var i = 0;
-        
         for (var type = EAnimState.Idle; type < EAnimState.End; type++)
         {
-            _stateHash[i] = Animator.StringToHash(type.ToString());
-            i++;
+            _stateHash[(int)type] = Animator.StringToHash(type.ToString());
         }
     }
 
