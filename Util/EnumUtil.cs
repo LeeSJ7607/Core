@@ -10,4 +10,9 @@ public static class EnumUtil
                    .Where(e => Convert.ToInt32(e) > -1)
                    .Select(e => e.ToString()).ToArray();
     }
+    
+    public static int GetLength<T>() where T : Enum
+    {
+        return Enum.GetValues(typeof(T)).Length;
+    }
 }

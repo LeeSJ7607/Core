@@ -1,9 +1,10 @@
-internal sealed class SkillController
+public sealed class SkillController
 {
-    private readonly IReadOnlyUnit _unit;
+    private BaseSkill[] _skills;
     
-    public SkillController(IReadOnlyUnit unit)
+    public void Initialize(IReadOnlyUnit owner)
     {
-        _unit = unit;
+        var cnt = EnumUtil.GetLength<eSkillSlot>();
+        _skills = new BaseSkill[cnt];
     }
 }
