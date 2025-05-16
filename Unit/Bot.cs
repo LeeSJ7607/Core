@@ -2,12 +2,6 @@
 {
     private readonly UnitAIController _unitAIController = new();
 
-    protected override void OnDisable()
-    {
-        _unitAIController.Release();
-        base.OnDisable();
-    }
-
     protected override void OnInitialize()
     {
         _unitAIController.Initialize(this, _unitController.Units);

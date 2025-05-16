@@ -48,16 +48,17 @@ public abstract partial class Unit : MonoBehaviour,
     {
         _deadController.Release();
         _animatorController.Release();
+        AttackController.Release();
     }
 
     protected virtual void Awake()
     {
         _deadController = new DeadController(this);
+        _animatorController = new AnimatorController(this);
         MoveController = new MoveController(this);
         TargetController = new TargetController(this);
         AttackController = new AttackController(this);
-        SkillController = new SkillController(this);
-        _animatorController = new AnimatorController(this);
+        SkillController = new SkillController();
     }
     
     void IUnitInitializer.Initialize(int unitId, eFaction factionType, IUnitController unitController)
@@ -69,7 +70,7 @@ public abstract partial class Unit : MonoBehaviour,
         _unitUI.Initialize(this);
         _deadController.Initialize();
         _animatorController.Initialize();
-        SkillController.Initialize();
+        SkillController.Initialize(this);
         OnInitialize();
     }
     

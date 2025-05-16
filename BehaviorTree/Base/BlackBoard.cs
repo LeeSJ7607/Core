@@ -8,24 +8,23 @@ public sealed class BlackBoard
     public MoveController MoveController { get; }
     public TargetController TargetController { get; }
     public AttackController AttackController { get; }
+    public SkillController SkillController { get; }
     public IEnumerable<IReadOnlyUnit> Units { get; }
     public IReadOnlyUnit Target => TargetController.Target;
 
     public BlackBoard(IReadOnlyUnit owner, IEnumerable<IReadOnlyUnit> units)
     {
+        if (owner is not Unit unit)
+        {
+            Debug.LogError($"[{nameof(BlackBoard)}] Owner is not Unit. Actual: {owner.GetType().Name}");
+            return;
+        }
+
         _owner = owner;
         Units = units;
-
-        if (owner is Unit unit)
-        {
-            MoveController = unit.MoveController;
-            TargetController = unit.TargetController;
-            AttackController = unit.AttackController;
-        }
-    }
-
-    public void Release()
-    {
-        AttackController.Release();
+        MoveController = unit.MoveController;
+        TargetController = unit.TargetController;
+        AttackController = unit.AttackController;
+        SkillController = unit.SkillController;
     }
 }
