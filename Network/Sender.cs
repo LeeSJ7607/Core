@@ -91,7 +91,7 @@ internal sealed class Sender
         return webRequest;
     }
 
-    private async UniTask<EResponseResult> SendWebRequest(UnityWebRequest webRequest)
+    private async UniTask<eResponseResult> SendWebRequest(UnityWebRequest webRequest)
     {
         var remainedRetryCount = 3;
         while (remainedRetryCount > 0)
@@ -101,7 +101,7 @@ internal sealed class Sender
                 await webRequest.SendWebRequest();
                 if (IsValidRequest(webRequest))
                 {
-                    return EResponseResult.Success;
+                    return eResponseResult.Success;
                 }
 
                 remainedRetryCount = await DecrementRetryWithDelay(remainedRetryCount, webRequest.url);
@@ -113,7 +113,7 @@ internal sealed class Sender
             }
         }
         
-        return EResponseResult.Shutdown;
+        return eResponseResult.Shutdown;
     }
     
     private async UniTask<int> DecrementRetryWithDelay(int remainedRetryCount, string webRequestUrl)

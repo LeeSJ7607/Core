@@ -2,7 +2,7 @@
 
 public static class UnitExtensions
 {
-    public static IEnumerable<IReadOnlyUnit> GetEnemies(this IEnumerable<IReadOnlyUnit> source, EFaction faction)
+    public static IEnumerable<IReadOnlyUnit> GetEnemies(this IEnumerable<IReadOnlyUnit> source, eFaction faction)
     {
         var result = new List<IReadOnlyUnit>();
 

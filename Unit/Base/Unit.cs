@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 public interface IReadOnlyUnit
 {
-    EFaction FactionType { get; }
+    eFaction FactionType { get; }
     UnitTable.Row UnitTable { get; }
     IReadOnlyStat Stat { get; }
     bool IsDead { get; }
@@ -13,7 +13,7 @@ public interface IReadOnlyUnit
 
 public interface IUnitInitializer
 {
-    void Initialize(int unitId, EFaction factionType, IUnitController unitController);
+    void Initialize(int unitId, eFaction factionType, IUnitController unitController);
 }
 
 [RequireComponent(typeof(NavMeshAgent), typeof(AnchorNode))]
@@ -24,7 +24,7 @@ public abstract partial class Unit : MonoBehaviour,
     IDefender
 {
 #region IReadOnlyUnit
-    public EFaction FactionType { get; private set; }
+    public eFaction FactionType { get; private set; }
     UnitTable.Row IReadOnlyUnit.UnitTable => DataAccessor.GetTable<UnitTable>().GetRow(_unitId);
     IReadOnlyStat IReadOnlyUnit.Stat => _stat;
     public bool IsDead => _stat[EStat.HP] <= 0;
@@ -35,6 +35,7 @@ public abstract partial class Unit : MonoBehaviour,
     public MoveController MoveController { get; private set; }
     public AttackController AttackController { get; private set; }
     public TargetController TargetController { get; private set; }
+    public SkillController SkillController { get; private set; }
     
     private int _unitId;
     private readonly Stat _stat = new();
@@ -55,10 +56,11 @@ public abstract partial class Unit : MonoBehaviour,
         MoveController = new MoveController(this);
         TargetController = new TargetController(this);
         AttackController = new AttackController(this);
+        SkillController = new SkillController(this);
         _animatorController = new AnimatorController(this);
     }
     
-    void IUnitInitializer.Initialize(int unitId, EFaction factionType, IUnitController unitController)
+    void IUnitInitializer.Initialize(int unitId, eFaction factionType, IUnitController unitController)
     {
         _unitId = unitId;
         FactionType = factionType;
@@ -67,6 +69,7 @@ public abstract partial class Unit : MonoBehaviour,
         _unitUI.Initialize(this);
         _deadController.Initialize();
         _animatorController.Initialize();
+        SkillController.Initialize();
         OnInitialize();
     }
     

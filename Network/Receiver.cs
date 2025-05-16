@@ -7,11 +7,11 @@
         _session = session;
     }
 
-    public void ReceiveProcess(EResponseResult responseResult, Sender.Request request)
+    public void ReceiveProcess(eResponseResult responseResult, Sender.Request request)
     {
         switch (responseResult)
         {
-        case EResponseResult.Success:
+        case eResponseResult.Success:
             {
                 var responseType = request.ResponseType;
                 var buffer = request.WebRequest.downloadHandler.data;
@@ -21,7 +21,7 @@
             }
             break;
 
-        case EResponseResult.Shutdown:
+        case eResponseResult.Shutdown:
             {
                 _session.Release();
                 

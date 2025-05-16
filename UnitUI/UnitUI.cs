@@ -8,8 +8,8 @@ public sealed class UnitUI
     public void Initialize(IReadOnlyUnit owner)
     {
         var anchorNode = owner.Tm.GetComponentInChildren<AnchorNode>(true);
-        _unitHealthUI.Initialize(anchorNode[EAnchorNode.HP]);
-        _unitDamageUI.Initialize(anchorNode[EAnchorNode.Damage]);
+        _unitHealthUI.Initialize(anchorNode[eAnchorNode.HP]);
+        _unitDamageUI.Initialize(anchorNode[eAnchorNode.Damage]);
     }
 
     public void OnUpdate()

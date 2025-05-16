@@ -4,8 +4,8 @@ using UnityEngine;
 
 public sealed class AnchorNode : MonoBehaviour
 {
-    public Transform this[EAnchorNode type] => _anchorNodes[type];
-    private readonly Dictionary<EAnchorNode, Transform> _anchorNodes = new();
+    public Transform this[eAnchorNode type] => _anchorNodes[type];
+    private readonly Dictionary<eAnchorNode, Transform> _anchorNodes = new();
     
     private void Awake()
     {
@@ -15,7 +15,7 @@ public sealed class AnchorNode : MonoBehaviour
         {
             var tm = (Transform)obj;
 
-            if (Enum.TryParse<EAnchorNode>(tm.name, out var type))
+            if (Enum.TryParse<eAnchorNode>(tm.name, out var type))
             {
                 _anchorNodes[type] = tm;
             }

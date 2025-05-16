@@ -15,7 +15,7 @@ public sealed class HeroSpawner : MonoBehaviour,
     void ISpawner.Spawn()
     {
         var unit = _unitController.RegisterUnit(_unitId, transform.position, transform.rotation);
-        unit.Initialize(_unitId, EFaction.Ally, _unitController);
+        unit.Initialize(_unitId, eFaction.Ally, _unitController);
     }
     
     private void OnDrawGizmos()

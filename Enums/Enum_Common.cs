@@ -1,10 +1,10 @@
-﻿public enum EFaction
+﻿public enum eFaction
 {
     Ally,
     Enemy,
 }
 
-public enum EAnchorNode
+public enum eAnchorNode
 {
     HP,
     Damage,

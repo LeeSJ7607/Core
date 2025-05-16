@@ -1,10 +1,10 @@
-public enum EResponseResult
+public enum eResponseResult
 {
     Success,
     Shutdown
 }
 
-public enum ELoginResult
+public enum eLoginResult
 {
     Success,
 }
