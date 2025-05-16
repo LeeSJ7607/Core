@@ -31,6 +31,10 @@ public abstract partial class Unit : MonoBehaviour,
     Transform IReadOnlyUnit.Tm => transform;
     public IAnimatorController AnimatorController => _animatorController;
 #endregion
+
+    public MoveController MoveController { get; private set; }
+    public AttackController AttackController { get; private set; }
+    public TargetController TargetController { get; private set; }
     
     private int _unitId;
     private readonly Stat _stat = new();
@@ -47,11 +51,13 @@ public abstract partial class Unit : MonoBehaviour,
 
     protected virtual void Awake()
     {
-        _animatorController = new AnimatorController(this);
         _deadController = new DeadController(this);
+        MoveController = new MoveController(this);
+        TargetController = new TargetController(this);
+        AttackController = new AttackController(this);
+        _animatorController = new AnimatorController(this);
     }
     
-    protected abstract void OnInitialize();
     void IUnitInitializer.Initialize(int unitId, EFaction factionType, IUnitController unitController)
     {
         _unitId = unitId;
@@ -93,4 +99,6 @@ public abstract partial class Unit : MonoBehaviour,
 
         Gizmos.color = Color.red;
     }
+    
+    protected abstract void OnInitialize();
 }

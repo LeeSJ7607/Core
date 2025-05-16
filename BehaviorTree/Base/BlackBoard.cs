@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-//TODO: Need To Move Controller Class
 public sealed class BlackBoard
 {
     private readonly IReadOnlyUnit _owner;
@@ -15,10 +14,14 @@ public sealed class BlackBoard
     public BlackBoard(IReadOnlyUnit owner, IEnumerable<IReadOnlyUnit> units)
     {
         _owner = owner;
-        MoveController = new MoveController(owner);
-        TargetController = new TargetController(owner);
-        AttackController = new AttackController((IAttacker)owner);
         Units = units;
+
+        if (owner is Unit unit)
+        {
+            MoveController = unit.MoveController;
+            TargetController = unit.TargetController;
+            AttackController = unit.AttackController;
+        }
     }
 
     public void Release()

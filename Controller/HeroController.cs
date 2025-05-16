@@ -9,7 +9,7 @@ public sealed class HeroController
     public HeroController(IReadOnlyUnit owner)
     {
         _owner = owner;
-        _moveController = new MoveController(owner);
+        _moveController = (owner as Unit)?.MoveController;
         _mainCam = Camera.main ?? throw new System.NullReferenceException("Main camera is missing.");
     }
 
