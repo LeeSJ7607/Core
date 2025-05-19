@@ -4,7 +4,7 @@ internal sealed class BTAction_Chase : BehaviorTree
 {
     private const float _maxChaseDistance = 5f;
     
-    public override EBTStatus OnUpdate(BlackBoard blackBoard)
+    public override eBTStatus OnUpdate(BlackBoard blackBoard)
     {
         var target = blackBoard.Target;
         var targetPos = target.Tm.position;
@@ -12,17 +12,17 @@ internal sealed class BTAction_Chase : BehaviorTree
 
         if (target.IsDead())
         {
-            return EBTStatus.Failure;
+            return eBTStatus.Failure;
         }
         
         if (IsTargetTooFar(blackBoard.OwnerPos, targetPos))
         {
-            return EBTStatus.Failure;
+            return eBTStatus.Failure;
         }
         
         return blackBoard.AttackController.IsTargetInRange(targetPos)
-            ? EBTStatus.Success
-            : EBTStatus.Running;
+            ? eBTStatus.Success
+            : eBTStatus.Running;
     }
 
     private bool IsTargetTooFar(Vector3 ownerPos, Vector3 targetPos)

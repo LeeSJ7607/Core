@@ -16,9 +16,9 @@ public sealed class HTAction_SpawnUnit : HTAction
         }
     }
 
-    public override EBTStatus OnUpdate()
+    public override eBTStatus OnUpdate()
     {
         _spawners.Foreach(_ => _.Spawn());
-        return EBTStatus.Success;
+        return eBTStatus.Success;
     }
 }

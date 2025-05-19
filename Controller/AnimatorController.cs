@@ -1,7 +1,7 @@
 ﻿using R3;
 using UnityEngine;
 
-public enum EAnimState
+public enum eAnimState
 {
     Idle,
     Walk,
@@ -14,18 +14,18 @@ public enum EAnimState
 
 public interface IAnimatorController
 {
-    Observable<EAnimState> OnAnimStateExit { get; }
-    void SetState(EAnimState state, float value = 0f);
+    Observable<eAnimState> OnAnimStateExit { get; }
+    void SetState(eAnimState state, float value = 0f);
 }
 
 public sealed class AnimatorController : 
     IAnimatorController,
     IUnitStateMachineBehaviour
 {
-    Observable<EAnimState> IAnimatorController.OnAnimStateExit => _onAnimStateExit;
-    private readonly ReactiveCommand<EAnimState> _onAnimStateExit = new();
-    private EAnimState _curAnimStateType = EAnimState.End;
-    private readonly int[] _stateHash = new int[(int)EAnimState.End];
+    Observable<eAnimState> IAnimatorController.OnAnimStateExit => _onAnimStateExit;
+    private readonly ReactiveCommand<eAnimState> _onAnimStateExit = new();
+    private eAnimState _curAnimStateType = eAnimState.End;
+    private readonly int[] _stateHash = new int[(int)eAnimState.End];
     private readonly Animator _animator;
     
     public AnimatorController(IReadOnlyUnit owner)
@@ -45,27 +45,27 @@ public sealed class AnimatorController :
     
     private void InitStateHash()
     {
-        for (var type = EAnimState.Idle; type < EAnimState.End; type++)
+        for (var type = eAnimState.Idle; type < eAnimState.End; type++)
         {
             _stateHash[(int)type] = Animator.StringToHash(type.ToString());
         }
     }
 
-    private EAnimState GetStateFromHash(int hash)
+    private eAnimState GetStateFromHash(int hash)
     {
         for (var i = 0; i < _stateHash.Length; i++)
         {
             if (_stateHash[i] == hash)
             {
-                return (EAnimState)i;
+                return (eAnimState)i;
             }
         }
         
         Debug.LogError($"Not found state hash: {hash}");
-        return EAnimState.End;
+        return eAnimState.End;
     }
     
-    void IAnimatorController.SetState(EAnimState state, float value)
+    void IAnimatorController.SetState(eAnimState state, float value)
     {
         if (_curAnimStateType == state)
         {
@@ -77,7 +77,7 @@ public sealed class AnimatorController :
         
         switch (state)
         {
-        case EAnimState.Walk:
+        case eAnimState.Walk:
             {
                 _animator.SetFloat(stateHash, value);
             }
@@ -86,7 +86,7 @@ public sealed class AnimatorController :
         default:
             {
                 _animator.SetTrigger(stateHash);
-                _animator.SetFloat(_stateHash[(int)EAnimState.Walk], 0f);
+                _animator.SetFloat(_stateHash[(int)eAnimState.Walk], 0f);
             }
             break;
         }
@@ -96,6 +96,6 @@ public sealed class AnimatorController :
     {
         var animState = GetStateFromHash(stateInfo.shortNameHash);
         _onAnimStateExit.Execute(animState);
-        _curAnimStateType = EAnimState.End;
+        _curAnimStateType = eAnimState.End;
     }
 }

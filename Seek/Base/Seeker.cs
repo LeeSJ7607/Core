@@ -16,17 +16,17 @@ public sealed class Seeker
         new SeekByDefenseBuilding(),
     };
 
-    public ISeeker this[ESeekRule seekRule]
+    public ISeeker this[eSeekRule seekRule]
     {
         get
         {
-            if (seekRule < ESeekRule.End)
+            if (seekRule < eSeekRule.End)
             {
                 return _seekers[(int)seekRule];
             }
             
             Debug.LogError($"Invalid SeekType : {seekRule}");
-            return _seekers[(int)ESeekRule.NearestEnemy];
+            return _seekers[(int)eSeekRule.NearestEnemy];
         }
     }
 }

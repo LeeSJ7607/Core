@@ -16,16 +16,16 @@ public sealed class HTCondition_ClearDistrictAll : HTCondition
         }
     }
 
-    public override EBTStatus OnUpdate()
+    public override eBTStatus OnUpdate()
     {
         foreach (var district in _districts)
         {
             if (!district.IsCleared)
             {
-                return EBTStatus.Running;
+                return eBTStatus.Running;
             }
         }
 
-        return EBTStatus.Success;
+        return eBTStatus.Success;
     }
 }

@@ -24,9 +24,9 @@ public sealed class DeadController
                            .AddTo(_disposable);
     }
 
-    private void OnAnimStateExit(EAnimState animState)
+    private void OnAnimStateExit(eAnimState animState)
     {
-        if (animState != EAnimState.Die)
+        if (animState != eAnimState.Die)
         {
             return;
         }

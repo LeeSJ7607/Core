@@ -6,7 +6,7 @@ internal sealed class MenuScene
     [MenuItem("Custom/Menu/Scene/Login", false, 0)]
     private static void OpenLoginScene()
     {
-        if (!TryFindScenePath(EScene.Login.ToString(), out var scenePath))
+        if (!TryFindScenePath(eScene.Login.ToString(), out var scenePath))
         {
             return;
         }
@@ -17,7 +17,7 @@ internal sealed class MenuScene
     [MenuItem("Custom/Menu/Scene/OutGame", false, 1)]
     private static void OpenOutGameScene()
     {
-        if (!TryFindScenePath(EScene.OutGame.ToString(), out var scenePath))
+        if (!TryFindScenePath(eScene.OutGame.ToString(), out var scenePath))
         {
             return;
         }
@@ -28,7 +28,7 @@ internal sealed class MenuScene
     [MenuItem("Custom/Menu/Scene/InGame", false, 2)]
     private static void OpenInGameScene()
     {
-        if (!TryFindScenePath(EScene.InGame.ToString(), out var scenePath))
+        if (!TryFindScenePath(eScene.InGame.ToString(), out var scenePath))
         {
             return;
         }
@@ -39,7 +39,7 @@ internal sealed class MenuScene
     [MenuItem("Custom/Menu/Scene/Loading", false, 3)]
     private static void OpenLoadingScene()
     {
-        if (!TryFindScenePath(EScene.Loading.ToString(), out var scenePath))
+        if (!TryFindScenePath(eScene.Loading.ToString(), out var scenePath))
         {
             return;
         }

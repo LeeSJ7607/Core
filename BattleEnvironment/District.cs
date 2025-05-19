@@ -30,7 +30,7 @@ public sealed class District : MonoBehaviour
             return;
         }
 
-        if (_htComposite.Update() == EBTStatus.Running)
+        if (_htComposite.Update() == eBTStatus.Running)
         {
             return;
         }

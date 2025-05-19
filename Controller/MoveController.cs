@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-public enum EMoveState
+public enum eMoveState
 {
     Moving,
     ReachedGoal,
@@ -28,26 +28,26 @@ public sealed class MoveController
         GetMoveState();
     }
 
-    public EMoveState GetMoveState()
+    public eMoveState GetMoveState()
     {
         var stoppingDistance = _navMeshAgent.stoppingDistance + _navMeshAgentRadius;
         var moveState = _navMeshAgent.remainingDistance > stoppingDistance
-            ? EMoveState.Moving
-            : EMoveState.ReachedGoal;
+            ? eMoveState.Moving
+            : eMoveState.ReachedGoal;
         
         SetAnimState(moveState);
         return moveState;
     }
 
-    private void SetAnimState(EMoveState moveState)
+    private void SetAnimState(eMoveState moveState)
     {
-        if (moveState == EMoveState.ReachedGoal)
+        if (moveState == eMoveState.ReachedGoal)
         {
-            _animatorController.SetState(EAnimState.Idle);
+            _animatorController.SetState(eAnimState.Idle);
             return;
         }
 
-        _navMeshAgent.speed = _stat[EStat.WALK_SPEED];
-        _animatorController.SetState(EAnimState.Walk, _navMeshAgent.speed);
+        _navMeshAgent.speed = _stat[eStat.WALK_SPEED];
+        _animatorController.SetState(eAnimState.Walk, _navMeshAgent.speed);
     }
 }

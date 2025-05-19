@@ -1,4 +1,4 @@
-public enum EBTStatus
+public enum eBTStatus
 {
     Success,
     Failure,
@@ -8,6 +8,6 @@ public enum EBTStatus
 public abstract class BehaviorTree
 {
     public virtual void OnBegin(BlackBoard blackBoard) { }
-    public abstract EBTStatus OnUpdate(BlackBoard blackBoard);
+    public abstract eBTStatus OnUpdate(BlackBoard blackBoard);
     public virtual void OnEnd(BlackBoard blackBoard) { }
 }

@@ -12,9 +12,9 @@ public abstract partial class Unit
     
     void IDefender.Hit(long damage)
     {
-        _stat[EStat.HP] -= damage;
+        _stat[eStat.HP] -= damage;
         _unitUI.SetHPAndDamage(_stat, damage);
-        AnimatorController.SetState(IsDead ? EAnimState.Die : EAnimState.Hit);
+        AnimatorController.SetState(IsDead ? eAnimState.Die : eAnimState.Hit);
         
         if (IsDead)
         {

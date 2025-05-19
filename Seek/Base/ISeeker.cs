@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public enum ESeekRule
+public enum eSeekRule
 {
     Self,
     Random,

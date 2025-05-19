@@ -42,7 +42,7 @@ public sealed class AttackController
 
         if (_owner.IsAttackable)
         {
-            _animatorController.SetState(EAnimState.Attack);
+            _animatorController.SetState(eAnimState.Attack);
             _owner.IsAttackable = false;
         }
     }
@@ -61,9 +61,9 @@ public sealed class AttackController
         }
     }
     
-    private void OnAnimStateExit(EAnimState animState)
+    private void OnAnimStateExit(eAnimState animState)
     {
-        if (animState == EAnimState.Attack)
+        if (animState == eAnimState.Attack)
         {
             _owner.IsAttackable = true;
         }

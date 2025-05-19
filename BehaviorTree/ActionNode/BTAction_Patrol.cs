@@ -13,17 +13,17 @@ internal sealed class BTAction_Patrol : BehaviorTree
         SetAndMoveToNextTarget(blackBoard.MoveController);
     }
 
-    public override EBTStatus OnUpdate(BlackBoard blackBoard)
+    public override eBTStatus OnUpdate(BlackBoard blackBoard)
     {
         var moveController = blackBoard.MoveController;
-        if (moveController.GetMoveState() == EMoveState.ReachedGoal)
+        if (moveController.GetMoveState() == eMoveState.ReachedGoal)
         {
             SetAndMoveToNextTarget(moveController);
         }
         
         return blackBoard.TargetController.TryFindTarget(blackBoard.Units) 
-            ? EBTStatus.Success 
-            : EBTStatus.Running;
+            ? eBTStatus.Success 
+            : eBTStatus.Running;
     }
 
     private void SetAndMoveToNextTarget(MoveController moveController)

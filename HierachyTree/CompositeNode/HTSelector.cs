@@ -15,7 +15,7 @@
         _canBegin = true;
     }
     
-    public override EBTStatus OnUpdate()
+    public override eBTStatus OnUpdate()
     {
         ResetTree();
         
@@ -31,16 +31,16 @@
 
             switch (curTask.OnUpdate())
             {
-            case EBTStatus.Running:
-                return EBTStatus.Running;
+            case eBTStatus.Running:
+                return eBTStatus.Running;
             
-            case EBTStatus.Success:
+            case eBTStatus.Success:
                 {
                     curTask.OnEnd();
                 }
-                return EBTStatus.Success;
+                return eBTStatus.Success;
                 
-            case EBTStatus.Failure:
+            case eBTStatus.Failure:
                 {
                     curTask.OnEnd();
                     MoveToNextTask();
@@ -50,6 +50,6 @@
             }
         }
 
-        return EBTStatus.Failure;
+        return eBTStatus.Failure;
     }
 }

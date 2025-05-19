@@ -19,7 +19,7 @@ public sealed class UnitUI
 
     public void SetHPAndDamage(Stat stat, long damage)
     {
-        _unitHealthUI.SetHP(stat[EStat.HP], stat[EStat.Max_HP]);
+        _unitHealthUI.SetHP(stat[eStat.HP], stat[eStat.Max_HP]);
         _unitDamageUI.SetDamage(damage);
     }
 }

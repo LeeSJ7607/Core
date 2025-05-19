@@ -1,6 +1,6 @@
 ﻿using UnityEngine.SceneManagement;
 
-public enum EScene
+public enum eScene
 {
     Login,
     OutGame,
@@ -11,12 +11,12 @@ public enum EScene
 
 internal sealed class SceneLoader
 {
-    public EScene CurSceneType = EScene.Login;
+    public eScene CurSceneType = eScene.Login;
     
-    public void LoadScene(EScene sceneType)
+    public void LoadScene(eScene sceneType)
     {
         CurSceneType = sceneType;
-        SceneManager.LoadSceneAsync(EScene.Loading.ToString());
+        SceneManager.LoadSceneAsync(eScene.Loading.ToString());
     }
     
     public void LoadNextScene()

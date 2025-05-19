@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public enum EStat
+public enum eStat
 {
     Max_HP,
     HP,
@@ -10,20 +10,20 @@ public enum EStat
 
 public interface IReadOnlyStat
 {
-    long this[EStat type] { get; }
+    long this[eStat type] { get; }
 }
 
 public sealed class Stat : IReadOnlyStat
 {
-    private readonly Dictionary<EStat, long> _statMap = new();
+    private readonly Dictionary<eStat, long> _statMap = new();
     
-    public long this[EStat type]
+    public long this[eStat type]
     {
         get => _statMap.GetValueOrDefault(type, 0);
         set => Sum(type, value);
     }
 
-    private void Sum(EStat type, long value)
+    private void Sum(eStat type, long value)
     {
         if (!_statMap.TryAdd(type, value))
         {
@@ -34,9 +34,9 @@ public sealed class Stat : IReadOnlyStat
     public void Initialize(IReadOnlyUnit owner)
     {
         var unitTable = owner.UnitTable;
-        Sum(EStat.Max_HP, unitTable.Max_HP);
-        Sum(EStat.HP, unitTable.Max_HP);
-        Sum(EStat.ATK, unitTable.Atk);
-        Sum(EStat.WALK_SPEED, unitTable.Walk_Speed);
+        Sum(eStat.Max_HP, unitTable.Max_HP);
+        Sum(eStat.HP, unitTable.Max_HP);
+        Sum(eStat.ATK, unitTable.Atk);
+        Sum(eStat.WALK_SPEED, unitTable.Walk_Speed);
     }
 }

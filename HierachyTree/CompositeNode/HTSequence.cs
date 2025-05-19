@@ -15,7 +15,7 @@
         _canBegin = true;
     }
 
-    public override EBTStatus OnUpdate()
+    public override eBTStatus OnUpdate()
     {
         while (_curTaskIdx < _nodes.Count)
         {
@@ -29,26 +29,26 @@
 
             switch (curTask.OnUpdate())
             {
-            case EBTStatus.Running: 
-                return EBTStatus.Running;
+            case eBTStatus.Running: 
+                return eBTStatus.Running;
 
-            case EBTStatus.Success:
+            case eBTStatus.Success:
                 {
                     curTask.OnEnd();
                     MoveToNextTask();
                 }
                 break;
 
-            case EBTStatus.Failure:
+            case eBTStatus.Failure:
                 {
                     curTask.OnEnd();
                     ResetTree();
                 }
-                return EBTStatus.Failure;
+                return eBTStatus.Failure;
             }
         }
 
         ResetTree();
-        return EBTStatus.Success;
+        return eBTStatus.Success;
     }
 }

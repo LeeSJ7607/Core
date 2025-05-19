@@ -27,7 +27,7 @@ public abstract partial class Unit : MonoBehaviour,
     public eFaction FactionType { get; private set; }
     UnitTable.Row IReadOnlyUnit.UnitTable => DataAccessor.GetTable<UnitTable>().GetRow(_unitId);
     IReadOnlyStat IReadOnlyUnit.Stat => _stat;
-    public bool IsDead => _stat[EStat.HP] <= 0;
+    public bool IsDead => _stat[eStat.HP] <= 0;
     Transform IReadOnlyUnit.Tm => transform;
     public IAnimatorController AnimatorController => _animatorController;
 #endregion
@@ -92,7 +92,7 @@ public abstract partial class Unit : MonoBehaviour,
         }
         
         var unitTable = (this as IReadOnlyUnit).UnitTable;
-        if (unitTable.SeekRuleType == ESeekRule.FOVEnemy)
+        if (unitTable.SeekRuleType == eSeekRule.FOVEnemy)
         {
             GizmosUtil.DrawFOV(transform, unitTable.FOV_Radius, unitTable.FOV_Angle);
         }

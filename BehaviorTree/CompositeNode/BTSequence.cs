@@ -15,7 +15,7 @@ internal sealed class BTSequence : BTComposite
         _canBegin = true;
     }
 
-    public override EBTStatus OnUpdate(BlackBoard blackBoard)
+    public override eBTStatus OnUpdate(BlackBoard blackBoard)
     {
         while (_curTaskIdx < _nodes.Count)
         {
@@ -29,26 +29,26 @@ internal sealed class BTSequence : BTComposite
 
             switch (curTask.OnUpdate(blackBoard))
             {
-            case EBTStatus.Running: 
-                return EBTStatus.Running;
+            case eBTStatus.Running: 
+                return eBTStatus.Running;
 
-            case EBTStatus.Success:
+            case eBTStatus.Success:
                 {
                     curTask.OnEnd(blackBoard);
                     MoveToNextTask();
                 }
                 break;
 
-            case EBTStatus.Failure:
+            case eBTStatus.Failure:
                 {
                     curTask.OnEnd(blackBoard);
                     Reset();
                 }
-                return EBTStatus.Failure;
+                return eBTStatus.Failure;
             }
         }
 
         Reset();
-        return EBTStatus.Success;
+        return eBTStatus.Success;
     }
 }
