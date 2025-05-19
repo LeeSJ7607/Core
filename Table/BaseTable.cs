@@ -11,6 +11,8 @@ public interface IBaseTable
 
 public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
 {
+    [Serializable] public sealed class Map : SerializableDictionary<int, TRow> { }
+    [SerializeField] private Map _rowMap = new();
     bool IBaseTable.IsReleaseAble { get; set; }
 
     public bool TryParse(IReadOnlyList<Dictionary<string, string>> rows)
@@ -27,7 +29,11 @@ public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
                 return false;
             }
             
-            OnParse(parsedRows);
+            _rowMap.Clear();
+            foreach (var row in parsedRows)
+            {
+                _rowMap.Add(GetRowKey(row), row);
+            }
         }
         catch (Exception e)
         {
@@ -37,6 +43,17 @@ public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
 
         return true;
     }
+
+    public TRow GetRow(int key)
+    {
+        if (_rowMap.TryGetValue(key, out var row))
+        {
+            return row;
+        }
+        
+        Debug.LogError($"Key: {key} not found in {GetType().Name}.");
+        return default;
+    }
     
-    protected abstract void OnParse(List<TRow> rows);
+    protected abstract int GetRowKey(TRow row);
 }
