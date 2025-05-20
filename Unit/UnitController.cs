@@ -13,6 +13,7 @@ public interface IUnitController
     void RemoveUnit(IReadOnlyUnit unit);
 }
 
+//TODO: 유닛 팩토리, 유닛 컨트롤러로 분리.
 public sealed class UnitController : IUnitController
 {
     IEnumerable<IReadOnlyUnit> IUnitController.Units => _units;
