@@ -18,7 +18,7 @@ public abstract partial class Unit
         
         if (IsDead)
         {
-            _unitController.RemoveUnit(this);
+            _UnitContainer.RemoveUnit(this);
         }
     }
 }

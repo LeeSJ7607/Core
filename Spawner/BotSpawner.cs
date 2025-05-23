@@ -9,7 +9,7 @@ public interface ISpawner
 
 public sealed class BotSpawner : MonoBehaviour, 
     ISpawner,
-    IUnitControllerBinder
+    IUnitContainerBinder
 {
     [Serializable]
     private struct SpawnSetting
@@ -26,11 +26,11 @@ public sealed class BotSpawner : MonoBehaviour,
 
     [SerializeField] private SpawnSetting _spawnSetting;
     [SerializeField] private List<UnitData> _unitDataList;
-    private IUnitController _unitController;
+    private UnitContainer _unitContainer;
 
-    void IUnitControllerBinder.Initialize(IUnitController unitController)
+    void IUnitContainerBinder.Initialize(UnitContainer unitContainer)
     {
-        _unitController = unitController;
+        _unitContainer = unitContainer;
     }
     
     void ISpawner.Spawn()
@@ -46,8 +46,8 @@ public sealed class BotSpawner : MonoBehaviour,
             for (var i = 0; i < unitData.Count; i++)
             {
                 var pos = MathUtil.GetRandomPositionInRadius(transform.position, _spawnSetting.Radius);
-                var unit = _unitController.RegisterUnit(unitData.Id, pos, transform.rotation);
-                unit.Initialize(unitData.Id, eFaction.Enemy, _unitController);
+                var unit = _unitContainer.RegisterUnit(unitData.Id, pos, transform.rotation);
+                unit.Initialize(unitData.Id, eFaction.Enemy, _unitContainer);
             }
         }
     }

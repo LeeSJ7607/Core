@@ -2,20 +2,20 @@
 
 public sealed class HeroSpawner : MonoBehaviour, 
     ISpawner,
-    IUnitControllerBinder
+    IUnitContainerBinder
 {
     [SerializeField] private int _unitId;
-    private IUnitController _unitController;
+    private UnitContainer _unitContainer;
 
-    void IUnitControllerBinder.Initialize(IUnitController unitController)
+    void IUnitContainerBinder.Initialize(UnitContainer unitContainer)
     {
-        _unitController = unitController;
+        _unitContainer = unitContainer;
     }
     
     void ISpawner.Spawn()
     {
-        var unit = _unitController.RegisterUnit(_unitId, transform.position, transform.rotation);
-        unit.Initialize(_unitId, eFaction.Ally, _unitController);
+        var unit = _unitContainer.RegisterUnit(_unitId, transform.position, transform.rotation);
+        unit.Initialize(_unitId, eFaction.Ally, _unitContainer);
     }
     
     private void OnDrawGizmos()

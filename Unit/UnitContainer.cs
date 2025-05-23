@@ -1,30 +1,22 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public interface IUnitControllerBinder
+public interface IUnitContainerBinder
 {
-    void Initialize(IUnitController unitController);
+    void Initialize(UnitContainer unitContainer);
 }
 
-public interface IUnitController
+public sealed class UnitContainer
 {
-    IEnumerable<IReadOnlyUnit> Units { get; }
-    IUnitInitializer RegisterUnit(int unitId, Vector3 pos, Quaternion rot, Transform root = null);
-    void RemoveUnit(IReadOnlyUnit unit);
-}
-
-//TODO: 유닛 팩토리, 유닛 컨트롤러로 분리.
-public sealed class UnitController : IUnitController
-{
-    IEnumerable<IReadOnlyUnit> IUnitController.Units => _units;
+    public IEnumerable<IReadOnlyUnit> Units => _units;
     private readonly HashSet<IReadOnlyUnit> _units = new();
 
-    void IUnitController.RemoveUnit(IReadOnlyUnit unit)
+    public void RemoveUnit(IReadOnlyUnit unit)
     {
         _units.Remove(unit);
     }
     
-    IUnitInitializer IUnitController.RegisterUnit(int unitId, Vector3 pos, Quaternion rot, Transform root)
+    public IUnitInitializer RegisterUnit(int unitId, Vector3 pos, Quaternion rot, Transform root = null)
     {
         var row = DataAccessor.GetTable<UnitTable>().GetRow(unitId);
         var res = AddressableManager.Instance.Get<GameObject>(row.PrefabName);

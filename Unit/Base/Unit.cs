@@ -13,7 +13,7 @@ public interface IReadOnlyUnit
 
 public interface IUnitInitializer
 {
-    void Initialize(int unitId, eFaction factionType, IUnitController unitController);
+    void Initialize(int unitId, eFaction factionType, UnitContainer unitContainer);
 }
 
 [RequireComponent(typeof(NavMeshAgent), typeof(AnchorNode))]
@@ -42,7 +42,7 @@ public abstract partial class Unit : MonoBehaviour,
     private readonly UnitUI _unitUI = new();
     private DeadController _deadController;
     private AnimatorController _animatorController;
-    protected IUnitController _unitController;
+    protected UnitContainer _UnitContainer;
 
     protected virtual void OnDisable()
     {
@@ -61,11 +61,11 @@ public abstract partial class Unit : MonoBehaviour,
         SkillController = new SkillController();
     }
     
-    void IUnitInitializer.Initialize(int unitId, eFaction factionType, IUnitController unitController)
+    void IUnitInitializer.Initialize(int unitId, eFaction factionType, UnitContainer unitContainer)
     {
         _unitId = unitId;
         FactionType = factionType;
-        _unitController = unitController;
+        _UnitContainer = unitContainer;
         _stat.Initialize(this);
         _unitUI.Initialize(this);
         _deadController.Initialize();

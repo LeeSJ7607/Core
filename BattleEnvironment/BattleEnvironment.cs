@@ -1,9 +1,9 @@
 ﻿public interface IReadOnlyBattleEnvironment
 {
-    IUnitController UnitController { get; }
+    UnitContainer UnitContainer { get; }
 }
 
 public sealed class BattleEnvironment : IReadOnlyBattleEnvironment
 {
-    IUnitController IReadOnlyBattleEnvironment.UnitController { get; } = new UnitController();
+    UnitContainer IReadOnlyBattleEnvironment.UnitContainer { get; } = new();
 }

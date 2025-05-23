@@ -14,10 +14,10 @@ public sealed class District : MonoBehaviour
 
     public void Initialize(IReadOnlyBattleEnvironment battleEnvironment)
     {
-        var initializers = GetComponentsInChildren<IUnitControllerBinder>();
+        var initializers = GetComponentsInChildren<IUnitContainerBinder>();
         foreach (var initializer in initializers)
         {
-            initializer.Initialize(battleEnvironment.UnitController);
+            initializer.Initialize(battleEnvironment.UnitContainer);
         }
 
         _isActive = true;
