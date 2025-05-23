@@ -9,6 +9,7 @@ public interface IBaseTable
     bool TryParse(IReadOnlyList<Dictionary<string, string>> rows);
 }
 
+//TODO: 커스텀 에디터 필요하고, SO -> CSV 저장 기능 필요.
 public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
 {
     [Serializable] public sealed class Map : SerializableDictionary<int, TRow> { }
