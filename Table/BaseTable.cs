@@ -33,6 +33,7 @@ public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
             _rowMap.Clear();
             foreach (var row in parsedRows)
             {
+                Initialize(row);
                 _rowMap.Add(GetRowKey(row), row);
             }
         }
@@ -57,4 +58,5 @@ public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
     }
     
     protected abstract int GetRowKey(TRow row);
+    protected virtual void Initialize(TRow row) { }
 }
