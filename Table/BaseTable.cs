@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -54,7 +55,7 @@ public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
         }
         
         Debug.LogError($"Key: {key} not found in {GetType().Name}.");
-        return default;
+        return !_rowMap.IsNullOrEmpty() ? _rowMap.Values.First() : default;
     }
     
     protected abstract int GetRowKey(TRow row);
