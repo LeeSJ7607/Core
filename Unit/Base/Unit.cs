@@ -9,6 +9,8 @@ public interface IReadOnlyUnit
     bool IsDead { get; }
     Transform Tm { get; }
     IAnimatorController AnimatorController { get; }
+    void AddStatusEffect(eDeBuffStatus status);
+    void RemoveStatusEffect(eDeBuffStatus status);
 }
 
 public interface IUnitInitializer
@@ -43,6 +45,7 @@ public abstract partial class Unit : MonoBehaviour,
     private DeadController _deadController;
     private AnimatorController _animatorController;
     protected UnitContainer _UnitContainer;
+    private eDeBuffStatus _curDeBuffStatus;
 
     protected virtual void OnDisable()
     {
@@ -82,6 +85,17 @@ public abstract partial class Unit : MonoBehaviour,
     protected virtual void OnUpdate()
     {
         _unitUI.OnUpdate();
+        SkillController.OnUpdate();
+    }
+    
+    void IReadOnlyUnit.AddStatusEffect(eDeBuffStatus status)
+    {
+        _curDeBuffStatus |= status;
+    }
+    
+    void IReadOnlyUnit.RemoveStatusEffect(eDeBuffStatus status)
+    {
+        _curDeBuffStatus &= status;
     }
     
     private void OnDrawGizmos()

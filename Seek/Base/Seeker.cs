@@ -2,6 +2,7 @@
 
 public sealed class Seeker
 {
+    //TODO: Factory (Func<ISeeker>)
     private readonly ISeeker[] _seekers = 
     {
         new SeekBySelf(),
