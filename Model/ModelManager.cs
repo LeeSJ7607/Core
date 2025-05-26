@@ -6,8 +6,7 @@ internal sealed class ModelManager : Singleton<ModelManager>
 {
     private readonly Dictionary<Type, IModel> _modelMap = new()
     {
-        { typeof(CMUser), new CMUser() },
-        { typeof(CMRanking), new CMRanking() },
+        {typeof(CMUser), new CMUser()},
     };
 
     public void Release()
