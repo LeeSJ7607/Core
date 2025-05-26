@@ -4,7 +4,7 @@
 
     protected override void OnInitialize()
     {
-        _unitAIController.Initialize(this, _UnitContainer.Units);
+        _unitAIController.Initialize(this, _unitContainer.Units);
     }
 
     protected override void OnUpdate()

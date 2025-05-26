@@ -9,8 +9,8 @@ public interface IReadOnlyUnit
     bool IsDead { get; }
     Transform Tm { get; }
     IAnimatorController AnimatorController { get; }
-    void AddStatusEffect(eDeBuffStatus status);
-    void RemoveStatusEffect(eDeBuffStatus status);
+    void AddBuffEffect(eBuffEffect buffEffect);
+    void RemoveBuffEffect(eBuffEffect buffEffect);
 }
 
 public interface IUnitInitializer
@@ -44,8 +44,8 @@ public abstract partial class Unit : MonoBehaviour,
     private readonly UnitUI _unitUI = new();
     private DeadController _deadController;
     private AnimatorController _animatorController;
-    protected UnitContainer _UnitContainer;
-    private eDeBuffStatus _curDeBuffStatus;
+    protected UnitContainer _unitContainer;
+    private eBuffEffect _curBuffEffectStatus;
 
     protected virtual void OnDisable()
     {
@@ -68,7 +68,7 @@ public abstract partial class Unit : MonoBehaviour,
     {
         _unitId = unitId;
         FactionType = factionType;
-        _UnitContainer = unitContainer;
+        _unitContainer = unitContainer;
         _stat.Initialize(this);
         _unitUI.Initialize(this);
         _deadController.Initialize();
@@ -88,14 +88,14 @@ public abstract partial class Unit : MonoBehaviour,
         SkillController.OnUpdate();
     }
     
-    void IReadOnlyUnit.AddStatusEffect(eDeBuffStatus status)
+    void IReadOnlyUnit.AddBuffEffect(eBuffEffect buffEffect)
     {
-        _curDeBuffStatus |= status;
+        _curBuffEffectStatus |= buffEffect;
     }
     
-    void IReadOnlyUnit.RemoveStatusEffect(eDeBuffStatus status)
+    void IReadOnlyUnit.RemoveBuffEffect(eBuffEffect buffEffect)
     {
-        _curDeBuffStatus &= status;
+        _curBuffEffectStatus &= buffEffect;
     }
     
     private void OnDrawGizmos()

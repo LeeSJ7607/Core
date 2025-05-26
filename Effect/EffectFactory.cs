@@ -6,9 +6,8 @@ internal sealed class EffectFactory
 {
     private static readonly Dictionary<eEffectType, Func<Effect>> _effectMap = new()
     {
-        [eEffectType.Stun] = () => new StunEffect(),
-        [eEffectType.Pulling] = () => new PullingEffect(),
-        [eEffectType.Poison] = () => new PoisonEffect(),
+        [eEffectType.Buff] = () => new BuffEffect(),
+        [eEffectType.Pull] = () => new PullingEffect(),
     };
 
     public static Effect GetEffect(eEffectType effectType)
@@ -19,6 +18,6 @@ internal sealed class EffectFactory
         }
         
         Debug.LogError($"[{nameof(GetEffect)}] Effect not found for state: {effectType}");
-        return _effectMap[eEffectType.Stun].Invoke();
+        return _effectMap[eEffectType.Buff].Invoke();
     }
 }

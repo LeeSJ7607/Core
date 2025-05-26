@@ -1,6 +1,6 @@
 using System;
 
-public enum eBuffType
+public enum eBuffCategory
 {
     Buff,
     DeBuff,
@@ -14,7 +14,7 @@ public enum eBuffOverlap
 }
 
 [Flags]
-public enum eDeBuffStatus
+public enum eBuffEffect
 {
     None = 0,
     Stun = 1 << 0,

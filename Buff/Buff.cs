@@ -1,3 +1,4 @@
+//TODO: 설계중.
 internal sealed class Buff
 {
     private readonly int _buffId;
@@ -11,22 +12,22 @@ internal sealed class Buff
     {
         var buffTable = TableManager.GetTable<BuffTable>().GetRow(_buffId);
 
-        if (buffTable.OverlapType == eBuffOverlap.Ignore)
+        if (buffTable.BuffOverlapType == eBuffOverlap.Ignore)
         {
             return;
         }
 
-        switch (buffTable.BuffType)
+        switch (buffTable.BuffCategoryType)
         {
-        case eBuffType.Buff:
+        case eBuffCategory.Buff:
             {
-                owner.AddStatusEffect(eDeBuffStatus.Stun);
+                owner.AddBuffEffect(buffTable.BuffEffectType);
             }
             break;
 
-        case eBuffType.DeBuff:
+        case eBuffCategory.DeBuff:
             {
-                target.AddStatusEffect(eDeBuffStatus.Stun);
+                target.AddBuffEffect(buffTable.BuffEffectType);
             }
             break;
         }

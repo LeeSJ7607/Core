@@ -6,8 +6,9 @@ public sealed class BuffTable : BaseTable<BuffTable.Row>
     public sealed class Row
     {
         public int Id;
-        public eBuffType BuffType;
-        public eBuffOverlap OverlapType;
+        public eBuffCategory BuffCategoryType;
+        public eBuffOverlap BuffOverlapType;
+        public eBuffEffect BuffEffectType;
     }
 
     protected override int GetRowKey(Row row) => row.Id;
