@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class UIBase : MonoBehaviour
 {
-    public bool ActiveSelf { get; private set; }
+    public bool IsShown { get; private set; }
     protected readonly CompositeDisposable _disposable = new();
     
     protected virtual void OnDestroy()
@@ -18,24 +18,24 @@ public abstract class UIBase : MonoBehaviour
     
     public virtual void Show()
     {
-        if (ActiveSelf)
+        if (IsShown)
         {
             return;
         }
         
         gameObject.Show();
-        ActiveSelf = true;
+        IsShown = true;
     }
     
     public virtual void Hide()
     {
-        if (!ActiveSelf)
+        if (!IsShown)
         {
             return;
         }
         
         _disposable.Clear();
         gameObject.Hide();
-        ActiveSelf = false;
+        IsShown = false;
     }
 }
