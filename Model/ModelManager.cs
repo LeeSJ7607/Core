@@ -68,7 +68,12 @@ internal sealed class ModelManager : Singleton<ModelManager>
         }
     }
 
-    public TModel Get<TModel>() where TModel : IModel
+    public static T GetModel<T>() where T : IModel
+    {
+        return Instance.Get<T>();
+    }
+    
+    private TModel Get<TModel>() where TModel : IModel
     {
         if (_modelMap.TryGetValue(typeof(TModel), out var model))
         {
@@ -78,6 +83,4 @@ internal sealed class ModelManager : Singleton<ModelManager>
         Debug.LogError($"Not Found Model: {typeof(TModel)}");
         return default;
     }
-    
-    public static T GetModel<T>() where T : IModel => Instance.Get<T>();
 }

@@ -18,8 +18,13 @@ internal sealed class TableManager : MonoSingleton<TableManager>
             _tableMap.Remove(key);
         }
     }
-
-    public T Get<T>() where T : IBaseTable
+    
+    public static T GetTable<T>() where T : IBaseTable
+    {
+        return Instance.Get<T>();   
+    }
+    
+    private T Get<T>() where T : IBaseTable
     {
         var type = typeof(T);
 
@@ -39,6 +44,4 @@ internal sealed class TableManager : MonoSingleton<TableManager>
 
         return (T)res;
     }
-    
-    public static T GetTable<T>() where T : IBaseTable => Instance.Get<T>();
 }
