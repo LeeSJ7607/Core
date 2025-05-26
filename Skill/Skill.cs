@@ -12,7 +12,7 @@ internal abstract class Skill
         
         foreach (var effectId in skillTable.EffectIds)
         {
-            var effectTable = DataAccessor.GetTable<EffectTable>().GetRow(effectId);
+            var effectTable = TableManager.GetTable<EffectTable>().GetRow(effectId);
             var effect = EffectFactory.GetEffect(effectTable.EffectType);
             effect.Initialize(effectTable);
             _effects.Add(effect);

@@ -9,7 +9,7 @@ internal sealed class Buff
 
     public void Apply(IReadOnlyUnit owner, IReadOnlyUnit target)
     {
-        var buffTable = DataAccessor.GetTable<BuffTable>().GetRow(_buffId);
+        var buffTable = TableManager.GetTable<BuffTable>().GetRow(_buffId);
 
         if (buffTable.OverlapType == eBuffOverlap.Ignore)
         {

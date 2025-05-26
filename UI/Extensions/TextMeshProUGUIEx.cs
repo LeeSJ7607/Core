@@ -26,7 +26,7 @@ internal sealed class TextMeshProUGUIEx : TextMeshProUGUI
             return;
         }
 
-        _cmOption ??= DataAccessor.GetModel<CMOption>();
+        _cmOption ??= ModelManager.GetModel<CMOption>();
         _cmOption.LanguageChanged
                  .Subscribe(_ => text = LocalizeUtil.GetText(localizeId))
                  .AddTo(_disposable);

@@ -2,6 +2,11 @@
 
 public static class UnitExtensions
 {
+    public static bool IsDead(this IReadOnlyUnit source)
+    {
+        return source == null || source.IsDead;
+    }
+    
     public static IEnumerable<IReadOnlyUnit> GetEnemies(this IEnumerable<IReadOnlyUnit> source, eFaction faction)
     {
         var result = new List<IReadOnlyUnit>();

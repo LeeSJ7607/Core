@@ -18,7 +18,7 @@ public sealed class UnitContainer
     
     public IUnitInitializer RegisterUnit(int unitId, Vector3 pos, Quaternion rot, Transform root = null)
     {
-        var row = DataAccessor.GetTable<UnitTable>().GetRow(unitId);
+        var row = TableManager.GetTable<UnitTable>().GetRow(unitId);
         var res = AddressableManager.Instance.Get<GameObject>(row.PrefabName);
         var obj = UnityEngine.Object.Instantiate(res, root);
         obj.transform.SetPositionAndRotation(pos, rot);

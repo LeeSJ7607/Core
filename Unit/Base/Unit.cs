@@ -27,7 +27,7 @@ public abstract partial class Unit : MonoBehaviour,
 {
 #region IReadOnlyUnit
     public eFaction FactionType { get; private set; }
-    UnitTable.Row IReadOnlyUnit.UnitTable => DataAccessor.GetTable<UnitTable>().GetRow(_unitId);
+    UnitTable.Row IReadOnlyUnit.UnitTable => TableManager.GetTable<UnitTable>().GetRow(_unitId);
     IReadOnlyStat IReadOnlyUnit.Stat => _stat;
     public bool IsDead => _stat[eStat.HP] <= 0;
     Transform IReadOnlyUnit.Tm => transform;

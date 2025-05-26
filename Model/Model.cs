@@ -51,7 +51,7 @@ public abstract class Model : IModel
     
     private string CalcSavePath()
     {
-        var cmUser = DataAccessor.GetModel<CMUser>();
+        var cmUser = ModelManager.GetModel<CMUser>();
         return $"{Application.persistentDataPath}{cmUser.UserId}/Model";
     }
 

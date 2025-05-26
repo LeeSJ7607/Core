@@ -39,4 +39,6 @@ internal sealed class TableManager : MonoSingleton<TableManager>
 
         return (T)res;
     }
+    
+    public static T GetTable<T>() where T : IBaseTable => Instance.Get<T>();
 }

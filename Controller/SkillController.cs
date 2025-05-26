@@ -18,7 +18,7 @@ public sealed class SkillController
 
         foreach (var (slotType, skillId) in uniqueSkillIdsBySlot)
         {
-            var skillTable = DataAccessor.GetTable<SkillTable>().GetRow(skillId);
+            var skillTable = TableManager.GetTable<SkillTable>().GetRow(skillId);
             var skill = SkillFactory.GetSkill(skillTable.SkillInputType);
             skill.Initialize(skillTable);
             _skillMap.Add(slotType, skill);
