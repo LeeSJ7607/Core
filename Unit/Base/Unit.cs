@@ -9,8 +9,7 @@ public interface IReadOnlyUnit
     bool IsDead { get; }
     Transform Tm { get; }
     IAnimatorController AnimatorController { get; }
-    void AddBuffEffect(eBuffEffect buffEffect);
-    void RemoveBuffEffect(eBuffEffect buffEffect);
+    void AddBuff(Buff buff);
 }
 
 public interface IUnitInitializer
@@ -44,8 +43,8 @@ public abstract partial class Unit : MonoBehaviour,
     private readonly UnitUI _unitUI = new();
     private DeadController _deadController;
     private AnimatorController _animatorController;
+    private BuffController _buffController;
     protected UnitContainer _unitContainer;
-    private eBuffEffect _curBuffEffectStatus;
 
     protected virtual void OnDisable()
     {
@@ -58,6 +57,7 @@ public abstract partial class Unit : MonoBehaviour,
     {
         _deadController = new DeadController(this);
         _animatorController = new AnimatorController(this);
+        _buffController = new BuffController(this);
         MoveController = new MoveController(this);
         TargetController = new TargetController(this);
         AttackController = new AttackController(this);
@@ -88,14 +88,9 @@ public abstract partial class Unit : MonoBehaviour,
         SkillController.OnUpdate();
     }
     
-    void IReadOnlyUnit.AddBuffEffect(eBuffEffect buffEffect)
+    void IReadOnlyUnit.AddBuff(Buff buff)
     {
-        _curBuffEffectStatus |= buffEffect;
-    }
-    
-    void IReadOnlyUnit.RemoveBuffEffect(eBuffEffect buffEffect)
-    {
-        _curBuffEffectStatus &= buffEffect;
+        _buffController.AddBuff(buff);
     }
     
     private void OnDrawGizmos()

@@ -1,17 +1,8 @@
 //TODO: 설계중.
-internal sealed class Buff
+public abstract class Buff
 {
-    private readonly int _buffId;
-    
-    public Buff(int buffId)
+    public virtual void Apply(BuffTable.Row buffTable, IReadOnlyUnit owner, IReadOnlyUnit target)
     {
-        _buffId = buffId;
-    }
-
-    public void Apply(IReadOnlyUnit owner, IReadOnlyUnit target)
-    {
-        var buffTable = TableManager.GetTable<BuffTable>().GetRow(_buffId);
-
         if (buffTable.BuffOverlapType == eBuffOverlap.Ignore)
         {
             return;
@@ -21,13 +12,13 @@ internal sealed class Buff
         {
         case eBuffCategory.Buff:
             {
-                owner.AddBuffEffect(buffTable.BuffEffectType);
+                owner.AddBuff(this);
             }
             break;
 
         case eBuffCategory.DeBuff:
             {
-                target.AddBuffEffect(buffTable.BuffEffectType);
+                target.AddBuff(this);
             }
             break;
         }
