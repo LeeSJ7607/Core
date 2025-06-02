@@ -11,6 +11,7 @@ public interface IBaseTable
 }
 
 //TODO: 커스텀 에디터 필요하고, SO -> CSV 저장 기능 필요.
+//TODO: UnitTable.Row 이런 식으로 사용 하는 경우가 많은데.. 코드를 짤 때 너무 별로임
 public abstract class BaseTable<TRow> : ScriptableObject, IBaseTable
 {
     [Serializable] public sealed class Map : SerializableDictionary<int, TRow> { }

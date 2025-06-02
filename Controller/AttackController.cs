@@ -1,6 +1,7 @@
 ﻿using R3;
 using UnityEngine;
 
+//TODO: SkillController 로 통합.
 public sealed class AttackController
 {
     private IDefender _target;
