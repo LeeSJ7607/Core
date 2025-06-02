@@ -6,6 +6,19 @@ internal abstract class Effect
     {
         _effectTable = effectTable;
     }
-    
-    public abstract void Apply(IReadOnlyUnit owner, IReadOnlyUnit target);
+
+    public void Apply(IReadOnlyUnit owner, IReadOnlyUnit target)
+    {
+        if (target == null)
+        {
+            SelfApply(owner);
+        }
+        else
+        {
+            ApplyToTarget(owner, target);
+        }
+    }
+
+    protected virtual void SelfApply(IReadOnlyUnit owner) { }
+    protected abstract void ApplyToTarget(IReadOnlyUnit owner, IReadOnlyUnit target);
 }
