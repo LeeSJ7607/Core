@@ -10,14 +10,14 @@ internal sealed class BuffFactory
         [eBuffEffect.Poison] = () => new PosionBuff(),
     };
 
-    public static Buff GetBuff(eBuffEffect buffEffectType)
+    public static Buff Create(eBuffEffect buffEffectType)
     {
         if (_buffMap.TryGetValue(buffEffectType, out var buff))
         {
             return buff.Invoke();
         }
 
-        Debug.LogError($"[{nameof(GetBuff)}] Buff not found for state: {buffEffectType}");
+        Debug.LogError($"[{nameof(Create)}] Buff not found for state: {buffEffectType}");
         return _buffMap[eBuffEffect.Stun].Invoke();
     }
 }

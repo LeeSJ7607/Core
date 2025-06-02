@@ -10,14 +10,14 @@ internal sealed class EffectFactory
         [eEffectType.Pull] = () => new PullingEffect(),
     };
 
-    public static Effect GetEffect(eEffectType effectType)
+    public static Effect Create(eEffectType effectType)
     {
         if (_effectMap.TryGetValue(effectType, out var effect))
         {
             return effect.Invoke();
         }
         
-        Debug.LogError($"[{nameof(GetEffect)}] Effect not found for state: {effectType}");
+        Debug.LogError($"[{nameof(Create)}] Effect not found for state: {effectType}");
         return _effectMap[eEffectType.Buff].Invoke();
     }
 }

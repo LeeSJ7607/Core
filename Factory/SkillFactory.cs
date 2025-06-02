@@ -12,14 +12,14 @@ internal sealed class SkillFactory
         [eSkillInput.GroundPoint] = () => new GroundPointSkill(),
     };
     
-    public static Skill GetSkill(eSkillInput skillInputType)
+    public static Skill Create(eSkillInput skillInputType)
     {
         if (_skillMap.TryGetValue(skillInputType, out var skill))
         {
             return skill.Invoke();
         }
 
-        Debug.LogError($"[{nameof(GetSkill)}] Skill not found for state: {skillInputType}");
+        Debug.LogError($"[{nameof(Create)}] Skill not found for state: {skillInputType}");
         return _skillMap[eSkillInput.Instant].Invoke();
     }
 }
