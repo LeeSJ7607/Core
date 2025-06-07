@@ -17,55 +17,46 @@ internal sealed class Program
 
 internal sealed class Game
 {
-    private readonly Print _print = new();
-    private readonly Rule _rule;
-    private readonly List<int> _pinHistoryList = new();
-
-    public Game()
-    {
-        _rule = new Rule(_pinHistoryList);
-    }
+    private readonly List<int> _rolls = new();
+    private readonly Rule _rule = new();
+    private readonly ConsolePrinter _consolePrinter = new();
 
     public void KnockedDownPins(int inputPins)
     {
-        if (!_rule.IsValidRoll(inputPins))
+        if (!_rule.IsValidRoll(_rolls, inputPins))
         {
             return;
         }
         
-        _pinHistoryList.Add(inputPins);
+        _rolls.Add(inputPins);
+        _consolePrinter.Print(_rolls);
     }
 }
 
 internal sealed class Rule
 {
+    public const int START_FRAME = 1;
+    public const int MAX_FRAME = 10;
+    public const int STRIKE_ROLLS = 1;
+    public const int SPARE_ROLLS = 2;
+    public const int MAX_PINS = 10;
     private const int MIN_PINS = 0;
-    private const int MAX_PINS = 10;
-    private const int START_FRAME = 1;
-    private const int MAX_FRAME = 10;
-    private const int STRIKE = 1;
-    private const int NORMAL_FRAME = 2;
-    private readonly IReadOnlyList<int> _pinHistoryList;
     
-    public Rule(IReadOnlyList<int> pinHistoryList)
-    {
-        _pinHistoryList = pinHistoryList;
-    }
-    
-    public bool IsValidRoll(int inputPins)
+    public bool IsValidRoll(IReadOnlyList<int> rolls, int inputPins)
     {
         if (!IsValidPins(inputPins))
         {
-            Console.WriteLine("0 ~ 10 사이의 값을 입력해주세요.");
+            var msg = $"{MIN_PINS} ~ {MAX_PINS} 사이의 값을 입력해주세요.";
+            Console.WriteLine(msg);
             return false;
         }
 
-        if (!IsValidBonusRoll(inputPins))
+        if (!IsValidBonusRoll(rolls, inputPins))
         {
             return false;
         }
 
-        return IsValidSecondRollInFrame(inputPins);
+        return IsValidSecondRollInFrame(rolls, inputPins);
     }
 
     private bool IsValidPins(int inputPins)
@@ -74,289 +65,216 @@ internal sealed class Rule
             && inputPins <= MAX_PINS;
     }
 
-    private bool IsValidBonusRoll(int inputPins)
+    private bool IsValidBonusRoll(IReadOnlyList<int> rolls, int inputPins)
     {
-        var (curFrame, curPinHistoryIdx) = GetCurFrameAndPinHistoryIdx();
-        if (curFrame <= MAX_FRAME)
+        var (curFrame, curFrameStartRollIdx) = GetCurFrameAndRollIndex(rolls);
+        if (curFrame < MAX_FRAME)
         {
-            return true;
+            return false;
         }
-
-        var maxFrameStartIdx = curPinHistoryIdx;
-        var bonusCount = _pinHistoryList.Count - maxFrameStartIdx;
         
+        var bonusCount = rolls.Count - curFrameStartRollIdx;
         if (bonusCount != 1 && bonusCount != 2)
         {
             return false;
         }
 
-        var pins = _pinHistoryList[maxFrameStartIdx];
+        var firstPins = rolls[curFrameStartRollIdx];
         if (bonusCount == 1)
         {
-            if (pins == MAX_FRAME)
+            if (IsStrike(firstPins))
             {
                 return IsValidPins(inputPins);
             }
 
-            return pins + inputPins <= MAX_PINS;
+            return firstPins + inputPins <= MAX_PINS;
         }
 
-        var nextPins = _pinHistoryList[maxFrameStartIdx + 1];
-        return pins == MAX_PINS 
-            || pins + nextPins == MAX_PINS;
+        var secondRollIdx = curFrameStartRollIdx + 1;
+        if (secondRollIdx >= rolls.Count)
+        {
+            return false;
+        }
+
+        var secondPins = rolls[secondRollIdx];
+        return IsStrike(firstPins)
+            || IsStrike(firstPins + secondPins);
     }
     
-    private (int curFrame, int curPinHistoryIdx) GetCurFrameAndPinHistoryIdx()
+    private (int curFrame, int curRollIdx) GetCurFrameAndRollIndex(IReadOnlyList<int> rolls)
     {
-        var pinHistoryIndex = 0;
+        var rollIdx = 0;
         var curFrame = START_FRAME;
 
-        while (pinHistoryIndex < _pinHistoryList.Count && curFrame <= MAX_FRAME)
+        while (rollIdx < rolls.Count && curFrame <= MAX_FRAME)
         {
-            var pins = _pinHistoryList[pinHistoryIndex];
-            if (pins == MAX_PINS)
+            var pins = rolls[rollIdx];
+            if (IsStrike(pins))
             {
-                pinHistoryIndex += STRIKE;
+                rollIdx += STRIKE_ROLLS;
             }
             else
             {
-                pinHistoryIndex += NORMAL_FRAME;
+                rollIdx += SPARE_ROLLS;
             }
 
             curFrame++;
         }
 
-        return (curFrame, pinHistoryIndex);
+        return (curFrame, rollIdx);
     }
 
-    private bool IsValidSecondRollInFrame(int inputPins)
+    private bool IsValidSecondRollInFrame(IReadOnlyList<int> rolls, int inputPins)
     {
-        if (_pinHistoryList.Count == 0)
+        if (rolls.Count == 0 || !IsWaitSecondRoll(rolls))
         {
-            return true;
+            return false;
         }
 
-        var lastPins = _pinHistoryList[^1];
+        var lastPins = rolls[^1];
         return lastPins + inputPins <= MAX_PINS;
     }
-}
 
-internal sealed class Print
-{
-    
-}
-
-
-
-
-
-
-using System;
-using System.Collections.Generic;
-
-internal class Program1
-{
-    public static void Maind(string[] args)
+    private bool IsWaitSecondRoll(IReadOnlyList<int> rolls)
     {
-        Game1 game1 = new Game1();
+        var rollIdx = 0;
+        var frame = START_FRAME;
 
-        // while (true)
-        // {
-        //     Console.Write("핀 수를 입력하세요 (0~10): ");
-        //     string input = Console.ReadLine();
-        //
-        //     if (int.TryParse(input, out int pins))
-        //     {
-        //         game.KnockedDownPins(pins);
-        //     }
-        //     else
-        //     {
-        //         Console.WriteLine("[잘못된 입력] 숫자를 입력해주세요.");
-        //     }
-        // }
-        
-        game1.KnockedDownPins(4);
-        game1.KnockedDownPins(6);
-        game1.KnockedDownPins(5);
-        game1.KnockedDownPins(5);
-        game1.KnockedDownPins(10);
-        game1.KnockedDownPins(6);
-    }
-}
-    
-
-public class Game1
-{
-    private List<int> rolls = new List<int>();
-
-    public void KnockedDownPins(int pins)
-    {
-        if (!IsValidRoll(pins))
+        while (rollIdx < rolls.Count && frame <= MAX_FRAME)
         {
-            Console.WriteLine($"[잘못된 입력] {pins}개 핀은 현재 상황에서 유효하지 않습니다.");
-            return;
-        }
-
-        rolls.Add(pins);
-        PrintOneLine();
-    }
-
-    private bool IsValidRoll(int pins)
-    {
-        if (pins < 0 || pins > 10)
-            return false;
-
-        int frame = 1;
-        int rollIndex = 0;
-
-        while (rollIndex < rolls.Count && frame <= 10)
-        {
-            if (rolls[rollIndex] == 10)
-                rollIndex += 1;
-            else
-                rollIndex += 2;
-
-            frame++;
-        }
-
-        // 10프레임 보너스 처리
-        if (frame > 10)
-        {
-            int start = GetFrameStartRollIndex(10);
-            int bonusCount = rolls.Count - start;
-
-            if (bonusCount == 1)
+            var pins = rolls[rollIdx];
+            if (IsStrike(pins))
             {
-                int first = rolls[start];
-                // 첫 스트라이크면 두 번째 투구는 어떤 숫자든 가능
-                // 첫 스페어면 보너스는 1개만 허용
-                if (first == 10)
-                    return pins >= 0 && pins <= 10;
-                else
-                    return first + pins <= 10;
-            }
-            else if (bonusCount == 2)
-            {
-                int first = rolls[start];
-                int second = rolls[start + 1];
-                // 첫 스트라이크거나 스페어인 경우 보너스 투구 허용
-                return (first == 10 || first + second == 10);
+                rollIdx += STRIKE_ROLLS;
             }
             else
             {
-                return false;
+                var secondRollIdx = rollIdx + 1;
+                if (secondRollIdx == rolls.Count)
+                {
+                    return true;
+                }
+
+                rollIdx += SPARE_ROLLS;
             }
-        }
 
-        var lastIdx = rolls.Count - 1;
-        // 프레임 내 첫 번째 투구가 10인 경우: 두 번째 투구 없음 → OK
-        if (rolls.Count > 0 && IsFirstRollOfFrameIncomplete())
-        {
-            int last = rolls[lastIdx];
-            // 두 번째 투구인데 첫 투구와 합이 10 초과면 ❌
-            return last + pins <= 10;
-        }
-
-        return true;
-    }
-
-    private bool IsFirstRollOfFrameIncomplete()
-    {
-        int index = 0;
-        int frame = 1;
-
-        while (index < rolls.Count && frame <= 10)
-        {
-            if (rolls[index] == 10)
-            {
-                index += 1;
-            }
-            else
-            {
-                if (index + 1 == rolls.Count)
-                    return true; // 두 번째 투구 기다리는 중
-                index += 2;
-            }
             frame++;
         }
 
         return false;
     }
 
-
-    private void PrintOneLine()
+    public static bool IsStrike(int pins)
     {
-        int rollIndex = 0;
-        int score = 0;
-        string topLine = "";
-        string botLine = "";
+        return pins == MAX_PINS;
+    }
+}
 
-        for (int frame = 1; frame <= 10; frame++)
+internal sealed class ConsolePrinter
+{
+    private string _firstRollStr;
+    private string _secondRollStr;
+    private string _scoreStr;
+
+    private void ResetStr()
+    {
+        _firstRollStr = " ";
+        _secondRollStr = " "; 
+        _scoreStr = "     ";
+    }
+    
+    public void Print(IReadOnlyList<int> rolls)
+    {
+        var frameResultsLineStr = string.Empty;
+        var scoreLineStr = string.Empty;
+        var rollIdx = 0;
+        var score = 0;
+        
+        for (var frame = Rule.START_FRAME; frame <= Rule.MAX_FRAME; frame++)
         {
-            string r1 = " ";
-            string r2 = " ";
-            string scoreStr = "     ";
+            ResetStr();
+            ProcessFrame(rolls, ref rollIdx, ref score, frame);
+            frameResultsLineStr += $"{frame}:[{_firstRollStr},{_secondRollStr}] ";
+            scoreLineStr += $"  {_scoreStr} ";
+        }
+        
+        Console.WriteLine(frameResultsLineStr);
+        Console.WriteLine(scoreLineStr);
+    }
 
-            if (rollIndex < rolls.Count)
+    private void ProcessFrame(IReadOnlyList<int> rolls, ref int rollIdx, ref int score, int frame)
+    {
+        if (rollIdx >= rolls.Count)
+        {
+            return;
+        }
+        
+        var firstPins = rolls[rollIdx];
+        if (Rule.IsStrike(firstPins))
+        {
+            ProcessStrike(rolls, ref rollIdx, ref score);
+            return;
+        }
+
+        var secondRollIdx = rollIdx + 1;
+        if (secondRollIdx < rolls.Count)
+        {
+            ProcessSecondRoll(rolls, ref rollIdx, ref score, frame);
+            return;
+        }
+
+        _firstRollStr = FormatRollResult(firstPins);
+        rollIdx += 1;
+    }
+    
+    private void ProcessStrike(IReadOnlyList<int> rolls, ref int rollIdx, ref int score)
+    {
+        const string STRIKE_MSG = "X"; 
+        _firstRollStr = STRIKE_MSG;
+                
+        var spareRollIdx = rollIdx + Rule.SPARE_ROLLS;
+        if (spareRollIdx < rolls.Count)
+        {
+            var strikeRollIdx = rollIdx + Rule.STRIKE_ROLLS;
+            var totalPins = rolls[strikeRollIdx] + rolls[spareRollIdx];
+            score += Rule.MAX_PINS + totalPins;
+            _scoreStr = $"[{score,3}]";
+        }
+
+        rollIdx += Rule.STRIKE_ROLLS;
+    }
+    
+    private void ProcessSecondRoll(IReadOnlyList<int> rolls, ref int rollIdx, ref int score, int frame)
+    {
+        var firstPins = rolls[rollIdx];
+        _firstRollStr = FormatRollResult(firstPins);
+
+        var secondRollIdx = rollIdx + 1;
+        var secondPins = rolls[secondRollIdx];
+        var totalPins = firstPins + secondPins;
+        var isStrike = Rule.IsStrike(totalPins);
+        _secondRollStr = isStrike ? "/" : FormatRollResult(secondPins);
+
+        var spareRollIdx = rollIdx + Rule.SPARE_ROLLS;
+        if (spareRollIdx < rolls.Count || frame == Rule.MAX_FRAME)
+        {
+            score += totalPins;
+
+            if (isStrike && spareRollIdx < rolls.Count)
             {
-                int first = rolls[rollIndex];
-
-                if (first == 10)
-                {
-                    r1 = "X";
-                    if (rollIndex + 2 < rolls.Count)
-                    {
-                        score += 10 + rolls[rollIndex + 1] + rolls[rollIndex + 2];
-                        scoreStr = $"[{score,3}]";
-                    }
-                    rollIndex += 1;
-                }
-                else if (rollIndex + 1 < rolls.Count)
-                {
-                    int second = rolls[rollIndex + 1];
-                    r1 = Format(first);
-                    r2 = (first + second == 10) ? "/" : Format(second);
-
-                    if (rollIndex + 2 < rolls.Count || frame == 10)
-                    {
-                        score += first + second;
-                        if (first + second == 10 && rollIndex + 2 < rolls.Count)
-                            score += rolls[rollIndex + 2];
-                        scoreStr = $"[{score,3}]";
-                    }
-
-                    rollIndex += 2;
-                }
-                else
-                {
-                    r1 = Format(first);
-                    rollIndex += 1;
-                }
+                score += rolls[spareRollIdx];
             }
-
-            topLine += $"{frame}:[{r1},{r2}] ";
-            botLine += $"  {scoreStr} ";
+            
+            _scoreStr = $"[{score,3}]";
         }
 
-        Console.WriteLine(topLine.TrimEnd());
-        Console.WriteLine(botLine.TrimEnd());
+        rollIdx += Rule.SPARE_ROLLS;
     }
-
-    private string Format(int pins)
+    
+    private string FormatRollResult(int pins)
     {
-        return pins == 0 ? "-" : pins.ToString();
-    }
-
-    private int GetFrameStartRollIndex(int targetFrame)
-    {
-        int frame = 1;
-        int index = 0;
-        while (frame < targetFrame && index < rolls.Count)
-        {
-            if (rolls[index] == 10) index += 1;
-            else index += 2;
-            frame++;
-        }
-        return index;
+        return pins == 0 
+            ? "-" 
+            : pins.ToString();
     }
 }
