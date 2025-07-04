@@ -6,7 +6,7 @@ using UnityEditor.AddressableAssets.Settings;
 
 internal sealed class MenuAddressable
 {
-    [MenuItem("Custom/Menu/Addressable/Clear Addressable All")]
+    [MenuItem("Joel/Menu/Addressable/Clear Addressable All")]
     private static void ClearAddressableAll()
     {
         var settings = AddressableAssetSettingsDefaultObject.Settings;
@@ -18,7 +18,7 @@ internal sealed class MenuAddressable
         }
     }
     
-    [MenuItem("Custom/Menu/Addressable/Replace Addressable To FileName All")]
+    [MenuItem("Joel/Menu/Addressable/Replace Addressable To FileName All")]
     private static void ReplaceAddressableToFileNameAll()
     {
         var settings = AddressableAssetSettingsDefaultObject.Settings;
