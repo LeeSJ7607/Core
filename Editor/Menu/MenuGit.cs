@@ -8,7 +8,7 @@ internal sealed class MenuGit
     private const string HTTPS_CORE_GIT = "https://github.com/LeeSJ7607/Core.git";
     private const string CORE_FOLDER_PATH = "Assets/Scripts/Core";
     
-    [MenuItem("Custom/Menu/Git/Clone Core")]
+    [MenuItem("Joel/Menu/Git/Clone Core")]
     private static void CloneCore()
     {
         if (!TryCloneCore())

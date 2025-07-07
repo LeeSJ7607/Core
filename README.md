@@ -7,6 +7,10 @@
 - Addressable
 - UnityIAP
 - Jenkins
+- ZLinq
 
 ## Architecture
 - Effect Based Architecture
+
+## Plugins
+- project-curator

@@ -3,7 +3,7 @@ using UnityEditor.SceneManagement;
 
 internal sealed class MenuScene
 {
-    [MenuItem("Custom/Menu/Scene/Login", false, 0)]
+    [MenuItem("Joel/Menu/Scene/Login", false, 0)]
     private static void OpenLoginScene()
     {
         if (!TryFindScenePath(eScene.Login.ToString(), out var scenePath))
@@ -14,7 +14,7 @@ internal sealed class MenuScene
         EditorSceneManager.OpenScene(scenePath);
     }
     
-    [MenuItem("Custom/Menu/Scene/OutGame", false, 1)]
+    [MenuItem("Joel/Menu/Scene/OutGame", false, 1)]
     private static void OpenOutGameScene()
     {
         if (!TryFindScenePath(eScene.OutGame.ToString(), out var scenePath))
@@ -25,7 +25,7 @@ internal sealed class MenuScene
         EditorSceneManager.OpenScene(scenePath);
     }
     
-    [MenuItem("Custom/Menu/Scene/InGame", false, 2)]
+    [MenuItem("Joel/Menu/Scene/InGame", false, 2)]
     private static void OpenInGameScene()
     {
         if (!TryFindScenePath(eScene.InGame.ToString(), out var scenePath))
@@ -36,7 +36,7 @@ internal sealed class MenuScene
         EditorSceneManager.OpenScene(scenePath);
     }
     
-    [MenuItem("Custom/Menu/Scene/Loading", false, 3)]
+    [MenuItem("Joel/Menu/Scene/Loading", false, 3)]
     private static void OpenLoadingScene()
     {
         if (!TryFindScenePath(eScene.Loading.ToString(), out var scenePath))
