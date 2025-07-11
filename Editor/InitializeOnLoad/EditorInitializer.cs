@@ -29,6 +29,11 @@ internal static class EditorInitializer
         var settings = AddressableAssetSettingsDefaultObject.Settings;
         settings.OnModification = (_, modificationEvent, obj) =>
         {
+            if (obj == null)
+            {
+                return;
+            }
+            
             EditorApplication.ExecuteMenuItem("File/Save Project");
             Debug.Log($"OnModificationAddressable: {modificationEvent}, arg: {obj}");
         };
