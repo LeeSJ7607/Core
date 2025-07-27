@@ -57,7 +57,7 @@ public abstract partial class Unit : MonoBehaviour,
     {
         _deadController = new DeadController(this);
         _animatorController = new AnimatorController(this);
-        _buffController = new BuffController(this);
+        _buffController = new BuffController();
         MoveController = new MoveController(this);
         TargetController = new TargetController(this);
         AttackController = new AttackController(this);
@@ -86,6 +86,7 @@ public abstract partial class Unit : MonoBehaviour,
     {
         _unitUI.OnUpdate();
         SkillController.OnUpdate();
+        _buffController.OnUpdate();
     }
     
     void IReadOnlyUnit.AddBuff(Buff buff)

@@ -1,26 +1,87 @@
-//TODO: 설계중.
+using UnityEngine;
+
 public abstract class Buff
 {
-    public virtual void Apply(BuffTable.Row buffTable, IReadOnlyUnit owner, IReadOnlyUnit target)
+    public BuffTable.Row BuffTable { get; private set; }
+    protected int _value => CalcValue();
+    private float _elapsedTime;
+    private int _stackCount = 1;
+    
+    public virtual void Apply(BuffTable.Row buffTable, IReadOnlyUnit target)
     {
-        if (buffTable.BuffOverlapType == eBuffOverlap.Ignore)
-        {
-            return;
-        }
+        BuffTable = buffTable;
+        target.AddBuff(this);
+    }
+    
+    public virtual void OnUpdate()
+    {
+        
+    }
 
-        switch (buffTable.BuffCategoryType)
+    public bool IsExpired()
+    {
+        _elapsedTime += Time.deltaTime;
+        return _elapsedTime >= BuffTable.Duration;
+    }
+
+    public void HandleOverlap()
+    {
+        switch (BuffTable.BuffOverlapType)
         {
-        case eBuffCategory.Buff:
+        case eBuffOverlap.Ignore:
             {
-                owner.AddBuff(this);
+                
             }
             break;
 
-        case eBuffCategory.DeBuff:
+        case eBuffOverlap.Reset:
             {
-                target.AddBuff(this);
+                Reset();
+            }
+            break;
+
+        case eBuffOverlap.StackNoRefresh:
+            {
+                AddStack();
+            }
+            break;
+
+        case eBuffOverlap.StackAndRefresh:
+            {
+                AddStack();
+                _elapsedTime = 0;
+            }
+            break;
+
+        case eBuffOverlap.RefreshOnly:
+            {
+                _elapsedTime = 0;
             }
             break;
         }
+    }
+    
+    private void Reset()
+    {
+        _elapsedTime = 0;
+        _stackCount = 1;
+    }
+
+    private void AddStack()
+    {
+        _stackCount = Mathf.Min(++_stackCount, BuffTable.MaxStackCount);
+    }
+
+    private int CalcValue()
+    {
+        if (BuffTable.BuffStackType == eBuffStack.Additive)
+        {
+            return BuffTable.Value * _stackCount;
+        }
+
+        var value = 1f + BuffTable.Value / GameRuleConst.PERCENTAGE_BASE;
+        var pow = Mathf.Pow(value, _stackCount);
+        var result = (pow - 1f) * GameRuleConst.PERCENTAGE_BASE;
+        return (int)result;
     }
 }

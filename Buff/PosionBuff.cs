@@ -1,7 +1,7 @@
 internal sealed class PosionBuff : Buff
 {
-    public override void Apply(BuffTable.Row buffTable, IReadOnlyUnit owner, IReadOnlyUnit target)
+    public override void Apply(BuffTable.Row buffTable, IReadOnlyUnit target)
     {
-        base.Apply(buffTable, owner, target);
+        base.Apply(buffTable, target);
     }
 }
