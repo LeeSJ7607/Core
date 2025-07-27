@@ -3,13 +3,21 @@ using UnityEngine;
 public abstract class Buff
 {
     public BuffTable.Row BuffTable { get; private set; }
-    protected int _value => CalcValue();
+    private IReadOnlyUnit _target;
+    private int _value => CalcValue();
     private float _elapsedTime;
     private int _stackCount = 1;
+    
+    protected virtual void DeActivate()
+    {
+        _target.RemoveBuffFlags(BuffTable.BuffEffectType);
+        _target = null;
+    }
     
     public virtual void Apply(BuffTable.Row buffTable, IReadOnlyUnit target)
     {
         BuffTable = buffTable;
+        _target = target;
         target.AddBuff(this);
     }
     
@@ -17,11 +25,18 @@ public abstract class Buff
     {
         
     }
-
+    
     public bool IsExpired()
     {
         _elapsedTime += Time.deltaTime;
-        return _elapsedTime >= BuffTable.Duration;
+
+        if (_elapsedTime < BuffTable.Duration)
+        {
+            return false;
+        }
+
+        DeActivate();
+        return true;
     }
 
     public void HandleOverlap()

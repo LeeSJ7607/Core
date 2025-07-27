@@ -10,6 +10,7 @@ public interface IReadOnlyUnit
     Transform Tm { get; }
     IAnimatorController AnimatorController { get; }
     void AddBuff(Buff buff);
+    void RemoveBuffFlags(eBuffEffect buffEffectFlags);
 }
 
 public interface IUnitInitializer
@@ -45,6 +46,7 @@ public abstract partial class Unit : MonoBehaviour,
     private AnimatorController _animatorController;
     private BuffController _buffController;
     protected UnitContainer _unitContainer;
+    private eBuffEffect _curBuffEffectFlags;
 
     protected virtual void OnDisable()
     {
@@ -91,7 +93,13 @@ public abstract partial class Unit : MonoBehaviour,
     
     void IReadOnlyUnit.AddBuff(Buff buff)
     {
+        _curBuffEffectFlags |= buff.BuffTable.BuffEffectType;
         _buffController.AddBuff(buff);
+    }
+
+    void IReadOnlyUnit.RemoveBuffFlags(eBuffEffect buffEffectFlags)
+    {
+        _curBuffEffectFlags &= ~buffEffectFlags;
     }
     
     private void OnDrawGizmos()
