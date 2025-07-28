@@ -3,7 +3,7 @@ using UnityEngine;
 public abstract class Buff
 {
     public BuffTable.Row BuffTable { get; private set; }
-    private IReadOnlyUnit _target;
+    protected IDefender _target;
     private int _value;
     private float _elapsedTime;
     private int _stackCount = 1;
@@ -14,7 +14,7 @@ public abstract class Buff
         _target = null;
     }
     
-    public virtual void Apply(BuffTable.Row buffTable, IReadOnlyUnit target)
+    public virtual void Apply(BuffTable.Row buffTable, IDefender target)
     {
         BuffTable = buffTable;
         _target = target;

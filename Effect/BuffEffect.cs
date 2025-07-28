@@ -1,12 +1,12 @@
 internal sealed class BuffEffect : Effect
 {
-    protected override void SelfApply(IReadOnlyUnit owner)
+    protected override void SelfApply(IAttacker owner)
     {
         var (buff, buffTable) = CreateBuffData();
-        buff.Apply(buffTable, owner);
+        buff.Apply(buffTable, owner as IDefender);
     }
 
-    protected override void ApplyToTarget(IReadOnlyUnit owner, IReadOnlyUnit target)
+    protected override void ApplyToTarget(IAttacker owner, IDefender target)
     {
         var (buff, buffTable) = CreateBuffData();
         buff.Apply(buffTable, target);

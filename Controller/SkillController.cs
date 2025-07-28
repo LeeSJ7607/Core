@@ -25,7 +25,7 @@ public sealed class SkillController
         }
     }
 
-    public void ShowIndicator(IReadOnlyUnit owner, eSkillSlot slotType)
+    public void ShowIndicator(IAttacker owner, eSkillSlot slotType)
     {
         if (!_skillMap.TryGetValue(slotType, out var skill))
         {
@@ -35,7 +35,7 @@ public sealed class SkillController
         skill.ShowIndicator();
     }
 
-    public void ExecuteSkill(IReadOnlyUnit owner)
+    public void ExecuteSkill(IAttacker owner)
     {
         if (!TryGetPreparedSkill(out var refSkill))
         {

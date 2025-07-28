@@ -15,7 +15,7 @@ internal abstract class Skill
     public virtual void OnUpdate() { }
     public virtual void ShowIndicator() { }
     public virtual void HideIndicator() { }
-    public virtual void Apply(IReadOnlyUnit owner)
+    public virtual void Apply(IAttacker owner)
     {
         if (_effects.IsNullOrEmpty())
         {

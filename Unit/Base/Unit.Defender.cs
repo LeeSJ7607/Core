@@ -4,11 +4,14 @@ public interface IDefender
 {
     Vector3 Pos { get; }
     void Hit(long damage);
+    void AddBuff(Buff buff);
+    void RemoveBuffFlags(eBuffEffect buffEffectFlags);
 }
 
 public abstract partial class Unit
 {
     Vector3 IDefender.Pos => transform.position;
+    private eBuffEffect _curBuffEffectFlags;
     
     void IDefender.Hit(long damage)
     {
@@ -20,5 +23,16 @@ public abstract partial class Unit
         {
             _unitContainer.RemoveUnit(this);
         }
+    }
+    
+    void IDefender.AddBuff(Buff buff)
+    {
+        _curBuffEffectFlags |= buff.BuffTable.BuffEffectType;
+        _buffController.AddBuff(buff);
+    }
+
+    void IDefender.RemoveBuffFlags(eBuffEffect buffEffectFlags)
+    {
+        _curBuffEffectFlags &= ~buffEffectFlags;
     }
 }

@@ -7,7 +7,7 @@ internal abstract class Effect
         _effectTable = effectTable;
     }
 
-    public void Apply(IReadOnlyUnit owner, IReadOnlyUnit target)
+    public void Apply(IAttacker owner, IDefender target)
     {
         if (target == null)
         {
@@ -19,6 +19,6 @@ internal abstract class Effect
         }
     }
 
-    protected virtual void SelfApply(IReadOnlyUnit owner) { }
-    protected abstract void ApplyToTarget(IReadOnlyUnit owner, IReadOnlyUnit target);
+    protected virtual void SelfApply(IAttacker owner) { }
+    protected abstract void ApplyToTarget(IAttacker owner, IDefender target);
 }
