@@ -4,7 +4,7 @@ public abstract class Buff
 {
     public BuffTable.Row BuffTable { get; private set; }
     private IReadOnlyUnit _target;
-    private int _value => CalcValue();
+    private int _value;
     private float _elapsedTime;
     private int _stackCount = 1;
     
@@ -86,17 +86,23 @@ public abstract class Buff
     {
         _stackCount = Mathf.Min(++_stackCount, BuffTable.MaxStackCount);
     }
-
-    private int CalcValue()
+    
+    protected int CalcValue()
     {
+        if (_value > 0)
+        {
+            return _value;
+        }
+        
         if (BuffTable.BuffStackType == eBuffStack.Additive)
         {
-            return BuffTable.Value * _stackCount;
+            _value = BuffTable.Value * _stackCount;
+            return _value;
         }
 
-        var value = 1f + BuffTable.Value / GameRuleConst.PERCENTAGE_BASE;
+        var value = 1f + BuffTable.Value.ToRatio();
         var pow = Mathf.Pow(value, _stackCount);
-        var result = (pow - 1f) * GameRuleConst.PERCENTAGE_BASE;
-        return (int)result;
+        _value = (int)(pow - 1f) * GameRuleConst.PERCENTAGE_BASE;;
+        return _value;
     }
 }
