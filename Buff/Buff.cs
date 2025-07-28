@@ -14,10 +14,10 @@ public abstract class Buff
         _target = null;
     }
     
-    public virtual void Apply(BuffTable.Row buffTable, IDefender target)
+    public virtual void Apply(IDefender target, BuffTable.Row buffTable)
     {
-        BuffTable = buffTable;
         _target = target;
+        BuffTable = buffTable;
         target.AddBuff(this);
     }
     
