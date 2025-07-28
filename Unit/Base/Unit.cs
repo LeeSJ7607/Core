@@ -9,6 +9,7 @@ public interface IReadOnlyUnit
     bool IsDead { get; }
     Transform Tm { get; }
     IAnimatorController AnimatorController { get; }
+    void SetMovementAllowed(bool allowed);
 }
 
 public interface IUnitInitializer
@@ -44,6 +45,7 @@ public abstract partial class Unit : MonoBehaviour,
     private AnimatorController _animatorController;
     private BuffController _buffController;
     protected UnitContainer _unitContainer;
+    private bool _isMovementAllowed;
 
     protected virtual void OnDisable()
     {
@@ -86,6 +88,11 @@ public abstract partial class Unit : MonoBehaviour,
         _unitUI.OnUpdate();
         SkillController.OnUpdate();
         _buffController.OnUpdate();
+    }
+    
+    void IReadOnlyUnit.SetMovementAllowed(bool allowed)
+    {
+        _isMovementAllowed = allowed;
     }
     
     private void OnDrawGizmos()
