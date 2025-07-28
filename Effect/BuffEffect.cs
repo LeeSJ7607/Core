@@ -3,13 +3,13 @@ internal sealed class BuffEffect : Effect
     protected override void SelfApply(IAttacker owner)
     {
         var (buff, buffTable) = CreateBuffData();
-        buff.Apply((IDefender)owner, buffTable);
+        buff.Apply((IDefender)owner, buffTable, _effectTable.Duration);
     }
 
     protected override void ApplyToTarget(IAttacker owner, IDefender target)
     {
         var (buff, buffTable) = CreateBuffData();
-        buff.Apply(target, buffTable);
+        buff.Apply(target, buffTable, _effectTable.Duration);
     }
 
     private (Buff buff, BuffTable.Row buffTable) CreateBuffData()

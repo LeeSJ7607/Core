@@ -11,8 +11,15 @@ internal abstract class Skill
         _skillTable = skillTable;
         CreateEffects();
     }
+
+    public virtual void OnUpdate()
+    {
+        foreach (var effect in _effects)
+        {
+            effect.OnUpdate();
+        }    
+    }
     
-    public virtual void OnUpdate() { }
     public virtual void ShowIndicator() { }
     public virtual void HideIndicator() { }
     public virtual void Apply(IAttacker owner)

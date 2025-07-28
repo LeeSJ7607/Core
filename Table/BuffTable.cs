@@ -10,7 +10,6 @@ public sealed class BuffTable : BaseTable<BuffTable.Row>
         public eBuffOverlap BuffOverlapType;
         public eBuffStack BuffStackType;
         public int Value;
-        public float Duration;
         public int MaxStackCount;
     }
 

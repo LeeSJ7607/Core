@@ -7,6 +7,7 @@ public sealed class EffectTable : BaseTable<EffectTable.Row>
     {
         public int Id;
         public eEffectType EffectType;
+        public float Duration;
         public int BuffId;
     }
 

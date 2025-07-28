@@ -5,38 +5,41 @@ public abstract class Buff
     public BuffTable.Row BuffTable { get; private set; }
     protected IDefender _target;
     private int _value;
+    private float _duration;
     private float _elapsedTime;
     private int _stackCount = 1;
     
     protected virtual void DeActivate()
     {
+        BuffTable = null;
         _target.RemoveBuffFlags(BuffTable.BuffEffectType);
         _target = null;
+        _value = 0;
+        _duration = 0f;
+        _elapsedTime = 0f;
+        _stackCount = 1;
     }
     
-    public virtual void Apply(IDefender target, BuffTable.Row buffTable)
+    public virtual void Apply(IDefender target, BuffTable.Row buffTable, float duration)
     {
         _target = target;
         BuffTable = buffTable;
+        _duration = duration;
         target.AddBuff(this);
     }
     
     public virtual void OnUpdate()
     {
-        
+        if (IsExpired())
+        {
+            DeActivate();
+        }
     }
     
     public bool IsExpired()
     {
         _elapsedTime += Time.deltaTime;
-
-        if (_elapsedTime < BuffTable.Duration)
-        {
-            return false;
-        }
-
-        DeActivate();
-        return true;
+        return _elapsedTime >= _duration;
     }
 
     public void HandleOverlap()
@@ -51,7 +54,8 @@ public abstract class Buff
 
         case eBuffOverlap.Reset:
             {
-                Reset();
+                _elapsedTime = 0f;
+                _stackCount = 1;
             }
             break;
 
@@ -74,12 +78,6 @@ public abstract class Buff
             }
             break;
         }
-    }
-    
-    private void Reset()
-    {
-        _elapsedTime = 0;
-        _stackCount = 1;
     }
 
     private void AddStack()
