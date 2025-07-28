@@ -7,7 +7,7 @@ internal sealed class EffectFactory
     private static readonly Dictionary<eEffectType, Func<Effect>> _effectMap = new()
     {
         [eEffectType.Buff] = () => new BuffEffect(),
-        [eEffectType.Pull] = () => new PullingEffect(),
+        [eEffectType.Pulling] = () => new PullingEffect(),
     };
 
     public static Effect Create(eEffectType effectType)
