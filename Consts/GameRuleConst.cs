@@ -1,4 +1,4 @@
 internal static class GameRuleConst
 {
-    public const float PERCENTAGE_BASE = 10000f;
+    public const int PERCENTAGE_BASE = 10000;
 }
