@@ -3,13 +3,11 @@ using System.Collections.Generic;
 internal abstract class Skill
 {
     public bool EnableIndicator { get; protected set; }
-    private SkillTable.Row _skillTable;
     private List<Effect> _effects;
     
     public void Initialize(SkillTable.Row skillTable)
     {
-        _skillTable = skillTable;
-        CreateEffects();
+        CreateEffects(skillTable);
     }
 
     public virtual void OnUpdate()
@@ -35,9 +33,9 @@ internal abstract class Skill
         }
     }
     
-    private void CreateEffects()
+    private void CreateEffects(SkillTable.Row skillTable)
     {
-        var effectIds = _skillTable.EffectIds;
+        var effectIds = skillTable.EffectIds;
         var count = effectIds.Count;
         if (count == 0)
         {
