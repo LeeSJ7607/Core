@@ -42,7 +42,6 @@ public sealed class SkillController
             return;
         }
         
-        refSkill.HideIndicator();
         refSkill.Apply(owner);
     }
 

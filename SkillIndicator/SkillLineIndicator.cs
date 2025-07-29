@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 internal sealed class SkillLineIndicator : ISkillIndicator
 {
+    Vector3 ISkillIndicator.Direction => _direction;
+    private Vector3 _direction;
     private Transform _ownerTm;
     private float _skillRange;
     private Camera _mainCam;
@@ -28,6 +30,7 @@ internal sealed class SkillLineIndicator : ISkillIndicator
         }
         
         UpdateLineRenderer(mouseDirection);
+        _direction = mouseDirection;
     }
     
     void ISkillIndicator.Show()
