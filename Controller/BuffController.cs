@@ -8,15 +8,20 @@ internal sealed class BuffController
     {
         foreach (var buffs in _buffMap.Values)
         {
-            for (var i = buffs.Count - 1; i >= 0; i--)
-            {
-                var buff = buffs[i];
-                buff.OnUpdate();
+            UpdateAndCleanBuffs(buffs);
+        }
+    }
 
-                if (buff.IsExpired())
-                {
-                    buffs.RemoveAt(i);
-                }
+    private void UpdateAndCleanBuffs(IList<Buff> buffs)
+    {
+        for (var i = buffs.Count - 1; i >= 0; i--)
+        {
+            var buff = buffs[i];
+            buff.OnUpdate();
+
+            if (buff.IsExpired())
+            {
+                buffs.RemoveAt(i);
             }
         }
     }
